@@ -76,5 +76,9 @@ convention = "google"
 [tool.mypy]
 strict = true
 
+[[tool.mypy.overrides]]
+module = ["everest.*"]
+ignore_missing_imports = true
+
 [tool.uv]
 dev-dependencies = ["mypy>=1.11.2", "pytest>=8.3.3", "ruff>=0.6.5"]

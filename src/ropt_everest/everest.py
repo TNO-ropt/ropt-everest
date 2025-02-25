@@ -6,13 +6,20 @@ from typing import TYPE_CHECKING, Any, Final, Type
 
 from ropt.plugins.plan.base import PlanHandlerPlugin, PlanStepPlugin
 
+from ._everest_config import EverestConfigStep
+from ._results_table import EverestDefaultTableHandler
+
 if TYPE_CHECKING:
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanStep, ResultHandler
 
-_STEP_OBJECTS: Final[dict[str, Type[PlanStep]]] = {}
+_STEP_OBJECTS: Final[dict[str, Type[PlanStep]]] = {
+    "everest_config": EverestConfigStep,
+}
 
-_RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {}
+_RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {
+    "everest_config": EverestDefaultTableHandler,
+}
 
 
 class EverestPlanHandlerPlugin(PlanHandlerPlugin):
