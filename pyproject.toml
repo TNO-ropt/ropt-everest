@@ -1,0 +1,80 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ropt-everest"
+description = "A Dakota optimizer plugin for ropt"
+readme = "README.md"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+]
+requires-python = ">=3.11"
+dynamic = ["version"]
+dependencies = []
+
+[project.urls]
+"Homepage" = "https://github.com/TNO-ropt/ropt-everest"
+"Repository" = "https://github.com/TNO-ropt/ropt-everest"
+"Bug Tracker" = "https://github.com/TNO-ropt/ropt-everest/issues"
+
+[project.entry-points."ropt.plugins.plan_handler"]
+everest = "ropt_everest.everest:EverestPlanHandlerPlugin"
+
+[project.entry-points."ropt.plugins.plan_step"]
+everest = "ropt_everest.everest:EverestPlanStepPlugin"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ropt_everest = ["py.typed"]
+
+[tool.setuptools.dynamic]
+version = { attr = "ropt_everest.version.__version__" }
+
+[tool.setuptools_scm]
+write_to = "src/ropt_everest/version.py"
+
+[tool.pytest.ini_options]
+filterwarnings = ["error"]
+
+[tool.ruff.format]
+exclude = ["src/ropt_everest/version.py", "build"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "AIR",    # airflow-variable-name-task-id-mismatch
+    "COM812", # missing-trailing-comma
+    "E501",   # line-too-lone
+    "ISC001", # single-line-implicit-string-concatenation   
+    "DJ",     # flake8-django
+    "FA",     # flake8-future-annotations
+    "UP",     # pyupgrade 
+    "S101",   # assert
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "E402",    # module-import-not-at-top-of-file
+    "D",       # pydocstyle
+    "ANN401",  # anytype
+    "FBT",     # flake8-boolean-trap
+    "PLR2004", # magic-value-comparison
+    "PLR0913", # too-many-arguments
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+strict = true
+
+[tool.uv]
+dev-dependencies = ["mypy>=1.11.2", "pytest>=8.3.3", "ruff>=0.6.5"]
