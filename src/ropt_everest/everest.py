@@ -8,6 +8,7 @@ from ropt.plugins.plan.base import PlanHandlerPlugin, PlanStepPlugin
 
 from ._everest_config import EverestConfigStep
 from ._results_table import EverestDefaultTableHandler
+from ._workflow_job import EverestWorkflowJob
 
 if TYPE_CHECKING:
     from ropt.plan import Plan
@@ -15,6 +16,7 @@ if TYPE_CHECKING:
 
 _STEP_OBJECTS: Final[dict[str, Type[PlanStep]]] = {
     "everest_config": EverestConfigStep,
+    "workflow_job": EverestWorkflowJob,
 }
 
 _RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {
