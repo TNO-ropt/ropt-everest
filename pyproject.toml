@@ -42,12 +42,17 @@ version = { attr = "ropt_everest.version.__version__" }
 write_to = "src/ropt_everest/version.py"
 
 [tool.pytest.ini_options]
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    'ignore:numpy.ndarray size changed, may indicate binary incompatibility.*:RuntimeWarning',
+]
+
 
 [tool.ruff.format]
 exclude = ["src/ropt_everest/version.py", "build"]
 
 [tool.ruff.lint]
+exclude = ["test-data/*"]
 select = ["ALL"]
 ignore = [
     "AIR",    # airflow-variable-name-task-id-mismatch
@@ -77,7 +82,7 @@ convention = "google"
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["everest.*"]
+module = ["everest.*", "ert.*"]
 ignore_missing_imports = true
 
 [tool.uv]
