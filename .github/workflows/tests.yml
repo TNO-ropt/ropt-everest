@@ -36,6 +36,6 @@ jobs:
       run: |
         uv sync --all-extras --dev
         uv pip install git+https://github.com/TNO-ropt/ropt
-        uv pip install git+https://github.com/equinor/ert@pv-wip[everest,dev]
+        uv pip install git+https://github.com/equinor/ert@update-to-ropt-0.16[everest,dev]
     - name: Run pytest
       run: uv run pytest tests

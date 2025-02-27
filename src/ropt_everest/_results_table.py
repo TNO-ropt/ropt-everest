@@ -49,12 +49,15 @@ _COLUMNS: Final[dict[str, dict[str, str]]] = {
     },
     "constraints": {
         "batch_id": "Batch",
-        "constraint_diffs.bound_lower": "BCD-lower",
-        "constraint_diffs.bound_upper": "BCD-upper",
-        "constraint_diffs.linear_lower": "ICD-lower",
-        "constraint_diffs.linear_upper": "ICD-upper",
-        "constraint_diffs.nonlinear_lower": "OCD-lower",
-        "constraint_diffs.nonlinear_upper": "OCD-upper",
+        "constraint_info.bound_lower": "BCD-lower",
+        "constraint_info.bound_upper": "BCD-upper",
+        "constraint_info.linear_lower": "ICD-lower",
+        "constraint_info.linear_upper": "ICD-upper",
+        "constraint_info.nonlinear_lower": "OCD-lower",
+        "constraint_info.nonlinear_upper": "OCD-upper",
+        "constraint_info.bound_violation": "BCD-violation",
+        "constraint_info.linear_violation": "ICD-violation",
+        "constraint_info.nonlinear_violation": "OCD-violation",
     },
 }
 
