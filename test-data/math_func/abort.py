@@ -1,10 +1,8 @@
+# type: ignore
+# ruff: noqa
+
 from ropt.enums import OptimizerExitCode
-from ropt.plan import Plan
-from ropt.plugins.plan.base import ResultHandler
-from ropt.transforms import OptModelTransforms
 
 
-def run_plan(
-    plan: Plan, _: OptModelTransforms | None
-) -> tuple[ResultHandler | None, OptimizerExitCode | None]:
+def run_plan(_):
     return None, OptimizerExitCode.USER_ABORT

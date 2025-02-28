@@ -4,9 +4,21 @@ from __future__ import annotations
 
 import importlib
 import sys
-from typing import TYPE_CHECKING
+from functools import partial
+from typing import TYPE_CHECKING, Callable
 
 from ropt.plugins.plan.base import PlanStep
+
+from ._everest_plan import EverestPlan
+
+if TYPE_CHECKING:
+    from ropt.enums import OptimizerExitCode
+    from ropt.plan import Plan
+    from ropt.plugins.plan.base import ResultHandler
+    from ropt.transforms import OptModelTransforms
+
+    from ._everest_plan import EverestTracker
+
 
 if TYPE_CHECKING:
     from everest.config import EverestConfig
@@ -30,7 +42,17 @@ class EverestConfigStep(PlanStep):
 
             if hasattr(module, "run_plan"):
                 self.plan.clear_handlers()
-                self.plan.add_function(module.run_plan)
+                self.plan.add_function(partial(_run_plan, func=module.run_plan))
             else:
                 msg = f"Function `run_plan` not found in module {module_name}"
                 raise ImportError(msg)
+
+
+def _run_plan(
+    plan: Plan,
+    transforms: OptModelTransforms,
+    func: Callable[[EverestPlan], tuple[EverestTracker | None, OptimizerExitCode]],
+) -> tuple[ResultHandler | None, OptimizerExitCode]:
+    ever_plan = EverestPlan(plan, transforms)
+    tracker, exit_code = func(ever_plan)
+    return (None if tracker is None else tracker.ropt_tracker), exit_code

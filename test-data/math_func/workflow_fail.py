@@ -1,12 +1,13 @@
+# type: ignore
+# ruff: noqa
+
 from ropt.enums import OptimizerExitCode
-from ropt.plan import Plan
-from ropt.plugins.plan.base import ResultHandler
-from ropt.transforms import OptModelTransforms
 
 
-def run_plan(
-    plan: Plan, _: OptModelTransforms | None
-) -> tuple[ResultHandler | None, OptimizerExitCode | None]:
-    step = plan.add_step("workflow_job")
-    plan.run_step(step, jobs=["fail"])
+def run_plan(plan):
+    workflow_job = plan.add_workflow_job()
+    info = workflow_job.run(["fail"])
+    if not all(v["completed"] for v in info.values()):
+        msg = "workflow job failed"
+        raise RuntimeError(msg)
     return None, OptimizerExitCode.MAX_FUNCTIONS_REACHED

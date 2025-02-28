@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Final, Literal, Sequence
+from typing import TYPE_CHECKING, Any, Final, Literal, Sequence
 
 from ropt.enums import EventType, ResultAxis
 from ropt.plugins.plan.base import ResultHandler
@@ -77,13 +77,18 @@ class EverestDefaultTableHandler(ResultHandler):
         *,
         everest_config: EverestConfig,
         tags: str | set[str] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> None:
         super().__init__(plan)
         self._tags = _get_set(tags)
         self._everest_config = everest_config
+        self._metadata = metadata
         self._tables = []
         for type_, table_type in _TABLE_TYPE_MAP.items():
             columns = deepcopy(_COLUMNS[type_])
+            if self._metadata is not None:
+                for key in self._metadata:
+                    columns[f"metadata.{key}"] = key
             self._tables.append(
                 ResultsTable(
                     columns,
@@ -96,14 +101,24 @@ class EverestDefaultTableHandler(ResultHandler):
     def handle_event(self, event: Event) -> Event:
         """Handle an event."""
         if (
-            event.event_type
-            in {
-                EventType.FINISHED_EVALUATION,
-                EventType.FINISHED_EVALUATOR_STEP,
-            }
+            event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
             and (event.tags & self._tags)
         ):
+            if self._metadata is not None:
+                metadata = {
+                    key: self.plan[value[1:]]
+                    if (
+                        isinstance(value, str)
+                        and value.startswith("$")
+                        and not value[1:].startswith("$")
+                    )
+                    else value
+                    for key, value in self._metadata.items()
+                }
+                for item in event.data["results"]:
+                    item.metadata = metadata
+
             names = _get_names(self._everest_config)
             for table in self._tables:
                 added = False

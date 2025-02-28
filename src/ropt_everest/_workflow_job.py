@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from ert.config import Workflow, WorkflowJob
 from ert.substitutions import Substitutions
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class EverestWorkflowJob(PlanStep):
-    def run(self, jobs: list[str]) -> None:  # type: ignore[override]
+    def run(self, jobs: list[str]) -> Any:  # type: ignore[override] # noqa: ANN401
         everest_config: EverestConfig = self.plan["everest_config"]
 
         installed_jobs = {
@@ -35,8 +35,6 @@ class EverestWorkflowJob(PlanStep):
             workflow = Workflow.from_file(file_name, Substitutions(), installed_jobs)
             runner = WorkflowRunner(workflow, fixtures={})
             runner.run_blocking()
-            if not all(v["completed"] for v in runner.workflowReport().values()):
-                msg = "workflow job failed"
-                raise RuntimeError(msg)
+            return runner.workflowReport()
         finally:
             file_name.unlink(missing_ok=True)
