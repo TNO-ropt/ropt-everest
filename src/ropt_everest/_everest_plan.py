@@ -28,7 +28,9 @@ class EverestPlan:
         return self._config_dict
 
     def add_optimizer(
-        self, config: dict[str, Any] | None = None
+        self,
+        config: dict[str, Any] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> EverestOptimizerStep:
         tag = f"tag{self._tag_id}"
         self._tag_id += 1
@@ -41,11 +43,14 @@ class EverestPlan:
             ),
             transforms=self._transforms,
             tags=tag,
+            metadata=metadata,
         )
         return EverestOptimizerStep(step, self._plan, tag)
 
     def add_evaluator(
-        self, config: dict[str, Any] | None = None
+        self,
+        config: dict[str, Any] | None = None,
+        metadata: dict[str, Any] | None = None,
     ) -> EverestEvaluatorStep:
         tag = f"tag{self._tag_id}"
         self._tag_id += 1
@@ -58,6 +63,7 @@ class EverestPlan:
             ),
             transforms=self._transforms,
             tags=tag,
+            metadata=metadata,
         )
         return EverestEvaluatorStep(step, self._plan, tag)
 

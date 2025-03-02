@@ -6,9 +6,10 @@ from copy import deepcopy
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final, Literal, Sequence
 
+import pandas as pd
 from ropt.enums import EventType, ResultAxis
 from ropt.plugins.plan.base import ResultHandler
-from ropt.report import ResultsDataFrame
+from ropt.results import Results, results_to_dataframe
 from tabulate import tabulate
 
 if TYPE_CHECKING:
@@ -81,65 +82,46 @@ class EverestDefaultTableHandler(ResultHandler):
     ) -> None:
         super().__init__(plan)
         self._tags = _get_set(tags)
-        self._everest_config = everest_config
-        self._metadata = metadata
         self._tables = []
+        names = _get_names(everest_config)
         for type_, table_type in _TABLE_TYPE_MAP.items():
-            columns = deepcopy(_COLUMNS[type_])
-            if self._metadata is not None:
-                for key in self._metadata:
-                    columns[f"metadata.{key}"] = key
             self._tables.append(
                 ResultsTable(
-                    columns,
+                    _COLUMNS[type_],
                     Path(everest_config.optimization_output_dir) / f"{type_}.txt",
                     table_type=table_type,
+                    metadata=metadata,
+                    names=names,
                     min_header_len=3,
                 )
             )
 
-    def handle_event(self, event: Event) -> Event:
+    def handle_event(self, event: Event) -> None:
         """Handle an event."""
         if (
             event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
             and (event.tags & self._tags)
         ):
-            if self._metadata is not None:
-                metadata = {
-                    key: self.plan[value[1:]]
-                    if (
-                        isinstance(value, str)
-                        and value.startswith("$")
-                        and not value[1:].startswith("$")
-                    )
-                    else value
-                    for key, value in self._metadata.items()
-                }
-                for item in event.data["results"]:
-                    item.metadata = metadata
-
-            names = _get_names(self._everest_config)
             for table in self._tables:
-                added = False
-                for item in event.data["results"]:
-                    if table.add_results(item, names):
-                        added = True
-                if added:
-                    table.save()
-        return event
+                table.add_results(event.data["results"])
 
 
-class ResultsTable(ResultsDataFrame):
-    def __init__(
+class ResultsTable:
+    def __init__(  # noqa: PLR0913
         self,
         columns: dict[str, str],
         path: Path,
         *,
         table_type: Literal["functions", "gradients"] = "functions",
+        metadata: dict[str, Any] | None = None,
+        names: dict[str, Sequence[str | int] | None] | None = None,
         min_header_len: int | None = None,
     ) -> None:
-        super().__init__(set(columns), table_type=table_type)
+        columns = deepcopy(columns)
+        if metadata is not None:
+            for key, value in metadata.items():
+                columns[f"metadata.{key}"] = value
 
         if path.parent.exists():
             if not path.parent.is_dir():
@@ -150,10 +132,24 @@ class ResultsTable(ResultsDataFrame):
 
         self._columns = columns
         self._path = path
+        self._names = names
+        self._results_type = table_type
         self._min_header_len = min_header_len
+        self._frames: list[pd.DataFrame] = []
+
+    def add_results(self, results: Sequence[Results]) -> None:
+        frame = results_to_dataframe(
+            results,
+            set(self._columns.keys()),
+            result_type=self._results_type,
+            names=self._names,
+        )
+        if not frame.empty:
+            self._frames.append(frame)
+            self.save()
 
     def save(self) -> None:
-        data = self.frame
+        data = pd.concat(self._frames)
         if not data.empty:
             # Turn the multi-index into columns:
             data = data.reset_index()
