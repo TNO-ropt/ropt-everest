@@ -37,9 +37,11 @@ class EverestPlan:
         step = self._plan.add_step(
             "optimizer",
             config=(
-                everest2ropt(self._config)
+                everest2ropt(self._config, transforms=self._transforms)
                 if config is None
-                else everest2ropt(EverestConfig.model_validate(config))
+                else everest2ropt(
+                    EverestConfig.model_validate(config), transforms=self._transforms
+                )
             ),
             transforms=self._transforms,
             tags=tag,
@@ -57,9 +59,11 @@ class EverestPlan:
         step = self._plan.add_step(
             "evaluator",
             config=(
-                everest2ropt(self._config)
+                everest2ropt(self._config, transforms=self._transforms)
                 if config is None
-                else everest2ropt(EverestConfig.model_validate(config))
+                else everest2ropt(
+                    EverestConfig.model_validate(config), transforms=self._transforms
+                )
             ),
             transforms=self._transforms,
             tags=tag,
