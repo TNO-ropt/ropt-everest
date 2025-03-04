@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 _COLUMNS: Final[dict[str, dict[str, str]]] = {
     "results": {
+        "eval_id": "Eval-ID",
         "batch_id": "Batch",
         "functions.weighted_objective": "Total-Objective",
         "functions.objectives": "Objective",
@@ -25,12 +26,14 @@ _COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.variables": "Control",
     },
     "gradients": {
+        "eval_id": "Eval-ID",
         "batch_id": "Batch",
         "gradients.weighted_objective": "Total-Gradient",
         "gradients.objectives": "Grad-objective",
         "gradients.constraints": "Grad-constraint",
     },
     "simulations": {
+        "eval_id": "Eval-ID",
         "batch_id": "Batch",
         "realization": "Realization",
         "variable": "Control-name",
@@ -40,6 +43,7 @@ _COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.evaluation_ids": "Simulation",
     },
     "perturbations": {
+        "eval_id": "Eval-ID",
         "batch_id": "Batch",
         "realization": "Realization",
         "perturbation": "Perturbation",
@@ -49,6 +53,7 @@ _COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.perturbed_evaluation_ids": "Simulation",
     },
     "constraints": {
+        "eval_id": "Eval-ID",
         "batch_id": "Batch",
         "constraint_info.bound_lower": "BCD-lower",
         "constraint_info.bound_upper": "BCD-upper",
