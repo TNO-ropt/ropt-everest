@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Sequence
+from typing import TYPE_CHECKING, Any, Literal, Sequence
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestRunModel
@@ -8,10 +8,12 @@ from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
 
 if TYPE_CHECKING:
-    from numpy.typing import ArrayLike
+    import numpy as np
+    from numpy.typing import ArrayLike, NDArray
     from ropt.enums import OptimizerExitCode
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanStep, ResultHandler
+    from ropt.results import FunctionResults
     from ropt.transforms import OptModelTransforms
 
 
@@ -79,12 +81,14 @@ class EverestPlan:
         self,
         track: EverestStep | Sequence[EverestStep],
         *,
+        what: Literal["best", "last", "all"] = "best",
         constraint_tolerance: float | None = None,
     ) -> EverestTracker:
         if isinstance(track, EverestStep):
             track = [track]
         step = self._plan.add_handler(
             "tracker",
+            what=what,
             constraint_tolerance=constraint_tolerance,
             tags={step.tag for step in track},
         )
@@ -168,6 +172,18 @@ class EverestTracker(EverestHandler):
     def __init__(self, tracker: ResultHandler, plan: Plan) -> None:
         super().__init__(plan)
         self._tracker = tracker
+
+    @property
+    def results(self) -> FunctionResults | tuple[FunctionResults, ...] | None:
+        results: FunctionResults | tuple[FunctionResults, ...] | None
+        results = self._tracker["results"]
+        return results
+
+    @property
+    def variables(self) -> NDArray[np.float64] | tuple[NDArray[np.float64], ...] | None:
+        variables: NDArray[np.float64] | tuple[NDArray[np.float64], ...] | None
+        variables = self._tracker["variables"]
+        return variables
 
     @property
     def ropt_tracker(self) -> ResultHandler:
