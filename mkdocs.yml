@@ -3,8 +3,6 @@ site_name: ropt-everest Documentation
 theme:
   name: material
   features:
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.top
     - navigation.expand
     - content.code.copy
@@ -74,4 +72,9 @@ watch:
 
 repo_url: https://github.com/TNO-ropt/ropt-everest
 nav:
-  - About: index.md
+  - "About": index.md
+  - "Usage": 
+     - "Basic Usage": usage/basics.md
+     - "Running the plan": usage/running.md
+  - "Reference":
+    - "Everest Plan": reference/everest_plan.md
