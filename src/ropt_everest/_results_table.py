@@ -4,76 +4,25 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Final, Literal, Sequence
+from typing import TYPE_CHECKING, Any, Literal, Sequence
 
 import pandas as pd
-from ropt.enums import EventType, ResultAxis
+from ropt.enums import EventType
 from ropt.plugins.plan.base import ResultHandler
 from ropt.results import Results, results_to_dataframe
 from tabulate import tabulate
 
+from ._utils import (
+    TABLE_COLUMNS,
+    TABLE_TYPE_MAP,
+    get_names,
+    rename_columns,
+    reorder_columns,
+)
+
 if TYPE_CHECKING:
     from everest.config import EverestConfig
     from ropt.plan import Event, Plan
-
-_COLUMNS: Final[dict[str, dict[str, str]]] = {
-    "results": {
-        "eval_id": "Eval-ID",
-        "batch_id": "Batch",
-        "functions.weighted_objective": "Total-Objective",
-        "functions.objectives": "Objective",
-        "functions.constraints": "Constraint",
-        "evaluations.variables": "Control",
-    },
-    "gradients": {
-        "eval_id": "Eval-ID",
-        "batch_id": "Batch",
-        "gradients.weighted_objective": "Total-Gradient",
-        "gradients.objectives": "Grad-objective",
-        "gradients.constraints": "Grad-constraint",
-    },
-    "simulations": {
-        "eval_id": "Eval-ID",
-        "batch_id": "Batch",
-        "realization": "Realization",
-        "variable": "Control-name",
-        "evaluations.variables": "Control",
-        "evaluations.objectives": "Objective",
-        "evaluations.constraints": "Constraint",
-        "evaluations.evaluation_ids": "Simulation",
-    },
-    "perturbations": {
-        "eval_id": "Eval-ID",
-        "batch_id": "Batch",
-        "realization": "Realization",
-        "perturbation": "Perturbation",
-        "evaluations.perturbed_variables": "Control",
-        "evaluations.perturbed_objectives": "Objective",
-        "evaluations.perturbed_constraints": "Constraint",
-        "evaluations.perturbed_evaluation_ids": "Simulation",
-    },
-    "constraints": {
-        "eval_id": "Eval-ID",
-        "batch_id": "Batch",
-        "constraint_info.bound_lower": "BCD-lower",
-        "constraint_info.bound_upper": "BCD-upper",
-        "constraint_info.linear_lower": "ICD-lower",
-        "constraint_info.linear_upper": "ICD-upper",
-        "constraint_info.nonlinear_lower": "OCD-lower",
-        "constraint_info.nonlinear_upper": "OCD-upper",
-        "constraint_info.bound_violation": "BCD-violation",
-        "constraint_info.linear_violation": "ICD-violation",
-        "constraint_info.nonlinear_violation": "OCD-violation",
-    },
-}
-
-_TABLE_TYPE_MAP: Final[dict[str, Literal["functions", "gradients"]]] = {
-    "results": "functions",
-    "gradients": "gradients",
-    "simulations": "functions",
-    "perturbations": "gradients",
-    "constraints": "functions",
-}
 
 
 class EverestDefaultTableHandler(ResultHandler):
@@ -88,11 +37,11 @@ class EverestDefaultTableHandler(ResultHandler):
         super().__init__(plan)
         self._tags = _get_set(tags)
         self._tables = []
-        names = _get_names(everest_config)
-        for type_, table_type in _TABLE_TYPE_MAP.items():
+        names = get_names(everest_config)
+        for type_, table_type in TABLE_TYPE_MAP.items():
             self._tables.append(
                 ResultsTable(
-                    _COLUMNS[type_],
+                    TABLE_COLUMNS[type_],
                     Path(everest_config.optimization_output_dir) / f"{type_}.txt",
                     table_type=table_type,
                     metadata=metadata,
@@ -160,22 +109,10 @@ class ResultsTable:
             data = data.reset_index()
 
             # Reorder the columns to match the order of the headers:
-            reordered_columns = [
-                name
-                for key in self._columns
-                for name in data.columns.to_numpy()
-                if name == key or (isinstance(name, tuple) and name[0] == key)
-            ]
-            data = data.reindex(columns=reordered_columns)
+            data = reorder_columns(data, self._columns)
 
             # Rename the columns:
-            renamed_columns = [
-                "\n".join([self._columns[name[0]]] + [str(item) for item in name[1:]])
-                if isinstance(name, tuple)
-                else self._columns[name]
-                for name in reordered_columns
-            ]
-            data = data.set_axis(renamed_columns, axis="columns")
+            data = rename_columns(data, self._columns)
 
             # Add newlines to the headers to make them all the same length:
             max_lines = max(len(str(column).split("\n")) for column in data.columns)
@@ -208,17 +145,3 @@ def _get_set(values: str | set[str] | list[str] | tuple[str, ...] | None) -> set
             return set()
     msg = f"Invalid type for values: {type(values)}"
     raise TypeError(msg)
-
-
-def _get_names(
-    everest_config: EverestConfig | None,
-) -> dict[str, Sequence[str | int] | None] | None:
-    if everest_config is None:
-        return None
-
-    return {
-        ResultAxis.VARIABLE: everest_config.formatted_control_names,
-        ResultAxis.OBJECTIVE: everest_config.objective_names,
-        ResultAxis.NONLINEAR_CONSTRAINT: everest_config.constraint_names,
-        ResultAxis.REALIZATION: everest_config.model.realizations,
-    }

@@ -6,9 +6,19 @@ from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
+from ropt.results import Results, results_to_dataframe
+
+from ._utils import (
+    TABLE_COLUMNS,
+    TABLE_TYPE_MAP,
+    get_names,
+    reorder_columns,
+    strip_prefix_from_columns,
+)
 
 if TYPE_CHECKING:
     import numpy as np
+    import pandas as pd
     from numpy.typing import ArrayLike, NDArray
     from ropt.enums import OptimizerExitCode
     from ropt.plan import Plan
@@ -92,7 +102,7 @@ class EverestPlan:
             constraint_tolerance=constraint_tolerance,
             tags={step.tag for step in track},
         )
-        return EverestTracker(step, self._plan)
+        return EverestTracker(step, self._plan, get_names(self._config))
 
     def add_table(
         self,
@@ -169,9 +179,15 @@ class EverestHandler:
 
 
 class EverestTracker(EverestHandler):
-    def __init__(self, tracker: ResultHandler, plan: Plan) -> None:
+    def __init__(
+        self,
+        tracker: ResultHandler,
+        plan: Plan,
+        names: dict[str, Sequence[str | int] | None] | None,
+    ) -> None:
         super().__init__(plan)
         self._tracker = tracker
+        self._names = names
 
     @property
     def results(self) -> FunctionResults | tuple[FunctionResults, ...] | None:
@@ -188,6 +204,27 @@ class EverestTracker(EverestHandler):
     @property
     def ropt_tracker(self) -> ResultHandler:
         return self._tracker
+
+    def dataframe(self, kind: str) -> pd.DataFrame | None:
+        if kind not in TABLE_COLUMNS:
+            msg = f"Cannot make frame for `{kind}`"
+            raise RuntimeError(msg)
+        results = self.results
+        if results is not None:
+            if isinstance(results, Results):
+                results = (results,)
+            return strip_prefix_from_columns(
+                reorder_columns(
+                    results_to_dataframe(
+                        results,
+                        fields=set(TABLE_COLUMNS[kind]),
+                        result_type=TABLE_TYPE_MAP[kind],
+                        names=self._names,
+                    ),
+                    TABLE_COLUMNS[kind],
+                )
+            )
+        return None
 
 
 class EverestTableHandler(EverestHandler):

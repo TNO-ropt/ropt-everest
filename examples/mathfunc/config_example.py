@@ -13,7 +13,7 @@ def run_plan_basic(plan):
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
     exit_code = optimizer.run()
-    print(tracker.variables)
+    print(tracker.dataframe("results"))
     return tracker, exit_code
 
 
