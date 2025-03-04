@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Literal, Sequence
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
@@ -107,8 +108,6 @@ class EverestPlan:
     def add_table(
         self,
         track: EverestStep | Sequence[EverestStep],
-        *,
-        metadata: dict[str, Any] | None = None,
     ) -> EverestTableHandler:
         if isinstance(track, EverestStep):
             track = [track]
@@ -116,7 +115,6 @@ class EverestPlan:
             "table",
             everest_config=self._config,
             tags={step.tag for step in track},
-            metadata=metadata,
         )
         return EverestTableHandler(step, self._plan)
 
@@ -213,15 +211,20 @@ class EverestTracker(EverestHandler):
         if results is not None:
             if isinstance(results, Results):
                 results = (results,)
+            columns = deepcopy(TABLE_COLUMNS[kind])
+            if results[0].metadata is not None:
+                for item in results[0].metadata:
+                    columns[f"metadata.{item}"] = item
+            fields = set(columns)
             return strip_prefix_from_columns(
                 reorder_columns(
                     results_to_dataframe(
                         results,
-                        fields=set(TABLE_COLUMNS[kind]),
+                        fields=fields,
                         result_type=TABLE_TYPE_MAP[kind],
                         names=self._names,
                     ),
-                    TABLE_COLUMNS[kind],
+                    columns,
                 )
             )
         return None

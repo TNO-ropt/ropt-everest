@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Literal, Sequence
+from typing import TYPE_CHECKING, Literal, Sequence
 
 import pandas as pd
 from ropt.enums import EventType
@@ -32,7 +32,6 @@ class EverestDefaultTableHandler(ResultHandler):
         *,
         everest_config: EverestConfig,
         tags: str | set[str] | None = None,
-        metadata: dict[str, Any] | None = None,
     ) -> None:
         super().__init__(plan)
         self._tags = _get_set(tags)
@@ -44,7 +43,6 @@ class EverestDefaultTableHandler(ResultHandler):
                     TABLE_COLUMNS[type_],
                     Path(everest_config.optimization_output_dir) / f"{type_}.txt",
                     table_type=table_type,
-                    metadata=metadata,
                     names=names,
                     min_header_len=3,
                 )
@@ -62,21 +60,15 @@ class EverestDefaultTableHandler(ResultHandler):
 
 
 class ResultsTable:
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         columns: dict[str, str],
         path: Path,
         *,
         table_type: Literal["functions", "gradients"] = "functions",
-        metadata: dict[str, Any] | None = None,
         names: dict[str, Sequence[str | int] | None] | None = None,
         min_header_len: int | None = None,
     ) -> None:
-        columns = deepcopy(columns)
-        if metadata is not None:
-            for key, value in metadata.items():
-                columns[f"metadata.{key}"] = value
-
         if path.parent.exists():
             if not path.parent.is_dir():
                 msg = f"Cannot write table to: {path}"
@@ -92,27 +84,31 @@ class ResultsTable:
         self._frames: list[pd.DataFrame] = []
 
     def add_results(self, results: Sequence[Results]) -> None:
+        columns = deepcopy(self._columns)
+        if results[0].metadata is not None:
+            for item in results[0].metadata:
+                columns[f"metadata.{item}"] = item
         frame = results_to_dataframe(
             results,
-            set(self._columns.keys()),
+            set(columns),
             result_type=self._results_type,
             names=self._names,
         )
         if not frame.empty:
             self._frames.append(frame)
-            self.save()
+            self.save(columns)
 
-    def save(self) -> None:
+    def save(self, columns: dict[str, str]) -> None:
         data = pd.concat(self._frames)
         if not data.empty:
             # Turn the multi-index into columns:
             data = data.reset_index()
 
             # Reorder the columns to match the order of the headers:
-            data = reorder_columns(data, self._columns)
+            data = reorder_columns(data, columns)
 
             # Rename the columns:
-            data = rename_columns(data, self._columns)
+            data = rename_columns(data, columns)
 
             # Add newlines to the headers to make them all the same length:
             max_lines = max(len(str(column).split("\n")) for column in data.columns)

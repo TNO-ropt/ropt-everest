@@ -9,7 +9,8 @@ test_to_run = "basic"
 
 
 def run_plan_basic(plan):
-    optimizer = plan.add_optimizer()
+    plan["bar"] = 1
+    optimizer = plan.add_optimizer(metadata={"foo": "$bar"})
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
     exit_code = optimizer.run()
