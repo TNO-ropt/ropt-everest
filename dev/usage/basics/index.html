@@ -701,22 +701,12 @@ instead of the standard Everest optimization process. This allows you to define
 complex, multi-step optimization strategies, incorporate custom logic, and gain
 fine-grained control over the optimization process.</p>
 <p>The <code>run_plan</code> function must have the following signature:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan_basic</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">plan</span><span class="p">:</span> <span class="n">EverestPlan</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">EverestTracker</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span> <span class="n">OptimizerExitCode</span><span class="p">]:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">...</span>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan_basic</span><span class="p">(</span><span class="n">plan</span><span class="p">:</span> <span class="n">EverestPlan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="o">...</span>
 </span></code></pre></div>
-<ul>
-<li>The function must accept an <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object,
-   which is used to define and execute the optimization workflow. This object is
-   created by Everest and provided to <code>run_plan</code> via the <code>plan</code> parameter.</li>
-<li>The function must return a tuple containing:<ul>
-<li>An <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestTracker"><code>EverestTracker</code></a> object (or <code>None</code>).</li>
-<li>An exit code indicating the outcome of the optimization. This exit code is
-  typically returned by an optimizer or evaluation step.</li>
-</ul>
-</li>
-</ul>
+<p>The function must accept an <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object,
+which is used to define and execute the optimization workflow. This object is
+created by Everest and provided to <code>run_plan</code> via the <code>plan</code> parameter.</p>
 <p>Developing and executing a custom workflow involves two key aspects:</p>
 <ol>
 <li>
@@ -742,8 +732,7 @@ fine-grained control over the optimization process.</p>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>       <span class="c1"># Add an optimizer step</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">tracker</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_tracker</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>  <span class="c1"># Add a tracker</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>              <span class="c1"># Add a table handler</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">exit_code</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>            <span class="c1"># Run the optimizer</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="k">return</span> <span class="n">tracker</span><span class="p">,</span> <span class="n">exit_code</span>              <span class="c1"># Return the results</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                        <span class="c1"># Run the optimizer</span>
 </span></code></pre></div>
 <p>This function executes a basic optimization workflow by performing these steps:</p>
 <ol>
@@ -760,9 +749,6 @@ fine-grained control over the optimization process.</p>
     optimization results in a set of tables.</li>
 <li><strong>Optimizer Execution</strong>: The optimization process is started by calling the
     <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method of the optimizer step.</li>
-<li><strong>Result Return</strong>: The <code>run_plan</code> function returns the tracker object (which
-    contains the tracked results) and the exit code returned by the optimizer's
-    <code>run</code> method.</li>
 </ol>
 <h2 id="everestplan-methods">EverestPlan Methods</h2>
 <p>The <code>EverestPlan</code> class provides a high-level interface for defining and
@@ -806,8 +792,6 @@ executed using its <a class="autorefs autorefs-internal" href="../../reference/e
 <li><strong>metadata</strong> (<code>dict</code>, optional): A dictionary of metadata to be associated
     with each result generated by the optimizer.</li>
 </ul>
-<p>The <code>run</code> method returns an exit code indicating the outcome of the optimizer,
-which can be used he return value for the <code>run_plan</code> function.</p>
 <h3 id="add_evaluator"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_evaluator"><code>add_evaluator</code></a></h3>
 <p>Adds an evaluator step to the workflow plan. The resulting
 <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestEvaluatorStep"><code>EverestEvaluatorStep</code></a> object can be
@@ -827,8 +811,6 @@ executed using its <a class="autorefs autorefs-internal" href="../../reference/e
 <li><strong>metadata</strong> (<code>dict</code>, optional): A dictionary of metadata to be associated
     with each result generated by the evaluator.</li>
 </ul>
-<p>The <code>run</code> method returns an exit code indicating the outcome of the evaluation,
-which can be used he return value for the <code>run_plan</code> function.</p>
 <h3 id="add_workflow_job"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_workflow_job"><code>add_workflow_job</code></a></h3>
 <p>Adds a workflow job step to the plan. The resulting
 <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestWorkflowJobStep"><code>EverestWorkflowJobStep</code></a> object can be
