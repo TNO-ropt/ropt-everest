@@ -33,8 +33,7 @@ def run_plan(plan):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
-    exit_code = optimizer.run()
-    return tracker, exit_code
+    optimizer.run()
 
 
 if __name__ == "__main__":

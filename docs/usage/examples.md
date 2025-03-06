@@ -18,11 +18,10 @@ if __name__ == "__main__":
 ## Basic plan
 ```py
 def run_plan(plan):
-    optimizer = plan.add_optimizer()       # Add an optimizer step
-    tracker = plan.add_tracker(optimizer)  # Add a tracker
-    plan.add_table(optimizer)              # Add a table handler
-    exit_code = optimizer.run()            # Run the optimizer
-    return tracker, exit_code              # Return the results
+    optimizer = plan.add_optimizer()
+    tracker = plan.add_tracker(optimizer)
+    plan.add_table(optimizer)            
+    optimizer.run()                   
 ```
 
 ## Running two optimizers
@@ -39,10 +38,9 @@ def run_plan(plan):
     config["optimization"]["max_function_evaluations"] = 2
 
     print("Running second optimizer...")
-    exit_code = optimizer.run(
+    optimizer.run(
         config=config, variables=tracker.variables
     )
-    return tracker, exit_code
 ```
 
 ## Running optimizers in a loop
@@ -55,13 +53,12 @@ def run_plan(plan):
     config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
     for idx in range(3):
-        exit_code = optimizer.run(
+        optimizer.run(
             config=config,
             variables=tracker.variables,
             metadata={"iteration": idx},
         )
         print(tracker.dataframe("results"))
-    return tracker, exit_code
 ```
 
 ## Running an evaluation
@@ -69,7 +66,6 @@ def run_plan(plan):
 def run_plan(plan):
     evaluator = plan.add_evaluator()
     tracker = plan.add_tracker(evaluator, what="all")
-    exit_code = evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
+    evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
     print(tracker.dataframe("results"))
-    return tracker, exit_code
 ```

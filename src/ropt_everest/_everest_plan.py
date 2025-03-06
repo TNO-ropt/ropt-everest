@@ -21,7 +21,6 @@ if TYPE_CHECKING:
     import numpy as np
     import pandas as pd
     from numpy.typing import ArrayLike, NDArray
-    from ropt.enums import OptimizerExitCode
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanStep, ResultHandler
     from ropt.transforms import OptModelTransforms
@@ -256,7 +255,7 @@ class EverestOptimizerStep(EverestStep):
         config: dict[str, Any] | None = None,
         variables: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
-    ) -> OptimizerExitCode:
+    ) -> None:
         """Runs the optimizer.
 
         This method executes the underlying optimizer with the given parameters.
@@ -291,11 +290,8 @@ class EverestOptimizerStep(EverestStep):
             variables: An array-like object containing the variables for the optimization.
             metadata:  An optional dictionary of metadata to associate with the
                        results of the optimizer's results.
-
-        Returns:
-            The exit code indicating the result of the optimization run.
         """
-        return self._plan.run_step(  # type: ignore[no-any-return]
+        self._plan.run_step(
             self._optimizer,
             config=(
                 everest2ropt(self._config, transforms=self._transforms)
@@ -335,7 +331,7 @@ class EverestEvaluatorStep(EverestStep):
         config: dict[str, Any] | None = None,
         variables: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
-    ) -> OptimizerExitCode:
+    ) -> None:
         """Runs the evaluator.
 
         This method executes the underlying evaluator with the given parameters.
@@ -372,11 +368,8 @@ class EverestEvaluatorStep(EverestStep):
             variables: An array-like object containing the variables for the optimization.
             metadata:  An optional dictionary of metadata to associate with the
                        results of the optimizer's results.
-
-        Returns:
-            The exit code indicating the result of the optimization run.
         """
-        return self._plan.run_step(  # type: ignore[no-any-return]
+        self._plan.run_step(
             self._evaluator,
             config=(
                 everest2ropt(self._config, transforms=self._transforms)

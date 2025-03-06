@@ -7,12 +7,12 @@ import sys
 from functools import partial
 from typing import TYPE_CHECKING, Callable
 
+from ropt.enums import OptimizerExitCode
 from ropt.plugins.plan.base import PlanStep
 
 from ._everest_plan import EverestPlan
 
 if TYPE_CHECKING:
-    from ropt.enums import OptimizerExitCode
     from ropt.plan import Plan
     from ropt.plugins.plan.base import ResultHandler
     from ropt.transforms import OptModelTransforms
@@ -54,5 +54,5 @@ def _run_plan(
     func: Callable[[EverestPlan], tuple[EverestTracker | None, OptimizerExitCode]],
 ) -> tuple[ResultHandler | None, OptimizerExitCode]:
     ever_plan = EverestPlan(plan, transforms)
-    tracker, exit_code = func(ever_plan)
-    return (None if tracker is None else tracker.ropt_tracker), exit_code
+    func(ever_plan)
+    return None, OptimizerExitCode.UNKNOWN

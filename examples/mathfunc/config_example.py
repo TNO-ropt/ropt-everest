@@ -12,8 +12,7 @@ def run_plan_basic(plan):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
-    exit_code = optimizer.run()
-    return tracker, exit_code
+    optimizer.run()
 
 
 def run_plan_two_optimizers(plan):
@@ -28,8 +27,7 @@ def run_plan_two_optimizers(plan):
     config["optimization"]["max_function_evaluations"] = 2
 
     print("Running second optimizer...")
-    exit_code = optimizer.run(config=config, variables=tracker.variables)
-    return tracker, exit_code
+    optimizer.run(config=config, variables=tracker.variables)
 
 
 def run_plan_loop(plan):
@@ -40,21 +38,19 @@ def run_plan_loop(plan):
     config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
     for idx in range(3):
-        exit_code = optimizer.run(
+        optimizer.run(
             config=config,
             variables=tracker.variables,
             metadata={"iteration": idx},
         )
         print(tracker.dataframe("results"))
-    return tracker, exit_code
 
 
 def run_plan_evaluation(plan):
     evaluator = plan.add_evaluator()
     tracker = plan.add_tracker(evaluator, what="all")
-    exit_code = evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
+    evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
     print(tracker.dataframe("results"))
-    return tracker, exit_code
 
 
 def run_plan(plan):
