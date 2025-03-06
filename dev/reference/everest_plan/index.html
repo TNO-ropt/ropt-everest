@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../../usage/running/">
+        <link rel="prev" href="../../usage/examples/">
       
       
       
@@ -353,6 +353,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../usage/examples/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -627,6 +649,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#ropt_everest.EverestTracker.reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      reset
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ropt_everest.EverestTracker.dataframe" class="md-nav__link">
     <span class="md-ellipsis">
       dataframe
@@ -862,6 +893,15 @@
   <a href="#ropt_everest.EverestTracker.variables" class="md-nav__link">
     <span class="md-ellipsis">
       variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ropt_everest.EverestTracker.reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      reset
     </span>
   </a>
   
@@ -1947,7 +1987,7 @@ tracker can also be set to only keep track of the feasible results.</p>
     <div class="doc doc-contents ">
 
         <p>Retrieves the tracked results.</p>
-<p>The tracked results can be a single <code>FunctionResults</code> object, a tuple of
+<p>The tracked results can be a single <code>FunctionResults</code> object, a list of
 <code>FunctionResults</code> objects, or <code>None</code> if no results have been tracked.</p>
 
 
@@ -1962,7 +2002,7 @@ tracker can also be set to only keep track of the feasible results.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="ropt.results.FunctionResults">FunctionResults</span> | <span title="tuple">tuple</span>[<span title="ropt.results.FunctionResults">FunctionResults</span>, ...] | None</code>
+                  <code><span title="ropt.results.FunctionResults">FunctionResults</span> | <span title="list">list</span>[<span title="ropt.results.FunctionResults">FunctionResults</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1993,7 +2033,7 @@ tracker can also be set to only keep track of the feasible results.</p>
     <div class="doc doc-contents ">
 
         <p>Retrieves the tracked variables.</p>
-<p>The tracked variables can be a single NumPy array, a tuple of NumPy
+<p>The tracked variables can be a single NumPy array, a list of NumPy
 arrays, or None if no variables have been tracked.</p>
 
 
@@ -2008,7 +2048,7 @@ arrays, or None if no variables have been tracked.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>] | <span title="tuple">tuple</span>[<span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>], ...] | None</code>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>] | <span title="list">list</span>[<span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2023,6 +2063,24 @@ arrays, or None if no variables have been tracked.</p>
 </div>
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ropt_everest.EverestTracker.reset" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">reset</span><span class="p">()</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Reset the tracker.</p>
+<p>Clears any results accumulated so far.</p>
+
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
