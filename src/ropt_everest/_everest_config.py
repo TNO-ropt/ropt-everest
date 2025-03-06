@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 
 class EverestConfigStep(PlanStep):
-    def run(self, *, everest_config: EverestConfig) -> None:  # type: ignore[override]
+    def run(self, *, everest_config: EverestConfig) -> None:
         self.plan["everest_config"] = everest_config
 
         path = everest_config.config_path

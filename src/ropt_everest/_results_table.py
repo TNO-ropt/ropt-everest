@@ -31,10 +31,10 @@ class EverestDefaultTableHandler(ResultHandler):
         plan: Plan,
         *,
         everest_config: EverestConfig,
-        tags: str | set[str] | None = None,
+        tags: set[str] | None = None,
     ) -> None:
         super().__init__(plan)
-        self._tags = _get_set(tags)
+        self._tags = set() if tags is None else tags
         self._tables = []
         names = get_names(everest_config)
         for type_, table_type in TABLE_TYPE_MAP.items():
@@ -53,7 +53,7 @@ class EverestDefaultTableHandler(ResultHandler):
         if (
             event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
-            and (event.tags & self._tags)
+            and (event.tag in self._tags)
         ):
             for table in self._tables:
                 table.add_results(event.data["results"])
@@ -129,15 +129,3 @@ class ResultsTable:
                     table_data, headers="keys", tablefmt="simple", showindex=False
                 ),
             )
-
-
-def _get_set(values: str | set[str] | list[str] | tuple[str, ...] | None) -> set[str]:
-    match values:
-        case str():
-            return {values}
-        case set() | list() | tuple():
-            return set(values)
-        case None:
-            return set()
-    msg = f"Invalid type for values: {type(values)}"
-    raise TypeError(msg)

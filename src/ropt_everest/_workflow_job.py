@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class EverestWorkflowJob(PlanStep):
-    def run(self, jobs: list[str]) -> Any:  # type: ignore[override] # noqa: ANN401
+    def run(self, jobs: list[str]) -> Any:  # noqa: ANN401
         everest_config: EverestConfig = self.plan["everest_config"]
 
         installed_jobs = {

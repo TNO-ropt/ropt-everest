@@ -85,7 +85,7 @@ class EverestPlan:
         """
         tag = f"tag{self._tag_id}"
         self._tag_id += 1
-        step = self._plan.add_step("optimizer", tags=tag)
+        step = self._plan.add_step("optimizer", tag=tag)
         return EverestOptimizerStep(
             step, self._plan, self._config, self._transforms, tag
         )
@@ -104,7 +104,7 @@ class EverestPlan:
         """
         tag = f"tag{self._tag_id}"
         self._tag_id += 1
-        step = self._plan.add_step("evaluator", tags=tag)
+        step = self._plan.add_step("evaluator", tag=tag)
         return EverestEvaluatorStep(
             step, self._plan, self._config, self._transforms, tag
         )
@@ -320,7 +320,7 @@ class EverestOptimizerStep(EverestStep):
         Returns:
             The exit code indicating the result of the optimization run.
         """
-        return self._plan.run_step(
+        return self._plan.run_step(  # type: ignore[no-any-return]
             self._optimizer,
             config=(
                 everest2ropt(self._config, transforms=self._transforms)
@@ -332,7 +332,7 @@ class EverestOptimizerStep(EverestStep):
             transforms=self._transforms,
             metadata=metadata,
             variables=variables,
-        )  # type: ignore[no-any-return]
+        )
 
 
 class EverestEvaluatorStep(EverestStep):
@@ -401,7 +401,7 @@ class EverestEvaluatorStep(EverestStep):
         Returns:
             The exit code indicating the result of the optimization run.
         """
-        return self._plan.run_step(
+        return self._plan.run_step(  # type: ignore[no-any-return]
             self._evaluator,
             config=(
                 everest2ropt(self._config, transforms=self._transforms)
@@ -413,7 +413,7 @@ class EverestEvaluatorStep(EverestStep):
             transforms=self._transforms,
             metadata=metadata,
             variables=variables,
-        )  # type: ignore[no-any-return]
+        )
 
 
 class EverestWorkflowJobStep(EverestStep):
