@@ -377,6 +377,66 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="EverestPlan Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#config_copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      config_copy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_optimizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_optimizer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_evaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_evaluator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_workflow_job" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_workflow_job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_tracker" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_tracker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_table
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -546,6 +606,66 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="EverestPlan Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#config_copy" class="md-nav__link">
+    <span class="md-ellipsis">
+      config_copy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_optimizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_optimizer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_evaluator" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_evaluator
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_workflow_job" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_workflow_job
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_tracker" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_tracker
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add_table" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_table
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -645,17 +765,15 @@ fine-grained control over the optimization process.</p>
 </ol>
 <h2 id="everestplan-methods">EverestPlan Methods</h2>
 <p>The <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object provides several methods for building and managing optimization workflows:</p>
-<dl>
-<dt><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>config_copy</code></a></dt>
-<dd>Creates a modifiable copy of the Everest configuration dictionary. This copy
+<h3 id="config_copy"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>config_copy</code></a></h3>
+<p>Creates a modifiable copy of the Everest configuration dictionary. This copy
 allows you to ride specific configuration settings when defining optimizer
-steps.</dd>
-<dt><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_optimizer"><code>add_optimizer</code></a></dt>
-<dd>
+steps.</p>
+<h3 id="add_optimizer"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_optimizer"><code>add_optimizer</code></a></h3>
 <p>Adds an optimizer step to the workflow plan. The resulting
 <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep"><code>EverestOptimizerStep</code></a> object can be
-executed using its <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method.
-The <code>run</code> method supports the following parameters to customize its behavior:</p>
+executed using its <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method. The
+<code>run</code> method supports the following parameters to customize its behavior:</p>
 <ul>
 <li><strong>config</strong> (<code>dict</code>, optional): A dictionary to override the default Everest
     configuration. If not specified, the original Everest configuration is used.
@@ -670,13 +788,11 @@ The <code>run</code> method supports the following parameters to customize its b
 </ul>
 <p>The <code>run</code> method returns an exit code indicating the outcome of the optimizer,
 which can be used he return value for the <code>run_plan</code> function.</p>
-</dd>
-<dt><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_evaluator"><code>add_evaluator</code></a></dt>
-<dd>
+<h3 id="add_evaluator"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_evaluator"><code>add_evaluator</code></a></h3>
 <p>Adds an evaluator step to the workflow plan. The resulting
 <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestEvaluatorStep"><code>EverestEvaluatorStep</code></a> object can be
-executed using its <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestEvaluatorStep.run"><code>run</code></a> method.
-The <code>run</code> method supports the following parameters to customize its behavior:</p>
+executed using its <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestEvaluatorStep.run"><code>run</code></a> method. The
+<code>run</code> method supports the following parameters to customize its behavior:</p>
 <ul>
 <li><strong>config</strong> (<code>dict</code>, optional): A dictionary to override the default Everest
     configuration. If not specified, the original Everest configuration is used.
@@ -693,41 +809,35 @@ The <code>run</code> method supports the following parameters to customize its b
 </ul>
 <p>The <code>run</code> method returns an exit code indicating the outcome of the evaluation,
 which can be used he return value for the <code>run_plan</code> function.</p>
-</dd>
-<dt><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_workflow_job"><code>add_workflow_job</code></a></dt>
-<dd>Adds a workflow job step to the plan. The resulting
-<a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestWorkflowJobStep"><code>EverestWorkflowJobStep</code></a> object can
-be executed using its <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestWorkflowJobStep.run"><code>run</code></a>
-method. The <code>run</code> method accepts a list of job names to execute. These jobs
-must be defined in the <code>install_workflow_jobs</code> section of the Everest
-configuration file.</dd>
-<dt><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_tracker"><code>add_tracker</code></a></dt>
-<dd>
+<h3 id="add_workflow_job"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_workflow_job"><code>add_workflow_job</code></a></h3>
+<p>Adds a workflow job step to the plan. The resulting
+<a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestWorkflowJobStep"><code>EverestWorkflowJobStep</code></a> object can be
+executed using its <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestWorkflowJobStep.run"><code>run</code></a> method. The
+<code>run</code> method accepts a list of job names to execute. These jobs must be defined
+in the <code>install_workflow_jobs</code> section of the Everest configuration file.</p>
+<h3 id="add_tracker"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_tracker"><code>add_tracker</code></a></h3>
 <p>Adds a result tracker to the plan to monitor the progress of a step. The
 resulting <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestTracker"><code>EverestTracker</code></a> object tracks and
-stores results emitted by optimizers and evaluators that it is monitoring.
-It accepts the following arguments:</p>
+stores results emitted by optimizers and evaluators that it is monitoring. It
+accepts the following arguments:</p>
 <ul>
+<li><strong>track</strong>: A single step object or a list of step objects to track. The
+    tracker will only record results generated by the specified steps.</li>
 <li>
-<p><strong>track</strong>: A single step object or a list of step objects to track. The
-    tracker will only record results generated by the specified steps.</p>
-</li>
-<li>
-<p><strong>what</strong>: This argument determines which results the tracker should
-    record. Possible values are:</p>
+<p><strong>what</strong>: This argument determines which results the tracker should record.
+    Possible values are:</p>
 <ul>
 <li><code>"best"</code>: Only the best result found so far is tracked.</li>
 <li><code>"last"</code>: Only the most recently generated result is tracked.</li>
 <li><code>"all"</code>: All results are tracked.</li>
 </ul>
-<p>The default value is <code>"best"</code>.</p>
-</li>
-<li>
-<p><strong>constraint_tolerance</strong>: A tolerance for detecting constraint violations.</p>
+<p>The default value is <code>"best"</code>.
+- <strong>constraint_tolerance</strong>: A tolerance for detecting constraint violations.</p>
 </li>
 </ul>
-<p>The tracker object returned by <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_tracker"><code>add_tracker</code></a>
-supports the following properties to inspect the results that it stores:</p>
+<p>The tracker object returned by
+<a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_tracker"><code>add_tracker</code></a> supports the following
+properties to inspect the results that it stores:</p>
 <ul>
 <li><strong>results</strong>:   The result, or list of results that is stored.</li>
 <li><strong>variables</strong>: The variables in the stored results.</li>
@@ -739,19 +849,15 @@ no results.</li>
 <li><strong><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestTracker.dataframe"><code>dataframe</code></a></strong>: Export the results
 as Pandas data frames.</li>
 </ul>
-</dd>
-<dt><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_table"><code>add_table</code></a></dt>
-<dd>
+<h3 id="add_table"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_table"><code>add_table</code></a></h3>
 <p>Adds a table result handler to the plan. The resulting
 <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestTableHandler"><code>EverestTableHandler</code></a> object tracks and
-stores results emitted by optimizers and evaluators in tables on file. It accepts
-a single argument:</p>
+stores results emitted by optimizers and evaluators in tables on file. It
+accepts a single argument:</p>
 <ul>
 <li><strong>track</strong>: A single step object or a list of step objects to track. The
   tracker will only record results generated by the specified steps.</li>
 </ul>
-</dd>
-</dl>
 
 
 
