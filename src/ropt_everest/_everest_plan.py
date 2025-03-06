@@ -7,7 +7,7 @@ from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
-from ropt.results import Results, results_to_dataframe
+from ropt.results import FunctionResults, Results, results_to_dataframe
 
 from ._utils import (
     TABLE_COLUMNS,
@@ -24,7 +24,6 @@ if TYPE_CHECKING:
     from ropt.enums import OptimizerExitCode
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanStep, ResultHandler
-    from ropt.results import FunctionResults
     from ropt.transforms import OptModelTransforms
 
 
@@ -462,36 +461,50 @@ class EverestTracker(EverestHandler):
         self._names = names
 
     @property
-    def results(self) -> FunctionResults | tuple[FunctionResults, ...] | None:
+    def results(self) -> FunctionResults | list[FunctionResults] | None:
         """Retrieves the tracked results.
 
-        The tracked results can be a single `FunctionResults` object, a tuple of
+        The tracked results can be a single `FunctionResults` object, a list of
         `FunctionResults` objects, or `None` if no results have been tracked.
 
         Returns:
             The tracked results.
         """
-        results: FunctionResults | tuple[FunctionResults, ...] | None
+        results: FunctionResults | list[FunctionResults] | None
         results = self._tracker["results"]
-        return results
+        return (
+            results
+            if results is None or isinstance(results, FunctionResults)
+            else list(results)
+        )
 
     @property
-    def variables(self) -> NDArray[np.float64] | tuple[NDArray[np.float64], ...] | None:
+    def variables(self) -> NDArray[np.float64] | list[NDArray[np.float64]] | None:
         """Retrieves the tracked variables.
 
-        The tracked variables can be a single NumPy array, a tuple of NumPy
+        The tracked variables can be a single NumPy array, a list of NumPy
         arrays, or None if no variables have been tracked.
 
         Returns:
             The tracked variables.
         """
-        variables: NDArray[np.float64] | tuple[NDArray[np.float64], ...] | None
-        variables = self._tracker["variables"]
-        return variables
+        results = self._tracker["results"]
+        if results is None:
+            return None
+        if isinstance(results, FunctionResults):
+            return results.evaluations.variables
+        return [item.evaluations.variables for item in results]
 
     @property
     def ropt_tracker(self) -> ResultHandler:
         return self._tracker
+
+    def reset(self) -> None:
+        """Reset the tracker.
+
+        Clears any results accumulated so far.
+        """
+        self._tracker["results"] = None
 
     def dataframe(self, kind: str) -> pd.DataFrame | None:
         """Converts the tracked results to a Pandas DataFrame.
@@ -519,7 +532,7 @@ class EverestTracker(EverestHandler):
         results = self.results
         if results is not None:
             if isinstance(results, Results):
-                results = (results,)
+                results = [results]
             columns = deepcopy(TABLE_COLUMNS[kind])
             if results[0].metadata is not None:
                 for item in results[0].metadata:
