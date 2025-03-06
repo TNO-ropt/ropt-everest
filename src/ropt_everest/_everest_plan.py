@@ -236,15 +236,6 @@ class EverestPlan:
             EvaluatorServerConfig()
         )
 
-    def __getitem__(self, name: str) -> Any:  # noqa: ANN401
-        return self._plan[name]
-
-    def __setitem__(self, name: str, value: Any) -> None:  # noqa: ANN401
-        self._plan[name] = value
-
-    def __contains__(self, name: str) -> bool:
-        return name in self._plan
-
 
 class EverestStep:
     def __init__(self, plan: Plan, tag: str | None = None) -> None:
