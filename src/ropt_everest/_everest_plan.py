@@ -34,21 +34,6 @@ class EverestPlan:
     managing optimization workflows in Everest. It allows you to add various
     steps to the plan, such as optimizers, evaluators, and workflow jobs, that
     are then executed to achieve the desired optimization goal.
-
-    **Key Features:**
-
-    -   **Step Management:** Add and manage different types of optimization
-        steps, including optimizers, evaluators, and workflow jobs.
-    -   **Tracking and Monitoring:** Incorporate trackers to monitor the
-        progress of specific steps and collect relevant results.
-    -   **Table Generation:** Generate tables to summarize the results of the
-        optimization process.
-    -   **Configuration Handling:** Manage Everest configurations, including the
-        ability to override default settings.
-    -   **Metadata Association:** Associate arbitrary metadata with steps and
-        results, facilitating the tracking of additional information.
-    -   **Direct Execution:** Execute the plan directly, providing more control
-        over stdout and error traces.
     """
 
     def __init__(self, plan: Plan, transforms: OptModelTransforms) -> None:

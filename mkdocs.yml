@@ -76,5 +76,6 @@ nav:
   - "Usage": 
      - "Basic Usage": usage/basics.md
      - "Running the plan": usage/running.md
+     - "Examples": usage/examples.md
   - "Reference":
     - "Everest Plan": reference/everest_plan.md
