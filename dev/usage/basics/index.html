@@ -765,6 +765,25 @@ fine-grained control over the optimization process.</p>
     <code>run</code> method.</li>
 </ol>
 <h2 id="everestplan-methods">EverestPlan Methods</h2>
+<p>The <code>EverestPlan</code> class provides a high-level interface for defining and
+managing optimization workflows in Everest. It allows you to add various
+steps to the plan, such as optimizers, evaluators, and workflow jobs, that
+are then executed to achieve the desired optimization goal.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li><strong>Step Management:</strong> Add and manage different types of optimization steps,
+    including optimizers, evaluators, and workflow jobs.</li>
+<li><strong>Tracking and Monitoring:</strong> Incorporate trackers to monitor the progress of
+    specific steps and collect relevant results.</li>
+<li><strong>Table Generation:</strong> Generate tables to summarize the results of the
+    optimization process.</li>
+<li><strong>Configuration Handling:</strong> Manage Everest configurations, including the
+    ability to override default settings.</li>
+<li><strong>Metadata Association:</strong> Associate arbitrary metadata with steps and results,
+   facilitating the tracking of additional information.</li>
+<li><strong>Direct Execution:</strong> Execute the plan directly, providing more control over
+    stdout and error traces.</li>
+</ul>
 <p>The <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object provides several methods for building and managing optimization workflows:</p>
 <h3 id="config_copy"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>config_copy</code></a></h3>
 <p>Creates a modifiable copy of the Everest configuration dictionary. This copy
