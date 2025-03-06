@@ -944,26 +944,7 @@ are then executed to achieve the desired optimization goal.</p>
     results, facilitating the tracking of additional information.</li>
 <li><strong>Direct Execution:</strong> Execute the plan directly, providing more control
     over stdout and error traces.</li>
-<li><strong>Arbitrary Value Storage:</strong> The <code>EverestPlan</code> object can store and
-    retrieve arbitrary values using the indexing operator (<code>[]</code>). This
-    allows you to dynamically add or modify data that can be used by any
-    step of the plan. This is especially useful when you need to change the
-    metadata during a sequence of executions, as metadata can reference
-    these values.</li>
 </ul>
-<p><strong>Example of Arbitrary Value Storage:</strong></p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">plan</span> <span class="o">=</span> <span class="n">EverestPlan</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">plan</span><span class="p">[</span><span class="s2">&quot;my_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">123</span>  <span class="c1"># Set a value</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">value</span> <span class="o">=</span> <span class="n">plan</span><span class="p">[</span><span class="s2">&quot;my_data&quot;</span><span class="p">]</span>  <span class="c1"># Retrieve the value</span>
-</span></code></pre></div>
-<p><strong>Example of Dynamic Metadata:</strong></p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">plan</span><span class="p">[</span><span class="s2">&quot;my_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;initial_value&quot;</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="s2">&quot;$my_data&quot;</span><span class="p">})</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># When the optimizer is run, &quot;key&quot; in the metadata will be &quot;initial_value&quot;.</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">plan</span><span class="p">[</span><span class="s2">&quot;my_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;new_value&quot;</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># When the optimizer is run again, &quot;key&quot; in the metadata will now be &quot;new_value&quot;.</span>
-</span></code></pre></div>
 
 
 
@@ -1030,7 +1011,7 @@ original configuration.</p>
 
 
 <h3 id="ropt_everest.EverestPlan.add_optimizer" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">add_optimizer</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">add_optimizer</span><span class="p">()</span></code>
 
 </h3>
 
@@ -1039,89 +1020,10 @@ original configuration.</p>
 
         <p>Adds an optimizer to the execution plan.</p>
 <p>This method integrates an optimization step into your Everest workflow.
-You can tailor the optimizer's behavior by providing an optional
-configuration dictionary. Invoking this method returns an
+Invoking this method returns an
 <a class="autorefs autorefs-internal" href="#ropt_everest.EverestOptimizerStep"><code>EverestOptimizerStep</code></a> object,
 which you can execute using its
 <a class="autorefs autorefs-internal" href="#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method.</p>
-<p><strong>Configuration</strong>:</p>
-<ul>
-<li>If no <code>config</code> is provided, the optimizer will use the default
-  Everest configuration loaded during startup.</li>
-<li>If a <code>config</code> dictionary is provided, it will override the default
-  configuration. It should be a dictionary that can be validated as an
-  <code>EverestConfig</code> object.</li>
-</ul>
-<p><strong>Metadata</strong>:</p>
-<ul>
-<li>The <code>metadata</code> parameter allows you to associate arbitrary data with
-  each result generated by the optimizer or evaluators.</li>
-<li>This metadata is included in generated tables and data frames.</li>
-<li>The keys in the <code>metadata</code> dictionary are used as column names in
-  the output tables.</li>
-<li>Dynamic Metadata: If a metadata value is a string that begins with a
-  dollar sign (<code>$</code>), it's treated as a dynamic reference. The portion of
-  the string following the <code>$</code> is used as a key to look up a value
-  within the execution plan itself (accessed using <code>plan[key]</code>). This
-  allows you to modify the metadata between runs by changing values in
-  the plan.</li>
-</ul>
-<p>Example of Dynamic Metadata:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="s2">&quot;$bar&quot;</span><span class="p">})</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># ... later in your code ...</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">plan</span><span class="p">[</span><span class="s2">&quot;bar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">123</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># In the results, &quot;foo&quot; will now have the value 123</span>
-</span></code></pre></div>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>config</code>
-            </td>
-            <td>
-                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>An optional dictionary containing the Everest configuration
-      for the optimizer. If omitted, the default configuration is
-      used.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>metadata</code>
-            </td>
-            <td>
-                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>An optional dictionary of metadata to associate with the
-      results of the optimizer's results.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1154,7 +1056,7 @@ which you can execute using its
 
 
 <h3 id="ropt_everest.EverestPlan.add_evaluator" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">add_evaluator</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">add_evaluator</span><span class="p">()</span></code>
 
 </h3>
 
@@ -1163,89 +1065,10 @@ which you can execute using its
 
         <p>Adds an evaluator to the execution plan.</p>
 <p>This method integrates an evaluation step into your Everest workflow.
-You can tailor the evaluator's behavior by providing an optional
-configuration dictionary. Invoking this method returns an
+Invoking this method returns an
 <a class="autorefs autorefs-internal" href="#ropt_everest.EverestEvaluatorStep"><code>EverestEvaluatorStep</code></a> object,
 which you can execute using its
 <a class="autorefs autorefs-internal" href="#ropt_everest.EverestEvaluatorStep.run"><code>run</code></a> method.</p>
-<p><strong>Configuration</strong>:</p>
-<ul>
-<li>If no <code>config</code> is provided, the evaluator will use the default
-  Everest configuration loaded during startup.</li>
-<li>If a <code>config</code> dictionary is provided, it will override the default
-  configuration. It should be a dictionary that can be validated as an
-  <code>EverestConfig</code> object.</li>
-</ul>
-<p><strong>Metadata</strong>:</p>
-<ul>
-<li>The <code>metadata</code> parameter allows you to associate arbitrary data with
-  each result generated by the evaluator.</li>
-<li>This metadata is included in generated tables and data frames.</li>
-<li>The keys in the <code>metadata</code> dictionary are used as column names in the
-  output tables.</li>
-<li>Dynamic Metadata: If a metadata value is a string that begins with a
-  dollar sign (<code>$</code>), it's treated as a dynamic reference. The portion of
-  the string following the <code>$</code> is used as a key to look up a value
-  within the execution plan itself (accessed using <code>plan[key]</code>). This
-  allows you to modify the metadata between runs by changing values in
-  the plan.</li>
-</ul>
-<p>Example of Dynamic Metadata:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">evaluator</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_evaluator</span><span class="p">(</span><span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;run_id&quot;</span><span class="p">:</span> <span class="s2">&quot;$run_number&quot;</span><span class="p">})</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># ... later in your code ...</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">plan</span><span class="p">[</span><span class="s2">&quot;run_number&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># In the results, &quot;run_id&quot; will now have the value 5</span>
-</span></code></pre></div>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>config</code>
-            </td>
-            <td>
-                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>An optional dictionary containing the Everest configuration
-     for the evaluator. If omitted, the default configuration is
-      used.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>metadata</code>
-            </td>
-            <td>
-                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>An optional dictionary of metadata to associate with the
-      evaluator's results.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1639,7 +1462,7 @@ provides a method to execute the optimizer .</p>
 
 
 <h3 id="ropt_everest.EverestOptimizerStep.run" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1647,9 +1470,28 @@ provides a method to execute the optimizer .</p>
     <div class="doc doc-contents ">
 
         <p>Runs the optimizer.</p>
-<p>This method executes the underlying optimizer with the given variables.
-If no variables are provided, the optimizer will use its default
-initialization.</p>
+<p>This method executes the underlying optimizer with the given parameters.
+You can tailor the optimizer's behavior by providing an optional
+configuration dictionary.</p>
+<p><strong>Configuration</strong>:</p>
+<ul>
+<li>If no <code>config</code> is provided, the optimizer will use the default
+  Everest configuration loaded during startup.</li>
+<li>If a <code>config</code> dictionary is provided, it will override the default
+  configuration. It should be a dictionary that can be validated as an
+  <code>EverestConfig</code> object.</li>
+</ul>
+<p><strong>Variables</strong>:</p>
+<p>If no variables are provided, the optimizer will use the initial values
+from the configuration.</p>
+<p><strong>Metadata</strong>:</p>
+<ul>
+<li>The <code>metadata</code> parameter allows you to associate arbitrary data with
+  each result generated by the optimizer or evaluators.</li>
+<li>This metadata is included in generated tables and data frames.</li>
+<li>The keys in the <code>metadata</code> dictionary are used as column names in
+  the output tables.</li>
+</ul>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1665,6 +1507,24 @@ initialization.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
+                <code>config</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An optional dictionary containing the Everest configuration
+       for the optimizer. If omitted, the default configuration is
+       used.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>variables</code>
             </td>
             <td>
@@ -1673,6 +1533,23 @@ initialization.</p>
             <td>
               <div class="doc-md-description">
                 <p>An array-like object containing the variables for the optimization.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>metadata</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An optional dictionary of metadata to associate with the
+       results of the optimizer's results.</p>
               </div>
             </td>
             <td>
@@ -1759,19 +1636,38 @@ provides a method to execute the evaluator .</p>
 
 
 <h3 id="ropt_everest.EverestEvaluatorStep.run" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
 
     <div class="doc doc-contents ">
 
-        <p>Runs the optimizer.</p>
-<p>This method executes the underlying optimizer with the given variables.
-If no variables are provided, the optimizer will use its default
-initialization.</p>
+        <p>Runs the evaluator.</p>
+<p>This method executes the underlying evaluator with the given parameters.
+You can tailor the evaluators's behavior by providing an optional
+configuration dictionary.</p>
+<p><strong>Configuration</strong>:</p>
+<ul>
+<li>If no <code>config</code> is provided, the evaluator will use the default
+  Everest configuration loaded during startup.</li>
+<li>If a <code>config</code> dictionary is provided, it will override the default
+  configuration. It should be a dictionary that can be validated as an
+  <code>EverestConfig</code> object.</li>
+</ul>
+<p><strong>Variables</strong>:</p>
 <p>The <code>variables</code> parameter can be a single vector, a sequence of multiple
-vectors, or a 2D matrix where the variable vectors are the rows.</p>
+vectors, or a 2D matrix where the variable vectors are the rows. If no
+variables are provided, the evaluator will use its default
+the initial values from the configuration.</p>
+<p><strong>Metadata</strong>:</p>
+<ul>
+<li>The <code>metadata</code> parameter allows you to associate arbitrary data with
+  each result generated by the optimizer or evaluators.</li>
+<li>This metadata is included in generated tables and data frames.</li>
+<li>The keys in the <code>metadata</code> dictionary are used as column names in
+  the output tables.</li>
+</ul>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1787,6 +1683,24 @@ vectors, or a 2D matrix where the variable vectors are the rows.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
+                <code>config</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An optional dictionary containing the Everest configuration
+       for the optimizer. If omitted, the default configuration is
+       used.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>variables</code>
             </td>
             <td>
@@ -1794,8 +1708,24 @@ vectors, or a 2D matrix where the variable vectors are the rows.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An array-like object containing the variables for the
-       optimization.</p>
+                <p>An array-like object containing the variables for the optimization.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>metadata</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An optional dictionary of metadata to associate with the
+       results of the optimizer's results.</p>
               </div>
             </td>
             <td>
