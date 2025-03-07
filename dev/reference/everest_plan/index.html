@@ -2245,7 +2245,7 @@ indicating the type of column and one or more objective, constraint
 or control names. For instance, a column containing values of the
 variable <code>point.x</code> may have the name: <code>(variables, point.x)</code>. The
 gradient of an objective <code>distance</code> with respect to a variable
-<code>point.x</code> may have the column name (objectives, distance, point.x.0).</p>
+<code>point.x</code> may have the column name <code>(objectives, distance, point.x.0)</code>.</p>
 </details>
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -2294,7 +2294,7 @@ gradient of an objective <code>distance</code> with respect to a variable
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A Pandas DataFrame containing the tracked results, or None.</p>
+                <p>A Pandas DataFrame containing the store results, or None.</p>
               </div>
             </td>
           </tr>
@@ -2370,8 +2370,6 @@ tracker can also be set to only keep track of the feasible results.</p>
     <div class="doc doc-contents ">
 
         <p>Retrieves the tracked results.</p>
-<p>The tracked results can be a single <code>FunctionResults</code> object, a list of
-<code>FunctionResults</code> objects, or <code>None</code> if no results have been tracked.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -2385,7 +2383,7 @@ tracker can also be set to only keep track of the feasible results.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="ropt.results.FunctionResults">FunctionResults</span> | <span title="list">list</span>[<span title="ropt.results.FunctionResults">FunctionResults</span>] | None</code>
+                  <code><span title="ropt.results.FunctionResults">FunctionResults</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2431,7 +2429,7 @@ arrays, or None if no variables have been tracked.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>] | <span title="list">list</span>[<span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>]] | None</code>
+                  <code><span title="numpy.typing.NDArray">NDArray</span>[<span title="numpy.float64">float64</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -2497,7 +2495,7 @@ indicating the type of column and one or more objective, constraint
 or control names. For instance, a column containing values of the
 variable <code>point.x</code> may have the name: <code>(variables, point.x)</code>. The
 gradient of an objective <code>distance</code> with respect to a variable
-<code>point.x</code> may have the column name (objectives, distance, point.x.0).</p>
+<code>point.x</code> may have the column name <code>(objectives, distance, point.x.0)</code>.</p>
 </details>
 
 <p><span class="doc-section-title">Parameters:</span></p>

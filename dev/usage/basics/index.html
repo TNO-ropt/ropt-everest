@@ -754,7 +754,7 @@ created by Everest and provided to <code>run_plan</code> via the <code>plan</cod
 </span></code></pre></div>
 <p>This function executes a basic optimization workflow by performing these steps:</p>
 <ol>
-<li><strong>Plan Creation</strong>: Everest creates an 1.
+<li><strong>Plan Creation</strong>: Everest creates an
     <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object and passes it to <code>run_plan</code>
     via the <code>plan</code> parameter.</li>
 <li><strong>Optimizer Addition</strong>: An optimizer step is added to the plan using the
@@ -788,10 +788,11 @@ are then executed to achieve the desired optimization goal.</p>
 <li><strong>Direct Execution:</strong> Execute the plan directly, providing more control over
     stdout and error traces.</li>
 </ul>
-<p>The <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object provides several methods for building and managing optimization workflows:</p>
+<p>The <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object provides several methods
+for building and managing optimization workflows:</p>
 <h3 id="config_copy"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>config_copy</code></a></h3>
 <p>Creates a modifiable copy of the Everest configuration dictionary. This copy
-allows you to ride specific configuration settings when defining optimizer
+allows you to override specific configuration settings to use with optimizer
 steps.</p>
 <h3 id="add_optimizer"><a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_optimizer"><code>add_optimizer</code></a></h3>
 <p>Adds an optimizer step to the workflow plan. The resulting
