@@ -515,13 +515,13 @@ class EverestStore(EverestHandler):
             or control names. For instance, a column containing values of the
             variable `point.x` may have the name: `(variables, point.x)`. The
             gradient of an objective `distance` with respect to a variable
-            `point.x` may have the column name (objectives, distance, point.x.0).
+            `point.x` may have the column name `(objectives, distance, point.x.0)`.
 
         Args:
             kind: The type of table to create.
 
         Returns:
-            A Pandas DataFrame containing the tracked results, or None.
+            A Pandas DataFrame containing the store results, or None.
         """
         if kind not in TABLE_COLUMNS:
             msg = f"Cannot make frame for `{kind}`"
@@ -571,9 +571,6 @@ class EverestTracker(EverestHandler):
     @property
     def results(self) -> FunctionResults | None:
         """Retrieves the tracked results.
-
-        The tracked results can be a single `FunctionResults` object, a list of
-        `FunctionResults` objects, or `None` if no results have been tracked.
 
         Returns:
             The tracked results.
@@ -626,7 +623,7 @@ class EverestTracker(EverestHandler):
             or control names. For instance, a column containing values of the
             variable `point.x` may have the name: `(variables, point.x)`. The
             gradient of an objective `distance` with respect to a variable
-            `point.x` may have the column name (objectives, distance, point.x.0).
+            `point.x` may have the column name `(objectives, distance, point.x.0)`.
 
         Args:
             kind: The type of table to create.

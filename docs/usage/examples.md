@@ -47,8 +47,9 @@ def run_plan(plan):
 
 ## Running optimizers in a loop
 Run an optimizer in a loop, each time starting from the last result of the
-previous. Also store all results in memory and export the gradients of all
-results to a Pandas data frame:
+previous. Store all results in memory and export the gradients of all results to
+a Pandas data frame. In addition, add the index of the loop to the metadata,
+which an additional `iteration` column to the data frame:
 
 ```py
 def run_plan(plan):

@@ -52,7 +52,7 @@ def run_plan(plan):
 
 This function executes a basic optimization workflow by performing these steps:
 
-1.  **Plan Creation**: Everest creates an 1.
+1.  **Plan Creation**: Everest creates an
     [`EverestPlan`][ropt_everest.EverestPlan] object and passes it to `run_plan`
     via the `plan` parameter.
 2.  **Optimizer Addition**: An optimizer step is added to the plan using the
@@ -90,11 +90,12 @@ are then executed to achieve the desired optimization goal.
 - **Direct Execution:** Execute the plan directly, providing more control over
     stdout and error traces.
 
-The [`EverestPlan`][ropt_everest.EverestPlan] object provides several methods for building and managing optimization workflows:
+The [`EverestPlan`][ropt_everest.EverestPlan] object provides several methods
+for building and managing optimization workflows:
 
 ### [`config_copy`][ropt_everest.EverestPlan.config_copy]
 Creates a modifiable copy of the Everest configuration dictionary. This copy
-allows you to ride specific configuration settings when defining optimizer
+allows you to override specific configuration settings to use with optimizer
 steps.
 
 ### [`add_optimizer`][ropt_everest.EverestPlan.add_optimizer]
