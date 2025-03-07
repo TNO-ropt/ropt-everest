@@ -63,6 +63,8 @@ def run_plan(plan):
             return run_plan_loop(plan)
         case "evaluation":
             return run_plan_evaluation(plan)
+        case _:
+            raise ValueError(f"Unknown example: {example}")
 
 
 if __name__ == "__main__":
