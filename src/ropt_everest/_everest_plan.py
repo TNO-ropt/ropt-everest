@@ -472,8 +472,7 @@ class EverestStore(EverestHandler):
         Returns:
             The stored results.
         """
-        results: list[Results] | None
-        results = self._store["results"]
+        results: tuple[Results] | None = self._store["results"]
         return None if results is None else list(results)
 
     @property
@@ -533,12 +532,11 @@ class EverestStore(EverestHandler):
             if results[0].metadata is not None:
                 for item in results[0].metadata:
                     columns[f"metadata.{item}"] = item
-            fields = set(columns)
             return strip_prefix_from_columns(
                 reorder_columns(
                     results_to_dataframe(
                         results,
-                        fields=fields,
+                        fields=set(columns),
                         result_type=TABLE_TYPE_MAP[kind],
                         names=self._names,
                     ),
@@ -571,7 +569,7 @@ class EverestTracker(EverestHandler):
         self._names = names
 
     @property
-    def results(self) -> FunctionResults | list[FunctionResults] | None:
+    def results(self) -> FunctionResults | None:
         """Retrieves the tracked results.
 
         The tracked results can be a single `FunctionResults` object, a list of
@@ -580,16 +578,11 @@ class EverestTracker(EverestHandler):
         Returns:
             The tracked results.
         """
-        results: FunctionResults | list[FunctionResults] | None
-        results = self._tracker["results"]
-        return (
-            results
-            if results is None or isinstance(results, FunctionResults)
-            else list(results)
-        )
+        results: FunctionResults | None = self._tracker["results"]
+        return results
 
     @property
-    def variables(self) -> NDArray[np.float64] | list[NDArray[np.float64]] | None:
+    def variables(self) -> NDArray[np.float64] | None:
         """Retrieves the tracked variables.
 
         The tracked variables can be a single NumPy array, a list of NumPy
@@ -599,11 +592,7 @@ class EverestTracker(EverestHandler):
             The tracked variables.
         """
         results = self._tracker["results"]
-        if results is None:
-            return None
-        if isinstance(results, FunctionResults):
-            return results.evaluations.variables
-        return [item.evaluations.variables for item in results]
+        return None if results is None else results.evaluations.variables
 
     @property
     def ropt_tracker(self) -> ResultHandler:
@@ -650,18 +639,15 @@ class EverestTracker(EverestHandler):
             raise RuntimeError(msg)
         results = self.results
         if results is not None:
-            if isinstance(results, Results):
-                results = [results]
             columns = deepcopy(TABLE_COLUMNS[kind])
-            if results[0].metadata is not None:
-                for item in results[0].metadata:
+            if results.metadata is not None:
+                for item in results.metadata:
                     columns[f"metadata.{item}"] = item
-            fields = set(columns)
             return strip_prefix_from_columns(
                 reorder_columns(
                     results_to_dataframe(
-                        results,
-                        fields=fields,
+                        [results],
+                        fields=set(columns),
                         result_type=TABLE_TYPE_MAP[kind],
                         names=self._names,
                     ),
