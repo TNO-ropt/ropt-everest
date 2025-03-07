@@ -6,6 +6,8 @@
 
 ::: ropt_everest.EverestWorkflowJobStep
 
+::: ropt_everest.EverestStore
+
 ::: ropt_everest.EverestTracker
 
 ::: ropt_everest.EverestTableHandler

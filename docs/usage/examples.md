@@ -16,15 +16,19 @@ if __name__ == "__main__":
 ```
 
 ## Basic plan
+A basic plan that corresponds to the default Everest optimization:
+
 ```py
 def run_plan(plan):
     optimizer = plan.add_optimizer()
-    tracker = plan.add_tracker(optimizer)
-    plan.add_table(optimizer)            
-    optimizer.run()                   
+    plan.add_tracker(optimizer)
+    plan.add_table(optimizer)
+    optimizer.run()
 ```
 
 ## Running two optimizers
+Running two optimizers with different configurations:
+
 ```py
 def run_plan(plan):
     optimizer = plan.add_optimizer()
@@ -38,17 +42,19 @@ def run_plan(plan):
     config["optimization"]["max_function_evaluations"] = 2
 
     print("Running second optimizer...")
-    optimizer.run(
-        config=config, variables=tracker.variables
-    )
+    optimizer.run(config=config, variables=tracker.variables)
 ```
 
 ## Running optimizers in a loop
+Run an optimizer in a loop, each time starting from the last result of the
+previous. Also store all results in memory and export the gradients of all
+results to a Pandas data frame:
+
 ```py
 def run_plan(plan):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
-    plan.add_table(optimizer)
+    store = plan.add_store(optimizer)
 
     config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
@@ -58,14 +64,17 @@ def run_plan(plan):
             variables=tracker.variables,
             metadata={"iteration": idx},
         )
-        print(tracker.dataframe("results"))
+    print(store.dataframe("gradients"))
 ```
 
 ## Running an evaluation
+Run an evaluation of the function for two control vectors and export the results
+to a Pandas data frame:
+
 ```py
 def run_plan(plan):
     evaluator = plan.add_evaluator()
-    tracker = plan.add_tracker(evaluator, what="all")
+    store = plan.add_store(evaluator)
     evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
-    print(tracker.dataframe("results"))
+    print(store.dataframe("results"))
 ```

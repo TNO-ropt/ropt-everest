@@ -5,12 +5,12 @@ from ropt_everest import EverestPlan
 from pathlib import Path
 
 
-example = "basic"
+example = "loop"
 
 
 def run_plan_basic(plan):
     optimizer = plan.add_optimizer()
-    tracker = plan.add_tracker(optimizer)
+    plan.add_tracker(optimizer)
     plan.add_table(optimizer)
     optimizer.run()
 
@@ -33,7 +33,7 @@ def run_plan_two_optimizers(plan):
 def run_plan_loop(plan):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
-    plan.add_table(optimizer)
+    store = plan.add_store(optimizer)
 
     config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
@@ -43,14 +43,14 @@ def run_plan_loop(plan):
             variables=tracker.variables,
             metadata={"iteration": idx},
         )
-        print(tracker.dataframe("results"))
+    print(store.dataframe("gradients"))
 
 
 def run_plan_evaluation(plan):
     evaluator = plan.add_evaluator()
-    tracker = plan.add_tracker(evaluator, what="all")
+    store = plan.add_store(evaluator)
     evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
-    print(tracker.dataframe("results"))
+    print(store.dataframe("results"))
 
 
 def run_plan(plan):
