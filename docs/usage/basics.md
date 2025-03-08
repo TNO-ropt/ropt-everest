@@ -40,6 +40,26 @@ Developing and executing a custom workflow involves two key aspects:
     power of Python programming (e.g., loops, conditional statements, and custom
     functions) to create sophisticated and adaptable optimization workflows.
 
+A `run_plan` function constructs a workflow by creating _step_ objects and
+_handler_ objects. You create these objects by calling methods on the `plan`
+object, typically using the pattern `plan.add_*()`. For example,
+`plan.add_optimizer()` creates an optimizer step and registers it with the plan.
+When added to the plan, step objects generally don't require arguments. Instead,
+you configure and execute them later by calling their `run` method (e.g., to
+start an optimization).
+
+The `run` method may accept additional arguments to customize the step's
+behavior. As steps execute, they may generate results. The plan receives these
+results and forwards them to any handler objects that have expressed interest.
+When creating handler objects, you specify one or more step objects they should
+monitor, indicating their interest in receiving results from those steps.
+Handlers may also accept additional configuration arguments during
+creation to refine how they process these results.
+
+In summary, building an optimization workflow involves: 1) defining one or more
+steps, 2) adding handlers to process the results of those steps, and 3) finally,
+executing the steps by calling their `run` methods, potentially multiple times.
+
 For example, this `run_plan` function reproduces the default Everest optimization:
 
 ```py

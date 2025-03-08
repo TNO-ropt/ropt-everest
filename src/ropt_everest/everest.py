@@ -26,16 +26,7 @@ _RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {
 
 
 class EverestPlanHandlerPlugin(PlanHandlerPlugin):
-    """The default plan plugin class.
-
-    This class provides a number of result handlers:
-
-    `Result Handlers`:
-    : - A handler that adds metadata to results
-        ([`metadata`][ropt.plugins.plan._metadata.DefaultMetadataHandler]).
-    : - A handler that tracks optimal results
-        ([`tracker`][ropt.plugins.plan._tracker.DefaultTrackerHandler]).
-    """
+    """The everest plan handler class."""
 
     def create(self, name: str, plan: Plan, **kwargs: dict[str, Any]) -> ResultHandler:
         """Create a result  handler.
@@ -63,16 +54,7 @@ class EverestPlanHandlerPlugin(PlanHandlerPlugin):
 
 
 class EverestPlanStepPlugin(PlanStepPlugin):
-    """The default plan plugin class.
-
-    This class provides a number of steps:
-
-    `Steps`:
-    : - A step that performs a single ensemble evaluation
-        ([`evaluator`][ropt.plugins.plan.evaluator.DefaultEvaluatorStep]).
-    : - A step that runs an optimization
-        ([`optimizer`][ropt.plugins.plan.optimizer.DefaultOptimizerStep]).
-    """
+    """The everest plan step class."""
 
     def create(self, name: str, plan: Plan, **kwargs: Any) -> PlanStep:  # noqa: ANN401
         """Create a step.
