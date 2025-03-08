@@ -649,9 +649,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestStore.variables" class="md-nav__link">
+  <a href="#ropt_everest.EverestStore.controls" class="md-nav__link">
     <span class="md-ellipsis">
-      variables
+      controls
     </span>
   </a>
   
@@ -700,9 +700,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestTracker.variables" class="md-nav__link">
+  <a href="#ropt_everest.EverestTracker.controls" class="md-nav__link">
     <span class="md-ellipsis">
-      variables
+      controls
     </span>
   </a>
   
@@ -959,9 +959,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestStore.variables" class="md-nav__link">
+  <a href="#ropt_everest.EverestStore.controls" class="md-nav__link">
     <span class="md-ellipsis">
-      variables
+      controls
     </span>
   </a>
   
@@ -1010,9 +1010,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestTracker.variables" class="md-nav__link">
+  <a href="#ropt_everest.EverestTracker.controls" class="md-nav__link">
     <span class="md-ellipsis">
-      variables
+      controls
     </span>
   </a>
   
@@ -1685,7 +1685,7 @@ provides a method to execute the optimizer .</p>
 
 
 <h3 id="ropt_everest.EverestOptimizerStep.run" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">controls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1704,8 +1704,8 @@ configuration dictionary.</p>
   configuration. It should be a dictionary that can be validated as an
   <code>EverestConfig</code> object.</li>
 </ul>
-<p><strong>Variables</strong>:</p>
-<p>If no variables are provided, the optimizer will use the initial values
+<p><strong>Controls</strong>:</p>
+<p>If no controls are provided, the optimizer will use the initial values
 from the configuration.</p>
 <p><strong>Metadata</strong>:</p>
 <ul>
@@ -1738,8 +1738,8 @@ from the configuration.</p>
             <td>
               <div class="doc-md-description">
                 <p>An optional dictionary containing the Everest configuration
-       for the optimizer. If omitted, the default configuration is
-       used.</p>
+      for the optimizer. If omitted, the default configuration is
+      used.</p>
               </div>
             </td>
             <td>
@@ -1748,14 +1748,14 @@ from the configuration.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>variables</code>
+                <code>controls</code>
             </td>
             <td>
                   <code><span title="numpy.typing.ArrayLike">ArrayLike</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An array-like object containing the variables for the optimization.</p>
+                <p>An array-like object containing the controls for the optimization.</p>
               </div>
             </td>
             <td>
@@ -1772,7 +1772,7 @@ from the configuration.</p>
             <td>
               <div class="doc-md-description">
                 <p>An optional dictionary of metadata to associate with the
-       results of the optimizer's results.</p>
+      results of the optimizer's results.</p>
               </div>
             </td>
             <td>
@@ -1836,7 +1836,7 @@ provides a method to execute the evaluator .</p>
 
 
 <h3 id="ropt_everest.EverestEvaluatorStep.run" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">controls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1855,10 +1855,10 @@ configuration dictionary.</p>
   configuration. It should be a dictionary that can be validated as an
   <code>EverestConfig</code> object.</li>
 </ul>
-<p><strong>Variables</strong>:</p>
-<p>The <code>variables</code> parameter can be a single vector, a sequence of multiple
-vectors, or a 2D matrix where the variable vectors are the rows. If no
-variables are provided, the evaluator will use its default
+<p><strong>Controls</strong>:</p>
+<p>The <code>controls</code> parameter can be a single vector, a sequence of multiple
+vectors, or a 2D matrix where the control vectors are the rows. If no
+controls are provided, the evaluator will use its default
 the initial values from the configuration.</p>
 <p><strong>Metadata</strong>:</p>
 <ul>
@@ -1891,8 +1891,8 @@ the initial values from the configuration.</p>
             <td>
               <div class="doc-md-description">
                 <p>An optional dictionary containing the Everest configuration
-       for the optimizer. If omitted, the default configuration is
-       used.</p>
+      for the optimizer. If omitted, the default configuration is
+      used.</p>
               </div>
             </td>
             <td>
@@ -1901,14 +1901,14 @@ the initial values from the configuration.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>variables</code>
+                <code>controls</code>
             </td>
             <td>
                   <code><span title="numpy.typing.ArrayLike">ArrayLike</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An array-like object containing the variables for the optimization.</p>
+                <p>An array-like object containing the controls for the optimization.</p>
               </div>
             </td>
             <td>
@@ -1925,7 +1925,7 @@ the initial values from the configuration.</p>
             <td>
               <div class="doc-md-description">
                 <p>An optional dictionary of metadata to associate with the
-       results of the optimizer's results.</p>
+      results of the optimizer's results.</p>
               </div>
             </td>
             <td>
@@ -2153,8 +2153,8 @@ analysis.</p>
 
 
 
-<h3 id="ropt_everest.EverestStore.variables" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">variables</span></code>
+<h3 id="ropt_everest.EverestStore.controls" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">controls</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -2165,7 +2165,7 @@ analysis.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Retrieves the stored variables.</p>
+        <p>Retrieves the stored controls.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -2183,7 +2183,7 @@ analysis.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The stored variables.</p>
+                <p>The stored controls.</p>
               </div>
             </td>
           </tr>
@@ -2243,8 +2243,8 @@ it easier to analyze and visualize the data.</p>
 strings. In the tuple form, the name is usually composed of a string
 indicating the type of column and one or more objective, constraint
 or control names. For instance, a column containing values of the
-variable <code>point.x</code> may have the name: <code>(variables, point.x)</code>. The
-gradient of an objective <code>distance</code> with respect to a variable
+control <code>point.x</code> may have the name: <code>(controls, point.x)</code>. The
+gradient of an objective <code>distance</code> with respect to a control
 <code>point.x</code> may have the column name <code>(objectives, distance, point.x.0)</code>.</p>
 </details>
 
@@ -2401,8 +2401,8 @@ tracker can also be set to only keep track of the feasible results.</p>
 
 
 
-<h3 id="ropt_everest.EverestTracker.variables" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">variables</span></code>
+<h3 id="ropt_everest.EverestTracker.controls" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">controls</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
@@ -2413,9 +2413,9 @@ tracker can also be set to only keep track of the feasible results.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Retrieves the tracked variables.</p>
-<p>The tracked variables can be a single NumPy array, a list of NumPy
-arrays, or None if no variables have been tracked.</p>
+        <p>Retrieves the tracked controls.</p>
+<p>The tracked controls can be a single NumPy array, a list of NumPy
+arrays, or None if no controls have been tracked.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -2433,7 +2433,7 @@ arrays, or None if no variables have been tracked.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The tracked variables.</p>
+                <p>The tracked controls.</p>
               </div>
             </td>
           </tr>
@@ -2493,8 +2493,8 @@ it easier to analyze and visualize the data.</p>
 strings. In the tuple form, the name is usually composed of a string
 indicating the type of column and one or more objective, constraint
 or control names. For instance, a column containing values of the
-variable <code>point.x</code> may have the name: <code>(variables, point.x)</code>. The
-gradient of an objective <code>distance</code> with respect to a variable
+control <code>point.x</code> may have the name: <code>(controls, point.x)</code>. The
+gradient of an objective <code>distance</code> with respect to a control
 <code>point.x</code> may have the column name <code>(objectives, distance, point.x.0)</code>.</p>
 </details>
 

@@ -745,12 +745,28 @@ created by Everest and provided to <code>run_plan</code> via the <code>plan</cod
     functions) to create sophisticated and adaptable optimization workflows.</p>
 </li>
 </ol>
+<p>A <code>run_plan</code> function constructs a workflow by creating <em>step</em> objects and
+<em>handler</em> objects. You create these objects by calling methods on the <code>plan</code>
+object, typically using the pattern <code>plan.add_*()</code>. For example,
+<code>plan.add_optimizer()</code> creates an optimizer step and registers it with the plan.
+When added to the plan, step objects generally don't require arguments. Instead,
+you configure and execute them later by calling their <code>run</code> method (e.g., to
+start an optimization).</p>
+<p>The <code>run</code> method may accept additional arguments to customize the step's
+behavior. As steps execute, they may generate results. The plan receives these
+results and forwards them to any handler objects that have expressed interest.
+When creating handler objects, you specify one or more step objects they should
+monitor, indicating their interest in receiving results from those steps.
+Handlers may also accept additional configuration arguments during
+creation to refine how they process these results.</p>
+<p>In summary, building an optimization workflow involves: 1) defining one or more
+steps, 2) adding handlers to process the results of those steps, and 3) finally,
+executing the steps by calling their <code>run</code> methods, potentially multiple times.</p>
 <p>For example, this <code>run_plan</code> function reproduces the default Everest optimization:</p>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">):</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>       <span class="c1"># Add an optimizer step</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">tracker</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_tracker</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>  <span class="c1"># Add a tracker</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>              <span class="c1"># Add a table handler</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                        <span class="c1"># Run the optimizer</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>  <span class="c1"># Add an optimizer step</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>         <span class="c1"># Add a table handler</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                   <span class="c1"># Run the optimizer</span>
 </span></code></pre></div>
 <p>This function executes a basic optimization workflow by performing these steps:</p>
 <ol>
@@ -759,9 +775,6 @@ created by Everest and provided to <code>run_plan</code> via the <code>plan</cod
     via the <code>plan</code> parameter.</li>
 <li><strong>Optimizer Addition</strong>: An optimizer step is added to the plan using the
     <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_optimizer"><code>add_optimizer</code></a> method.</li>
-<li><strong>Tracker Addition</strong>: A tracker result handler is attached to the optimizer
-    step using the <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_tracker"><code>add_tracker</code></a> method
-    to monitor its progress.</li>
 <li><strong>Table Handler Addition</strong>: A table handler is added to the plan using the
     <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_table"><code>add_table</code></a> method. This will save the
     optimization results in a set of tables.</li>
@@ -805,7 +818,7 @@ executed using its <a class="autorefs autorefs-internal" href="../../reference/e
     You can modify the result of
     <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>plan.config_copy()</code></a> to create a
     suitable configuration.</li>
-<li><strong>variables</strong> (<code>array-like</code>, optional): Initial variable values for the
+<li><strong>controls</strong> (<code>array-like</code>, optional): Initial control values for the
     optimizer. If not specified, the initial values from the Everest
     configuration are used.</li>
 <li><strong>metadata</strong> (<code>dict</code>, optional): A dictionary of metadata to be associated
@@ -822,10 +835,10 @@ executed using its <a class="autorefs autorefs-internal" href="../../reference/e
     You can modify the result of
     <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>plan.config_copy()</code></a> to create a
     suitable configuration.</li>
-<li><strong>variables</strong> (<code>array-like</code>, optional): The variables that will be evaluated.
+<li><strong>controls</strong> (<code>array-like</code>, optional): The controls that will be evaluated.
     This can be a single vector, a sequence of multiple vectors, or a 2D matrix
-    where the variable vectors are the rows. If multiple vectors or a 2D matrix
-    is supplied, an evaluation is performed for each variable vector. If not
+    where the control vectors are the rows. If multiple vectors or a 2D matrix
+    is supplied, an evaluation is performed for each control vector. If not
     specified, the initial values from the Everest configuration are used.</li>
 <li><strong>metadata</strong> (<code>dict</code>, optional): A dictionary of metadata to be associated
     with each result generated by the evaluator.</li>
@@ -848,8 +861,8 @@ arguments:</p>
 <p>The tracker object returned by <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_store"><code>add_store</code></a>
 supports the following properties to inspect the results that it stores:</p>
 <ul>
-<li><strong>results</strong>:   The list of results that is stored.</li>
-<li><strong>variables</strong>: The variables in the stored results.</li>
+<li><strong>results</strong>:  The list of results that is stored.</li>
+<li><strong>controls</strong>: The controls in the stored results.</li>
 </ul>
 <p>In addition, the following methods are available:</p>
 <ul>
@@ -877,8 +890,8 @@ It accepts the following arguments:</p>
 <p>The tracker object returned by <a class="autorefs autorefs-internal" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_tracker"><code>add_tracker</code></a>
 supports the following properties to inspect the results that it stores:</p>
 <ul>
-<li><strong>results</strong>:   The results object that is stored.</li>
-<li><strong>variables</strong>: The variables in the stored results.</li>
+<li><strong>results</strong>:  The results object that is stored.</li>
+<li><strong>controls</strong>: The controls in the stored results.</li>
 </ul>
 <p>In addition, the following methods are available:</p>
 <ul>
