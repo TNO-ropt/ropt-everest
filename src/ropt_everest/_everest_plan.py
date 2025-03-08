@@ -591,10 +591,6 @@ class EverestTracker(EverestHandler):
         results = self._tracker["results"]
         return None if results is None else results.evaluations.variables
 
-    @property
-    def ropt_tracker(self) -> ResultHandler:
-        return self._tracker
-
     def reset(self) -> None:
         """Reset the tracker.
 
