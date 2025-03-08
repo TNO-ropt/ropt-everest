@@ -27,7 +27,7 @@ def run_plan_two_optimizers(plan):
     config["optimization"]["max_function_evaluations"] = 2
 
     print("Running second optimizer...")
-    optimizer.run(config=config, variables=tracker.variables)
+    optimizer.run(config=config, controls=tracker.controls)
 
 
 def run_plan_loop(plan):
@@ -40,7 +40,7 @@ def run_plan_loop(plan):
     for idx in range(3):
         optimizer.run(
             config=config,
-            variables=tracker.variables,
+            controls=tracker.controls,
             metadata={"iteration": idx},
         )
     print(store.dataframe("gradients"))
@@ -49,7 +49,7 @@ def run_plan_loop(plan):
 def run_plan_evaluation(plan):
     evaluator = plan.add_evaluator()
     store = plan.add_store(evaluator)
-    evaluator.run(variables=[[0, 0, 0], [1, 1, 1]])
+    evaluator.run(controls=[[0, 0, 0], [1, 1, 1]])
     print(store.dataframe("results"))
 
 

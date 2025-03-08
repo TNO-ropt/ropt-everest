@@ -12,9 +12,9 @@ from ropt.results import FunctionResults, Results, results_to_dataframe
 from ._utils import (
     TABLE_COLUMNS,
     TABLE_TYPE_MAP,
+    fix_columns,
     get_names,
     reorder_columns,
-    strip_prefix_from_columns,
 )
 
 if TYPE_CHECKING:
@@ -283,7 +283,7 @@ class EverestOptimizerStep(EverestStep):
     def run(
         self,
         config: dict[str, Any] | None = None,
-        variables: ArrayLike | None = None,
+        controls: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> None:
         """Runs the optimizer.
@@ -300,9 +300,9 @@ class EverestOptimizerStep(EverestStep):
           configuration. It should be a dictionary that can be validated as an
           `EverestConfig` object.
 
-        **Variables**:
+        **Controls**:
 
-        If no variables are provided, the optimizer will use the initial values
+        If no controls are provided, the optimizer will use the initial values
         from the configuration.
 
         **Metadata**:
@@ -314,12 +314,12 @@ class EverestOptimizerStep(EverestStep):
           the output tables.
 
         Args:
-            config:    An optional dictionary containing the Everest configuration
-                       for the optimizer. If omitted, the default configuration is
-                       used.
-            variables: An array-like object containing the variables for the optimization.
-            metadata:  An optional dictionary of metadata to associate with the
-                       results of the optimizer's results.
+            config:   An optional dictionary containing the Everest configuration
+                      for the optimizer. If omitted, the default configuration is
+                      used.
+            controls: An array-like object containing the controls for the optimization.
+            metadata: An optional dictionary of metadata to associate with the
+                      results of the optimizer's results.
         """
         self._plan.run_step(
             self._optimizer,
@@ -332,7 +332,7 @@ class EverestOptimizerStep(EverestStep):
             ),
             transforms=self._transforms,
             metadata=metadata,
-            variables=variables,
+            variables=controls,
         )
 
 
@@ -359,7 +359,7 @@ class EverestEvaluatorStep(EverestStep):
     def run(
         self,
         config: dict[str, Any] | None = None,
-        variables: ArrayLike | None = None,
+        controls: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> None:
         """Runs the evaluator.
@@ -376,11 +376,11 @@ class EverestEvaluatorStep(EverestStep):
           configuration. It should be a dictionary that can be validated as an
           `EverestConfig` object.
 
-        **Variables**:
+        **Controls**:
 
-        The `variables` parameter can be a single vector, a sequence of multiple
-        vectors, or a 2D matrix where the variable vectors are the rows. If no
-        variables are provided, the evaluator will use its default
+        The `controls` parameter can be a single vector, a sequence of multiple
+        vectors, or a 2D matrix where the control vectors are the rows. If no
+        controls are provided, the evaluator will use its default
         the initial values from the configuration.
 
         **Metadata**:
@@ -392,12 +392,12 @@ class EverestEvaluatorStep(EverestStep):
           the output tables.
 
         Args:
-            config:    An optional dictionary containing the Everest configuration
-                       for the optimizer. If omitted, the default configuration is
-                       used.
-            variables: An array-like object containing the variables for the optimization.
-            metadata:  An optional dictionary of metadata to associate with the
-                       results of the optimizer's results.
+            config:   An optional dictionary containing the Everest configuration
+                      for the optimizer. If omitted, the default configuration is
+                      used.
+            controls: An array-like object containing the controls for the optimization.
+            metadata: An optional dictionary of metadata to associate with the
+                      results of the optimizer's results.
         """
         self._plan.run_step(
             self._evaluator,
@@ -410,7 +410,7 @@ class EverestEvaluatorStep(EverestStep):
             ),
             transforms=self._transforms,
             metadata=metadata,
-            variables=variables,
+            variables=controls,
         )
 
 
@@ -476,11 +476,11 @@ class EverestStore(EverestHandler):
         return None if results is None else list(results)
 
     @property
-    def variables(self) -> NDArray[np.float64] | list[NDArray[np.float64]] | None:
-        """Retrieves the stored variables.
+    def controls(self) -> NDArray[np.float64] | list[NDArray[np.float64]] | None:
+        """Retrieves the stored controls.
 
         Returns:
-            The stored variables.
+            The stored controls.
         """
         results = self._store["results"]
         if results is None:
@@ -513,8 +513,8 @@ class EverestStore(EverestHandler):
             strings. In the tuple form, the name is usually composed of a string
             indicating the type of column and one or more objective, constraint
             or control names. For instance, a column containing values of the
-            variable `point.x` may have the name: `(variables, point.x)`. The
-            gradient of an objective `distance` with respect to a variable
+            control `point.x` may have the name: `(controls, point.x)`. The
+            gradient of an objective `distance` with respect to a control
             `point.x` may have the column name `(objectives, distance, point.x.0)`.
 
         Args:
@@ -532,7 +532,7 @@ class EverestStore(EverestHandler):
             if results[0].metadata is not None:
                 for item in results[0].metadata:
                     columns[f"metadata.{item}"] = item
-            return strip_prefix_from_columns(
+            return fix_columns(
                 reorder_columns(
                     results_to_dataframe(
                         results,
@@ -579,14 +579,14 @@ class EverestTracker(EverestHandler):
         return results
 
     @property
-    def variables(self) -> NDArray[np.float64] | None:
-        """Retrieves the tracked variables.
+    def controls(self) -> NDArray[np.float64] | None:
+        """Retrieves the tracked controls.
 
-        The tracked variables can be a single NumPy array, a list of NumPy
-        arrays, or None if no variables have been tracked.
+        The tracked controls can be a single NumPy array, a list of NumPy
+        arrays, or None if no controls have been tracked.
 
         Returns:
-            The tracked variables.
+            The tracked controls.
         """
         results = self._tracker["results"]
         return None if results is None else results.evaluations.variables
@@ -621,8 +621,8 @@ class EverestTracker(EverestHandler):
             strings. In the tuple form, the name is usually composed of a string
             indicating the type of column and one or more objective, constraint
             or control names. For instance, a column containing values of the
-            variable `point.x` may have the name: `(variables, point.x)`. The
-            gradient of an objective `distance` with respect to a variable
+            control `point.x` may have the name: `(controls, point.x)`. The
+            gradient of an objective `distance` with respect to a control
             `point.x` may have the column name `(objectives, distance, point.x.0)`.
 
         Args:
@@ -640,7 +640,7 @@ class EverestTracker(EverestHandler):
             if results.metadata is not None:
                 for item in results.metadata:
                     columns[f"metadata.{item}"] = item
-            return strip_prefix_from_columns(
+            return fix_columns(
                 reorder_columns(
                     results_to_dataframe(
                         [results],

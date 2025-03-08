@@ -106,10 +106,10 @@ def rename_columns(data: pd.DataFrame, columns: dict[str, str]) -> pd.DataFrame:
     return data.set_axis(renamed_columns, axis="columns")
 
 
-def strip_prefix_from_columns(data: pd.DataFrame) -> pd.DataFrame:
+def fix_columns(data: pd.DataFrame) -> pd.DataFrame:
     def _strip(value: str) -> str:
         _, _, new_value = value.partition(".")
-        return new_value
+        return new_value.replace("variables", "controls")
 
     renamed_columns = [
         (_strip(name[0]), *(str(item) for item in name[1:]))
