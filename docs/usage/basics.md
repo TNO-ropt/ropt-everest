@@ -44,10 +44,9 @@ For example, this `run_plan` function reproduces the default Everest optimizatio
 
 ```py
 def run_plan(plan):
-    optimizer = plan.add_optimizer()       # Add an optimizer step
-    tracker = plan.add_tracker(optimizer)  # Add a tracker
-    plan.add_table(optimizer)              # Add a table handler
-    optimizer.run()                        # Run the optimizer
+    optimizer = plan.add_optimizer()  # Add an optimizer step
+    plan.add_table(optimizer)         # Add a table handler
+    optimizer.run()                   # Run the optimizer
 ```
 
 This function executes a basic optimization workflow by performing these steps:
@@ -57,13 +56,10 @@ This function executes a basic optimization workflow by performing these steps:
     via the `plan` parameter.
 2.  **Optimizer Addition**: An optimizer step is added to the plan using the
     [`add_optimizer`][ropt_everest.EverestPlan.add_optimizer] method.
-3.  **Tracker Addition**: A tracker result handler is attached to the optimizer
-    step using the [`add_tracker`][ropt_everest.EverestPlan.add_tracker] method
-    to monitor its progress.
-4.  **Table Handler Addition**: A table handler is added to the plan using the
+3.  **Table Handler Addition**: A table handler is added to the plan using the
     [`add_table`][ropt_everest.EverestPlan.add_table] method. This will save the
     optimization results in a set of tables.
-5.  **Optimizer Execution**: The optimization process is started by calling the
+4.  **Optimizer Execution**: The optimization process is started by calling the
     [`run`][ropt_everest.EverestOptimizerStep.run] method of the optimizer step.
 
 

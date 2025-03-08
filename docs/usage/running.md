@@ -31,7 +31,6 @@ from pathlib import Path
 
 def run_plan(plan):
     optimizer = plan.add_optimizer()
-    tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
     optimizer.run()
 

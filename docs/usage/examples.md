@@ -21,7 +21,6 @@ A basic plan that corresponds to the default Everest optimization:
 ```py
 def run_plan(plan):
     optimizer = plan.add_optimizer()
-    plan.add_tracker(optimizer)
     plan.add_table(optimizer)
     optimizer.run()
 ```

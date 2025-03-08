@@ -5,12 +5,11 @@ from ropt_everest import EverestPlan
 from pathlib import Path
 
 
-example = "loop"
+example = "basic"
 
 
 def run_plan_basic(plan):
     optimizer = plan.add_optimizer()
-    plan.add_tracker(optimizer)
     plan.add_table(optimizer)
     optimizer.run()
 
