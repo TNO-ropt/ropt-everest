@@ -31,7 +31,7 @@ TABLE_COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.variables": "Control",
         "evaluations.objectives": "Objective",
         "evaluations.constraints": "Constraint",
-        "evaluations.evaluation_ids": "Simulation",
+        "evaluations.evaluation_info.sim_ids": "Simulation",
     },
     "perturbations": {
         "batch_id": "Batch",
@@ -40,7 +40,7 @@ TABLE_COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.perturbed_variables": "Control",
         "evaluations.perturbed_objectives": "Objective",
         "evaluations.perturbed_constraints": "Constraint",
-        "evaluations.perturbed_evaluation_ids": "Simulation",
+        "evaluations.evaluation_info.sim_ids": "Simulation",
     },
     "constraints": {
         "batch_id": "Batch",
