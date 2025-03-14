@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.7">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.8">
     
     
       
@@ -1099,6 +1099,7 @@ are then executed to achieve the desired optimization goal.</p>
 
 
 
+
   <div class="doc doc-children">
 
 
@@ -1148,6 +1149,7 @@ original configuration.</p>
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -1166,9 +1168,9 @@ original configuration.</p>
         <p>Adds an optimizer to the execution plan.</p>
 <p>This method integrates an optimization step into your Everest workflow.
 Invoking this method returns an
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestOptimizerStep"><code>EverestOptimizerStep</code></a> object,
+<a class="autorefs autorefs-internal" title="ropt_everest.EverestOptimizerStep" href="#ropt_everest.EverestOptimizerStep"><code>EverestOptimizerStep</code></a> object,
 which you can execute using its
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method.</p>
+<a class="autorefs autorefs-internal" title="run(config=None, controls=None, metadata=None)" href="#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1182,7 +1184,7 @@ which you can execute using its
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="ropt_everest._everest_plan.EverestOptimizerStep" href="#ropt_everest.EverestOptimizerStep">EverestOptimizerStep</a></code>
+                  <code><a class="autorefs autorefs-internal" title="ropt_everest.EverestOptimizerStep (ropt_everest._everest_plan.EverestOptimizerStep)" href="#ropt_everest.EverestOptimizerStep">EverestOptimizerStep</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1192,6 +1194,7 @@ which you can execute using its
           </tr>
       </tbody>
     </table>
+
 
     </div>
 
@@ -1211,9 +1214,9 @@ which you can execute using its
         <p>Adds an evaluator to the execution plan.</p>
 <p>This method integrates an evaluation step into your Everest workflow.
 Invoking this method returns an
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestEvaluatorStep"><code>EverestEvaluatorStep</code></a> object,
+<a class="autorefs autorefs-internal" title="ropt_everest.EverestEvaluatorStep" href="#ropt_everest.EverestEvaluatorStep"><code>EverestEvaluatorStep</code></a> object,
 which you can execute using its
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestEvaluatorStep.run"><code>run</code></a> method.</p>
+<a class="autorefs autorefs-internal" title="run(config=None, controls=None, metadata=None)" href="#ropt_everest.EverestEvaluatorStep.run"><code>run</code></a> method.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1227,7 +1230,7 @@ which you can execute using its
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="ropt_everest._everest_plan.EverestEvaluatorStep" href="#ropt_everest.EverestEvaluatorStep">EverestEvaluatorStep</a></code>
+                  <code><a class="autorefs autorefs-internal" title="ropt_everest.EverestEvaluatorStep (ropt_everest._everest_plan.EverestEvaluatorStep)" href="#ropt_everest.EverestEvaluatorStep">EverestEvaluatorStep</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1237,6 +1240,7 @@ which you can execute using its
           </tr>
       </tbody>
     </table>
+
 
     </div>
 
@@ -1257,9 +1261,9 @@ which you can execute using its
 <p>This method incorporates a workflow job into the execution plan.
 Workflow jobs are used to run external operations. Invoking this method
 returns an
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestWorkflowJobStep"><code>EverestWorkflowJobStep</code></a> object,
+<a class="autorefs autorefs-internal" title="ropt_everest.EverestWorkflowJobStep" href="#ropt_everest.EverestWorkflowJobStep"><code>EverestWorkflowJobStep</code></a> object,
 which you can execute using its
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestWorkflowJobStep.run"><code>run</code></a> method.</p>
+<a class="autorefs autorefs-internal" title="run(jobs)" href="#ropt_everest.EverestWorkflowJobStep.run"><code>run</code></a> method.</p>
 <p>This step can be used to incorporate different external programs or
 scripts into the current optimization process.</p>
 
@@ -1275,7 +1279,7 @@ scripts into the current optimization process.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="ropt_everest._everest_plan.EverestWorkflowJobStep" href="#ropt_everest.EverestWorkflowJobStep">EverestWorkflowJobStep</a></code>
+                  <code><a class="autorefs autorefs-internal" title="ropt_everest.EverestWorkflowJobStep (ropt_everest._everest_plan.EverestWorkflowJobStep)" href="#ropt_everest.EverestWorkflowJobStep">EverestWorkflowJobStep</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1285,6 +1289,7 @@ scripts into the current optimization process.</p>
           </tr>
       </tbody>
     </table>
+
 
     </div>
 
@@ -1304,7 +1309,7 @@ scripts into the current optimization process.</p>
         <p>Adds a results store to the execution plan.</p>
 <p>Stores the results of specified optimization or evaluation steps.</p>
 <p>Invoking this method returns an
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestStore"><code>EverestStore</code></a> object, which provides
+<a class="autorefs autorefs-internal" title="ropt_everest.EverestStore" href="#ropt_everest.EverestStore"><code>EverestStore</code></a> object, which provides
 various methods to access the stored results.</p>
 <p><strong>steps:</strong> This argument specifies which steps in the execution plan the
 store should monitor. You can provide either a single step object
@@ -1354,7 +1359,7 @@ will record all the results generated by these steps.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="ropt_everest._everest_plan.EverestStore" href="#ropt_everest.EverestStore">EverestStore</a></code>
+                  <code><a class="autorefs autorefs-internal" title="ropt_everest.EverestStore (ropt_everest._everest_plan.EverestStore)" href="#ropt_everest.EverestStore">EverestStore</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1364,6 +1369,7 @@ will record all the results generated by these steps.</p>
           </tr>
       </tbody>
     </table>
+
 
     </div>
 
@@ -1387,7 +1393,7 @@ analyze the outcomes of these steps during the execution of the plan.
 You can configure a tracker to save the best or the last results
 generated by the tracked steps.</p>
 <p>Invoking this method returns an
-<a class="autorefs autorefs-internal" href="#ropt_everest.EverestTracker"><code>EverestTracker</code></a> object, which provides
+<a class="autorefs autorefs-internal" title="ropt_everest.EverestTracker" href="#ropt_everest.EverestTracker"><code>EverestTracker</code></a> object, which provides
 various methods to access the tracked results.</p>
 <p>A tracker is configured by three arguments:</p>
 <p><strong>steps:</strong> This argument specifies which steps in the execution plan the
@@ -1482,7 +1488,7 @@ is not set, constraints are not tested.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="ropt_everest._everest_plan.EverestTracker" href="#ropt_everest.EverestTracker">EverestTracker</a></code>
+                  <code><a class="autorefs autorefs-internal" title="ropt_everest.EverestTracker (ropt_everest._everest_plan.EverestTracker)" href="#ropt_everest.EverestTracker">EverestTracker</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1492,6 +1498,7 @@ is not set, constraints are not tested.</p>
           </tr>
       </tbody>
     </table>
+
 
     </div>
 
@@ -1556,7 +1563,7 @@ be generated and saved in the output directory.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="ropt_everest._everest_plan.EverestTableHandler" href="#ropt_everest.EverestTableHandler">EverestTableHandler</a></code>
+                  <code><a class="autorefs autorefs-internal" title="ropt_everest.EverestTableHandler (ropt_everest._everest_plan.EverestTableHandler)" href="#ropt_everest.EverestTableHandler">EverestTableHandler</a></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1566,6 +1573,7 @@ be generated and saved in the output directory.</p>
           </tr>
       </tbody>
     </table>
+
 
     </div>
 
@@ -1631,6 +1639,7 @@ several advantages, including:</p>
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -1662,6 +1671,7 @@ several advantages, including:</p>
         <p>Represents an optimizer step in an Everest execution plan.</p>
 <p>This class encapsulates an optimization step within an Everest workflow. It
 provides a method to execute the optimizer .</p>
+
 
 
 
@@ -1782,6 +1792,7 @@ from the configuration.</p>
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -1813,6 +1824,7 @@ from the configuration.</p>
         <p>Represents an evaluator step in an Everest execution plan.</p>
 <p>This class encapsulates an evaluation step within an Everest workflow. It
 provides a method to execute the evaluator .</p>
+
 
 
 
@@ -1935,6 +1947,7 @@ the initial values from the configuration.</p>
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -1966,6 +1979,7 @@ the initial values from the configuration.</p>
         <p>Represents a workflow job step in an Everest execution plan.</p>
 <p>This class encapsulates a workflow job step within an Everest workflow. It
 provides a method to execute the workflow job.</p>
+
 
 
 
@@ -2055,6 +2069,7 @@ file in the <code>install_workflow_jobs</code> section.</p>
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -2088,6 +2103,7 @@ file in the <code>install_workflow_jobs</code> section.</p>
 within an Everest execution plan. It allows you to access the results. You
 can also convert the stored results into a Pandas DataFrame for easier
 analysis.</p>
+
 
 
 
@@ -2145,6 +2161,7 @@ analysis.</p>
           </tr>
       </tbody>
     </table>
+
     </div>
 
 </div>
@@ -2189,6 +2206,7 @@ analysis.</p>
           </tr>
       </tbody>
     </table>
+
     </div>
 
 </div>
@@ -2208,6 +2226,7 @@ analysis.</p>
 
         <p>Reset the store.</p>
 <p>Clears any results accumulated so far.</p>
+
 
     </div>
 
@@ -2301,6 +2320,7 @@ gradient of an objective <code>distance</code> with respect to a control
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -2336,6 +2356,7 @@ results. You can also convert the tracked results into a Pandas DataFrame
 for easier analysis.</p>
 <p>The tracker can keep track of the best, the last, or all the results. The
 tracker can also be set to only keep track of the feasible results.</p>
+
 
 
 
@@ -2393,6 +2414,7 @@ tracker can also be set to only keep track of the feasible results.</p>
           </tr>
       </tbody>
     </table>
+
     </div>
 
 </div>
@@ -2439,6 +2461,7 @@ arrays, or None if no controls have been tracked.</p>
           </tr>
       </tbody>
     </table>
+
     </div>
 
 </div>
@@ -2458,6 +2481,7 @@ arrays, or None if no controls have been tracked.</p>
 
         <p>Reset the tracker.</p>
 <p>Clears any results accumulated so far.</p>
+
 
     </div>
 
@@ -2551,6 +2575,7 @@ gradient of an objective <code>distance</code> with respect to a control
       </tbody>
     </table>
 
+
     </div>
 
 </div>
@@ -2580,6 +2605,7 @@ gradient of an objective <code>distance</code> with respect to a control
 
 
         <p>Represents a table handler in an Everest execution plan.</p>
+
 
 
 
