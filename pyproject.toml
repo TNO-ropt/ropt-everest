@@ -62,6 +62,7 @@ ignore = [
     "ISC001", # single-line-implicit-string-concatenation   
     "DJ",     # flake8-django
     "FA",     # flake8-future-annotations
+    "PGH004", # blanket-noqa
     "UP",     # pyupgrade 
     "S101",   # assert
 ]

@@ -35,24 +35,13 @@ class EverestPlan:
     are then executed to achieve the desired optimization goal.
     """
 
-    def __init__(self, plan: Plan, transforms: OptModelTransforms) -> None:
+    def __init__(
+        self, plan: Plan, config: EverestConfig, transforms: OptModelTransforms
+    ) -> None:
         self._plan = plan
-        self._config: EverestConfig = plan["everest_config"]
-        self._config_dict: dict[str, Any] = self._config.model_dump(exclude_none=True)
+        self._config = config
         self._transforms = transforms
         self._tag_id = 0
-
-    def config_copy(self) -> dict[str, Any]:
-        """Retrieves a copy of the default Everest configuration.
-
-        This method returns a copy of the Everest configuration used during
-        startup. Modifications to the returned dictionary will not affect the
-        original configuration.
-
-        Returns:
-            A dictionary representing the Everest configuration.
-        """
-        return deepcopy(self._config_dict)
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
@@ -109,7 +98,7 @@ class EverestPlan:
             An `EverestWorkflowJobStep` object, representing the added workflow job step.
         """
         step = self._plan.add_step("workflow_job")
-        return EverestWorkflowJobStep(step, self._plan)
+        return EverestWorkflowJobStep(step, self._plan, self._config)
 
     def add_store(
         self,
@@ -421,9 +410,12 @@ class EverestWorkflowJobStep(EverestStep):
     provides a method to execute the workflow job.
     """
 
-    def __init__(self, workflow_job: PlanStep, plan: Plan) -> None:
+    def __init__(
+        self, workflow_job: PlanStep, plan: Plan, config: EverestConfig
+    ) -> None:
         super().__init__(plan)
         self._workflow_job = workflow_job
+        self._config = config
 
     def run(self, jobs: list[str]) -> dict[str, Any]:
         """Runs the workflow job.
@@ -438,7 +430,7 @@ class EverestWorkflowJobStep(EverestStep):
         Returns:
             A dictionary containing the workflow report.
         """
-        return self._plan.run_step(self._workflow_job, jobs=jobs)  # type: ignore[no-any-return]
+        return self._plan.run_step(self._workflow_job, config=self._config, jobs=jobs)  # type: ignore[no-any-return]
 
 
 class EverestHandler:

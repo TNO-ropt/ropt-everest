@@ -14,7 +14,7 @@ def run_plan_basic(plan):
     optimizer.run()
 
 
-def run_plan_two_optimizers(plan):
+def run_plan_two_optimizers(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
@@ -22,19 +22,17 @@ def run_plan_two_optimizers(plan):
     print("Running first optimizer...")
     optimizer.run()
 
-    config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
 
     print("Running second optimizer...")
     optimizer.run(config=config, controls=tracker.controls)
 
 
-def run_plan_loop(plan):
+def run_plan_loop(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
 
-    config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
     for idx in range(3):
         optimizer.run(
@@ -52,14 +50,14 @@ def run_plan_evaluation(plan):
     print(store.dataframe("results"))
 
 
-def run_plan(plan):
+def run_plan(plan, config):
     match example:
         case "basic":
             return run_plan_basic(plan)
         case "two_optimizers":
-            return run_plan_two_optimizers(plan)
+            return run_plan_two_optimizers(plan, config)
         case "loop":
-            return run_plan_loop(plan)
+            return run_plan_loop(plan, config)
         case "evaluation":
             return run_plan_evaluation(plan)
         case _:

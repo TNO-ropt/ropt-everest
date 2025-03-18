@@ -5,7 +5,7 @@ from __future__ import annotations
 import importlib
 import sys
 from functools import partial
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
 from ropt.enums import OptimizerExitCode
 from ropt.plugins.plan.base import PlanStep
@@ -13,6 +13,7 @@ from ropt.plugins.plan.base import PlanStep
 from ._everest_plan import EverestPlan
 
 if TYPE_CHECKING:
+    from everest.config import EverestConfig
     from ropt.plan import Plan
     from ropt.plugins.plan.base import ResultHandler
     from ropt.transforms import OptModelTransforms
@@ -20,14 +21,8 @@ if TYPE_CHECKING:
     from ._everest_plan import EverestTracker
 
 
-if TYPE_CHECKING:
-    from everest.config import EverestConfig
-
-
 class EverestConfigStep(PlanStep):
     def run(self, *, everest_config: EverestConfig) -> None:
-        self.plan["everest_config"] = everest_config
-
         path = everest_config.config_path
         if path.suffix == ".yml" and (path := path.with_suffix(".py")).exists():
             module_name = path.stem
@@ -42,7 +37,9 @@ class EverestConfigStep(PlanStep):
 
             if hasattr(module, "run_plan"):
                 self.plan.clear_handlers()
-                self.plan.add_function(partial(_run_plan, func=module.run_plan))
+                self.plan.add_function(
+                    partial(_run_plan, func=module.run_plan, config=everest_config)
+                )
             else:
                 msg = f"Function `run_plan` not found in module {module_name}"
                 raise ImportError(msg)
@@ -51,8 +48,11 @@ class EverestConfigStep(PlanStep):
 def _run_plan(
     plan: Plan,
     transforms: OptModelTransforms,
-    func: Callable[[EverestPlan], tuple[EverestTracker | None, OptimizerExitCode]],
+    func: Callable[
+        [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, OptimizerExitCode]
+    ],
+    config: EverestConfig,
 ) -> tuple[ResultHandler | None, OptimizerExitCode]:
-    ever_plan = EverestPlan(plan, transforms)
-    func(ever_plan)
+    ever_plan = EverestPlan(plan, config, transforms)
+    func(ever_plan, config.model_dump(exclude_none=True))
     return None, OptimizerExitCode.UNKNOWN

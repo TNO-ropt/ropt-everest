@@ -19,7 +19,7 @@ if __name__ == "__main__":
 A basic plan that corresponds to the default Everest optimization:
 
 ```py
-def run_plan(plan):
+def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
     optimizer.run()
@@ -29,7 +29,7 @@ def run_plan(plan):
 Running two optimizers with different configurations:
 
 ```py
-def run_plan(plan):
+def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
@@ -37,7 +37,6 @@ def run_plan(plan):
     print("Running first optimizer...")
     optimizer.run()
 
-    config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
 
     print("Running second optimizer...")
@@ -51,12 +50,11 @@ a Pandas data frame. In addition, add the index of the loop to the metadata,
 which an additional `iteration` column to the data frame:
 
 ```py
-def run_plan(plan):
+def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
 
-    config = plan.config_copy()
     config["optimization"]["max_function_evaluations"] = 2
     for idx in range(3):
         optimizer.run(
@@ -72,7 +70,7 @@ Run an evaluation of the function for two control vectors and export the results
 to a Pandas data frame:
 
 ```py
-def run_plan(plan):
+def run_plan(plan, config):
     evaluator = plan.add_evaluator()
     store = plan.add_store(evaluator)
     evaluator.run(controls=[[0, 0, 0], [1, 1, 1]])

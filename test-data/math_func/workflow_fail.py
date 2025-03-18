@@ -4,7 +4,7 @@
 from ropt.enums import OptimizerExitCode
 
 
-def run_plan(plan):
+def run_plan(plan, _):
     workflow_job = plan.add_workflow_job()
     info = workflow_job.run(["fail"])
     if not all(v["completed"] for v in info.values()):

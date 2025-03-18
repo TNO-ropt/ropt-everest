@@ -16,12 +16,10 @@ if TYPE_CHECKING:
 
 
 class EverestWorkflowJob(PlanStep):
-    def run(self, jobs: list[str]) -> Any:  # noqa: ANN401
-        everest_config: EverestConfig = self.plan["everest_config"]
-
+    def run(self, config: EverestConfig, jobs: list[str]) -> Any:  # noqa: ANN401
         installed_jobs = {
             item.name: WorkflowJob.from_file(item.source, item.name)
-            for item in everest_config.install_workflow_jobs
+            for item in config.install_workflow_jobs
         }
 
         with NamedTemporaryFile(
