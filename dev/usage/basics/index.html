@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.8">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
     
     
       
@@ -24,7 +24,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4af4bdda.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -381,15 +381,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#config_copy" class="md-nav__link">
-    <span class="md-ellipsis">
-      config_copy
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#add_optimizer" class="md-nav__link">
     <span class="md-ellipsis">
       add_optimizer
@@ -619,15 +610,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#config_copy" class="md-nav__link">
-    <span class="md-ellipsis">
-      config_copy
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#add_optimizer" class="md-nav__link">
     <span class="md-ellipsis">
       add_optimizer
@@ -719,12 +701,15 @@ instead of the standard Everest optimization process. This allows you to define
 complex, multi-step optimization strategies, incorporate custom logic, and gain
 fine-grained control over the optimization process.</p>
 <p>The <code>run_plan</code> function must have the following signature:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan_basic</span><span class="p">(</span><span class="n">plan</span><span class="p">:</span> <span class="n">EverestPlan</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">:</span> <span class="n">EverestPlan</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="o">...</span>
 </span></code></pre></div>
-<p>The function must accept an <a class="autorefs autorefs-internal" title="ropt_everest.EverestPlan" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object,
-which is used to define and execute the optimization workflow. This object is
-created by Everest and provided to <code>run_plan</code> via the <code>plan</code> parameter.</p>
+<p>The first argument is an <a class="autorefs autorefs-internal" title="ropt_everest.EverestPlan" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object, which
+is used to define and execute the optimization workflow. This object is created
+by Everest and provided to <code>run_plan</code> via the <code>plan</code> parameter. The second
+argument is a dictionary that contains the parsed configuration that was
+provided to Everest. It can be modified and passed to optimization and
+evaluation steps in the workflow to modify their behavior.</p>
 <p>Developing and executing a custom workflow involves two key aspects:</p>
 <ol>
 <li>
@@ -763,7 +748,7 @@ creation to refine how they process these results.</p>
 steps, 2) adding handlers to process the results of those steps, and 3) finally,
 executing the steps by calling their <code>run</code> methods, potentially multiple times.</p>
 <p>For example, this <code>run_plan</code> function reproduces the default Everest optimization:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">):</span>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>  <span class="c1"># Add an optimizer step</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>         <span class="c1"># Add a table handler</span>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>                   <span class="c1"># Run the optimizer</span>
@@ -772,14 +757,16 @@ executing the steps by calling their <code>run</code> methods, potentially multi
 <ol>
 <li><strong>Plan Creation</strong>: Everest creates an
     <a class="autorefs autorefs-internal" title="ropt_everest.EverestPlan" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object and passes it to <code>run_plan</code>
-    via the <code>plan</code> parameter.</li>
+    via the <code>plan</code> parameter. In addition it passes the Everest configuration
+    dictionary, although it is not used in this example.</li>
 <li><strong>Optimizer Addition</strong>: An optimizer step is added to the plan using the
     <a class="autorefs autorefs-internal" title="add_optimizer()" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_optimizer"><code>add_optimizer</code></a> method.</li>
 <li><strong>Table Handler Addition</strong>: A table handler is added to the plan using the
     <a class="autorefs autorefs-internal" title="add_table(steps)" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_table"><code>add_table</code></a> method. This will save the
     optimization results in a set of tables.</li>
 <li><strong>Optimizer Execution</strong>: The optimization process is started by calling the
-    <a class="autorefs autorefs-internal" title="run(config=None, controls=None, metadata=None)" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method of the optimizer step.</li>
+    <a class="autorefs autorefs-internal" title="run(config=None, controls=None, metadata=None)" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method of the optimizer step. It
+    uses the configuration that was passed to Everest without modification.</li>
 </ol>
 <h2 id="everestplan-methods">EverestPlan Methods</h2>
 <p>The <code>EverestPlan</code> class provides a high-level interface for defining and
@@ -803,10 +790,6 @@ are then executed to achieve the desired optimization goal.</p>
 </ul>
 <p>The <a class="autorefs autorefs-internal" title="ropt_everest.EverestPlan" href="../../reference/everest_plan/#ropt_everest.EverestPlan"><code>EverestPlan</code></a> object provides several methods
 for building and managing optimization workflows:</p>
-<h3 id="config_copy"><a class="autorefs autorefs-internal" title="config_copy()" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>config_copy</code></a></h3>
-<p>Creates a modifiable copy of the Everest configuration dictionary. This copy
-allows you to override specific configuration settings to use with optimizer
-steps.</p>
 <h3 id="add_optimizer"><a class="autorefs autorefs-internal" title="add_optimizer()" href="../../reference/everest_plan/#ropt_everest.EverestPlan.add_optimizer"><code>add_optimizer</code></a></h3>
 <p>Adds an optimizer step to the workflow plan. The resulting
 <a class="autorefs autorefs-internal" title="ropt_everest.EverestOptimizerStep" href="../../reference/everest_plan/#ropt_everest.EverestOptimizerStep"><code>EverestOptimizerStep</code></a> object can be
@@ -815,9 +798,8 @@ executed using its <a class="autorefs autorefs-internal" title="run(config=None,
 <ul>
 <li><strong>config</strong> (<code>dict</code>, optional): A dictionary to override the default Everest
     configuration. If not specified, the original Everest configuration is used.
-    You can modify the result of
-    <a class="autorefs autorefs-internal" title="config_copy()" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>plan.config_copy()</code></a> to create a
-    suitable configuration.</li>
+    You can copy and modify the configuration passed to the <code>run_plan</code> function
+    to create a suitable configuration.</li>
 <li><strong>controls</strong> (<code>array-like</code>, optional): Initial control values for the
     optimizer. If not specified, the initial values from the Everest
     configuration are used.</li>
@@ -832,9 +814,8 @@ executed using its <a class="autorefs autorefs-internal" title="run(config=None,
 <ul>
 <li><strong>config</strong> (<code>dict</code>, optional): A dictionary to override the default Everest
     configuration. If not specified, the original Everest configuration is used.
-    You can modify the result of
-    <a class="autorefs autorefs-internal" title="config_copy()" href="../../reference/everest_plan/#ropt_everest.EverestPlan.config_copy"><code>plan.config_copy()</code></a> to create a
-    suitable configuration.</li>
+    You can copy and modify the configuration passed to the <code>run_plan</code> function
+    to create a suitable configuration.</li>
 <li><strong>controls</strong> (<code>array-like</code>, optional): The controls that will be evaluated.
     This can be a single vector, a sequence of multiple vectors, or a 2D matrix
     where the control vectors are the rows. If multiple vectors or a 2D matrix
