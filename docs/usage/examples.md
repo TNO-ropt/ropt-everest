@@ -26,7 +26,8 @@ def run_plan(plan, config):
 ```
 
 ## Running two optimizers
-Running two optimizers with different configurations:
+Running two optimizers with different configurations, sending optimizer output
+to different directories:
 
 ```py
 def run_plan(plan, config):
@@ -34,13 +35,13 @@ def run_plan(plan, config):
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
 
-    print("Running first optimizer...")
-    optimizer.run()
-
     config["optimization"]["max_function_evaluations"] = 2
 
+    print("Running first optimizer...")
+    optimizer.run(config=config, output_dir="output1")
+
     print("Running second optimizer...")
-    optimizer.run(config=config, controls=tracker.controls)
+    optimizer.run(config=config, controls=tracker.controls, output_dir="output2")
 ```
 
 ## Running optimizers in a loop
@@ -61,6 +62,7 @@ def run_plan(plan, config):
             config=config,
             controls=tracker.controls,
             metadata={"iteration": idx},
+            output_dir=f"output{idx}",
         )
     print(store.dataframe("gradients"))
 ```

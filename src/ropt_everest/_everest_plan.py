@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, Sequence
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestRunModel
 from everest.config import EverestConfig
-from everest.optimizer.everest2ropt import everest2ropt
+from everest.optimizer.everest2ropt import _everest2ropt
+from ropt.config.enopt import EnOptConfig
 from ropt.results import FunctionResults, Results, results_to_dataframe
 
 from ._utils import (
@@ -274,6 +276,7 @@ class EverestOptimizerStep(EverestStep):
         config: dict[str, Any] | None = None,
         controls: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
+        output_dir: str | None = None,
     ) -> None:
         """Runs the optimizer.
 
@@ -302,23 +305,42 @@ class EverestOptimizerStep(EverestStep):
         - The keys in the `metadata` dictionary are used as column names in
           the output tables.
 
+        **Optimizer output**:
+
+        Normally, the optimizer's output is directed to the `optimization_output`
+        subdirectory within the main output directory specified in the Everest
+        configuration. When multiple optimization steps are executed, there's a
+        risk of output files being overwritten. The `output_dir` argument
+        provides a way to override the default output location for the optimizer.
+        You can specify an absolute path, or a relative path, which will be
+        interpreted as relative to the `optimization_output` directory.
+
         Args:
-            config:   An optional dictionary containing the Everest configuration
-                      for the optimizer. If omitted, the default configuration is
-                      used.
-            controls: An array-like object containing the controls for the optimization.
-            metadata: An optional dictionary of metadata to associate with the
-                      results of the optimizer's results.
+            config:     An optional dictionary containing the Everest configuration
+                        for the optimizer. If omitted, the default configuration is
+                        used.
+            controls:   An array-like object containing the controls for the optimization.
+            metadata:   An optional dictionary of metadata to associate with the
+                        results of the optimizer's results.
+            output_dir: An optional output directory for the optimizer.
         """
+        config_dir = (
+            _everest2ropt(self._config, transforms=self._transforms)
+            if config is None
+            else _everest2ropt(
+                EverestConfig.model_validate(config), transforms=self._transforms
+            )
+        )
+        if output_dir is not None:
+            output_path = Path(output_dir)
+            if not output_path.is_absolute():
+                output_path = config_dir["optimizer"]["output_dir"] / output_path
+            config_dir["optimizer"]["output_dir"] = output_path
+            output_path.mkdir(parents=True, exist_ok=True)
+
         self._plan.run_step(
             self._optimizer,
-            config=(
-                everest2ropt(self._config, transforms=self._transforms)
-                if config is None
-                else everest2ropt(
-                    EverestConfig.model_validate(config), transforms=self._transforms
-                )
-            ),
+            config=EnOptConfig.model_validate(config_dir),
             transforms=self._transforms,
             metadata=metadata,
             variables=controls,
@@ -390,10 +412,10 @@ class EverestEvaluatorStep(EverestStep):
         """
         self._plan.run_step(
             self._evaluator,
-            config=(
-                everest2ropt(self._config, transforms=self._transforms)
+            config=EnOptConfig.model_validate(
+                _everest2ropt(self._config, transforms=self._transforms)
                 if config is None
-                else everest2ropt(
+                else _everest2ropt(
                     EverestConfig.model_validate(config), transforms=self._transforms
                 )
             ),
@@ -430,7 +452,11 @@ class EverestWorkflowJobStep(EverestStep):
         Returns:
             A dictionary containing the workflow report.
         """
-        return self._plan.run_step(self._workflow_job, config=self._config, jobs=jobs)  # type: ignore[no-any-return]
+        return self._plan.run_step(  # type: ignore[no-any-return]
+            self._workflow_job,
+            config=self._config,
+            jobs=jobs,
+        )
 
 
 class EverestHandler:
