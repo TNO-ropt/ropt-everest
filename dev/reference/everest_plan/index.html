@@ -1108,7 +1108,7 @@ are then executed to achieve the desired optimization goal.</p>
 Invoking this method returns an
 <a class="autorefs autorefs-internal" title="ropt_everest.EverestOptimizerStep" href="#ropt_everest.EverestOptimizerStep"><code>EverestOptimizerStep</code></a> object,
 which you can execute using its
-<a class="autorefs autorefs-internal" title="run(config=None, controls=None, metadata=None)" href="#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method.</p>
+<a class="autorefs autorefs-internal" title="run(config=None, controls=None, metadata=None, output_dir=None)" href="#ropt_everest.EverestOptimizerStep.run"><code>run</code></a> method.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1633,7 +1633,7 @@ provides a method to execute the optimizer .</p>
 
 
 <h3 id="ropt_everest.EverestOptimizerStep.run" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">controls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">controls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1663,6 +1663,14 @@ from the configuration.</p>
 <li>The keys in the <code>metadata</code> dictionary are used as column names in
   the output tables.</li>
 </ul>
+<p><strong>Optimizer output</strong>:</p>
+<p>Normally, the optimizer's output is directed to the <code>optimization_output</code>
+subdirectory within the main output directory specified in the Everest
+configuration. When multiple optimization steps are executed, there's a
+risk of output files being overwritten. The <code>output_dir</code> argument
+provides a way to override the default output location for the optimizer.
+You can specify an absolute path, or a relative path, which will be
+interpreted as relative to the <code>optimization_output</code> directory.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1686,8 +1694,8 @@ from the configuration.</p>
             <td>
               <div class="doc-md-description">
                 <p>An optional dictionary containing the Everest configuration
-      for the optimizer. If omitted, the default configuration is
-      used.</p>
+        for the optimizer. If omitted, the default configuration is
+        used.</p>
               </div>
             </td>
             <td>
@@ -1720,7 +1728,23 @@ from the configuration.</p>
             <td>
               <div class="doc-md-description">
                 <p>An optional dictionary of metadata to associate with the
-      results of the optimizer's results.</p>
+        results of the optimizer's results.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>output_dir</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>An optional output directory for the optimizer.</p>
               </div>
             </td>
             <td>
