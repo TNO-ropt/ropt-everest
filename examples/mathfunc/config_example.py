@@ -44,7 +44,7 @@ def run_plan_loop(plan, config):
     print(store.dataframe("gradients"))
 
 
-def run_plan_evaluation(plan):
+def run_plan_evaluator(plan):
     evaluator = plan.add_evaluator()
     store = plan.add_store(evaluator)
     evaluator.run(controls=[[0, 0, 0], [1, 1, 1]])
@@ -55,12 +55,12 @@ def run_plan(plan, config):
     match example:
         case "basic":
             return run_plan_basic(plan)
-        case "two_optimizers":
+        case "two":
             return run_plan_two_optimizers(plan, config)
         case "loop":
             return run_plan_loop(plan, config)
-        case "evaluation":
-            return run_plan_evaluation(plan)
+        case "evaluator":
+            return run_plan_evaluator(plan)
         case _:
             raise ValueError(f"Unknown example: {example}")
 

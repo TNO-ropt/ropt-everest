@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import uuid
 from copy import deepcopy
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, Sequence
@@ -24,7 +25,6 @@ if TYPE_CHECKING:
     import pandas as pd
     from numpy.typing import ArrayLike, NDArray
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import PlanStep, ResultHandler
     from ropt.transforms import OptModelTransforms
 
 
@@ -43,7 +43,7 @@ class EverestPlan:
         self._plan = plan
         self._config = config
         self._transforms = transforms
-        self._tag_id = 0
+        self._id: uuid.UUID = uuid.uuid4()
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
@@ -57,11 +57,9 @@ class EverestPlan:
         Returns:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
-        tag = f"tag{self._tag_id}"
-        self._tag_id += 1
-        step = self._plan.add_step("optimizer", tag=tag)
+        self._id = self._plan.add_step("optimizer")
         return EverestOptimizerStep(
-            step, self._plan, self._config, self._transforms, tag
+            self._plan, self._id, self._config, self._transforms
         )
 
     def add_evaluator(self) -> EverestEvaluatorStep:
@@ -76,11 +74,9 @@ class EverestPlan:
         Returns:
             An `EverestEvaluatorStep` object, representing the added evaluator.
         """
-        tag = f"tag{self._tag_id}"
-        self._tag_id += 1
-        step = self._plan.add_step("evaluator", tag=tag)
+        self._id = self._plan.add_step("evaluator")
         return EverestEvaluatorStep(
-            step, self._plan, self._config, self._transforms, tag
+            self._plan, self._id, self._config, self._transforms
         )
 
     def add_workflow_job(self) -> EverestWorkflowJobStep:
@@ -99,12 +95,12 @@ class EverestPlan:
         Returns:
             An `EverestWorkflowJobStep` object, representing the added workflow job step.
         """
-        step = self._plan.add_step("workflow_job")
-        return EverestWorkflowJobStep(step, self._plan, self._config)
+        self._id = self._plan.add_step("workflow_job")
+        return EverestWorkflowJobStep(self._plan, self._id, self._config)
 
     def add_store(
         self,
-        steps: EverestStep | Sequence[EverestStep],
+        steps: EverestBase | Sequence[EverestBase],
     ) -> EverestStore:
         """Adds a results store to the execution plan.
 
@@ -125,17 +121,14 @@ class EverestPlan:
         Returns:
             An `EverestStore` object, which can be used to access the stored results.
         """
-        if isinstance(steps, EverestStep):
+        if isinstance(steps, EverestBase):
             steps = [steps]
-        step = self._plan.add_handler(
-            "store",
-            tags={step.tag for step in steps},
-        )
-        return EverestStore(step, self._plan, get_names(self._config))
+        self._id = self._plan.add_handler("store", sources={step.id for step in steps})
+        return EverestStore(self._plan, self._id, get_names(self._config))
 
     def add_tracker(
         self,
-        steps: EverestStep | Sequence[EverestStep],
+        steps: EverestBase | Sequence[EverestBase],
         *,
         what: Literal["best", "last"] = "best",
         constraint_tolerance: float | None = None,
@@ -181,19 +174,19 @@ class EverestPlan:
         Returns:
             An `EverestTracker` object, which can be used to access the tracked results.
         """
-        if isinstance(steps, EverestStep):
+        if isinstance(steps, EverestBase):
             steps = [steps]
-        step = self._plan.add_handler(
+        self._id = self._plan.add_handler(
             "tracker",
             what=what,
             constraint_tolerance=constraint_tolerance,
-            tags={step.tag for step in steps},
+            sources={step.id for step in steps},
         )
-        return EverestTracker(step, self._plan, get_names(self._config))
+        return EverestTracker(self._plan, self._id, get_names(self._config))
 
     def add_table(
         self,
-        steps: EverestStep | Sequence[EverestStep],
+        steps: EverestBase | Sequence[EverestBase],
     ) -> EverestTableHandler:
         """Adds a handler that create a table to the execution plan.
 
@@ -207,14 +200,14 @@ class EverestPlan:
         Returns:
             An `EverestTableHandler` object.
         """
-        if isinstance(steps, EverestStep):
+        if isinstance(steps, EverestBase):
             steps = [steps]
-        step = self._plan.add_handler(
+        self._id = self._plan.add_handler(
             "table",
             everest_config=self._config,
-            tags={step.tag for step in steps},
+            sources={step.id for step in steps},
         )
-        return EverestTableHandler(step, self._plan)
+        return EverestTableHandler(self._plan, self._id)
 
     @classmethod
     def everest(cls, config_file: str) -> None:
@@ -241,17 +234,21 @@ class EverestPlan:
         )
 
 
-class EverestStep:
-    def __init__(self, plan: Plan, tag: str | None = None) -> None:
+class EverestBase:
+    def __init__(self, plan: Plan, id_: uuid.UUID) -> None:
         self._plan = plan
-        self._tag = "" if tag is None else tag
+        self._id = id_
 
     @property
-    def tag(self) -> str:
-        return self._tag
+    def id(self) -> uuid.UUID:
+        return self._id
+
+    @property
+    def plan(self) -> Plan:
+        return self._plan
 
 
-class EverestOptimizerStep(EverestStep):
+class EverestOptimizerStep(EverestBase):
     """Represents an optimizer step in an Everest execution plan.
 
     This class encapsulates an optimization step within an Everest workflow. It
@@ -260,14 +257,12 @@ class EverestOptimizerStep(EverestStep):
 
     def __init__(
         self,
-        optimizer: PlanStep,
         plan: Plan,
+        optimizer: uuid.UUID,
         config: EverestConfig,
         transforms: OptModelTransforms,
-        tag: str,
     ) -> None:
-        super().__init__(plan, tag)
-        self._optimizer = optimizer
+        super().__init__(plan, optimizer)
         self._config = config
         self._transforms = transforms
 
@@ -338,8 +333,8 @@ class EverestOptimizerStep(EverestStep):
             config_dir["optimizer"]["output_dir"] = output_path
             output_path.mkdir(parents=True, exist_ok=True)
 
-        self._plan.run_step(
-            self._optimizer,
+        self.plan.run_step(
+            self.id,
             config=EnOptConfig.model_validate(config_dir),
             transforms=self._transforms,
             metadata=metadata,
@@ -347,7 +342,7 @@ class EverestOptimizerStep(EverestStep):
         )
 
 
-class EverestEvaluatorStep(EverestStep):
+class EverestEvaluatorStep(EverestBase):
     """Represents an evaluator step in an Everest execution plan.
 
     This class encapsulates an evaluation step within an Everest workflow. It
@@ -356,14 +351,12 @@ class EverestEvaluatorStep(EverestStep):
 
     def __init__(
         self,
-        evaluator: PlanStep,
         plan: Plan,
+        evaluator: uuid.UUID,
         config: EverestConfig,
         transforms: OptModelTransforms,
-        tag: str,
     ) -> None:
-        super().__init__(plan, tag)
-        self._evaluator = evaluator
+        super().__init__(plan, evaluator)
         self._config = config
         self._transforms = transforms
 
@@ -410,8 +403,8 @@ class EverestEvaluatorStep(EverestStep):
             metadata: An optional dictionary of metadata to associate with the
                       results of the optimizer's results.
         """
-        self._plan.run_step(
-            self._evaluator,
+        self.plan.run_step(
+            self.id,
             config=EnOptConfig.model_validate(
                 _everest2ropt(self._config, transforms=self._transforms)
                 if config is None
@@ -425,7 +418,7 @@ class EverestEvaluatorStep(EverestStep):
         )
 
 
-class EverestWorkflowJobStep(EverestStep):
+class EverestWorkflowJobStep(EverestBase):
     """Represents a workflow job step in an Everest execution plan.
 
     This class encapsulates a workflow job step within an Everest workflow. It
@@ -433,10 +426,9 @@ class EverestWorkflowJobStep(EverestStep):
     """
 
     def __init__(
-        self, workflow_job: PlanStep, plan: Plan, config: EverestConfig
+        self, plan: Plan, workflow_job: uuid.UUID, config: EverestConfig
     ) -> None:
-        super().__init__(plan)
-        self._workflow_job = workflow_job
+        super().__init__(plan, workflow_job)
         self._config = config
 
     def run(self, jobs: list[str]) -> dict[str, Any]:
@@ -452,19 +444,14 @@ class EverestWorkflowJobStep(EverestStep):
         Returns:
             A dictionary containing the workflow report.
         """
-        return self._plan.run_step(  # type: ignore[no-any-return]
-            self._workflow_job,
+        return self.plan.run_step(  # type: ignore[no-any-return]
+            self.id,
             config=self._config,
             jobs=jobs,
         )
 
 
-class EverestHandler:
-    def __init__(self, plan: Plan) -> None:
-        self._plan = plan
-
-
-class EverestStore(EverestHandler):
+class EverestStore(EverestBase):
     """Provides access to the results stored by an Everest execution plan.
 
     This class provides methods to retrieve and analyze the results produces
@@ -475,12 +462,11 @@ class EverestStore(EverestHandler):
 
     def __init__(
         self,
-        store: ResultHandler,
         plan: Plan,
+        store: uuid.UUID,
         names: dict[str, Sequence[str | int] | None] | None,
     ) -> None:
-        super().__init__(plan)
-        self._store = store
+        super().__init__(plan, store)
         self._names = names
 
     @property
@@ -490,7 +476,7 @@ class EverestStore(EverestHandler):
         Returns:
             The stored results.
         """
-        results: tuple[Results] | None = self._store["results"]
+        results: tuple[Results] | None = self.plan.get(self.id, "results")
         return None if results is None else list(results)
 
     @property
@@ -500,7 +486,7 @@ class EverestStore(EverestHandler):
         Returns:
             The stored controls.
         """
-        results = self._store["results"]
+        results = self.plan.get(self.id, "results")
         if results is None:
             return None
         return [item.evaluations.variables for item in results]
@@ -510,7 +496,7 @@ class EverestStore(EverestHandler):
 
         Clears any results accumulated so far.
         """
-        self._store["results"] = None
+        self.plan.set(self.id, "results", None)
 
     def dataframe(self, kind: str) -> pd.DataFrame | None:
         """Converts the stored results to a Pandas DataFrame.
@@ -564,7 +550,7 @@ class EverestStore(EverestHandler):
         return None
 
 
-class EverestTracker(EverestHandler):
+class EverestTracker(EverestBase):
     """Provides access to the results generated by an Everest execution plan.
 
     This class provides methods to retrieve and analyze the results tracked by a
@@ -578,12 +564,11 @@ class EverestTracker(EverestHandler):
 
     def __init__(
         self,
-        tracker: ResultHandler,
         plan: Plan,
+        tracker: uuid.UUID,
         names: dict[str, Sequence[str | int] | None] | None,
     ) -> None:
-        super().__init__(plan)
-        self._tracker = tracker
+        super().__init__(plan, tracker)
         self._names = names
 
     @property
@@ -593,7 +578,7 @@ class EverestTracker(EverestHandler):
         Returns:
             The tracked results.
         """
-        results: FunctionResults | None = self._tracker["results"]
+        results: FunctionResults | None = self.plan.get(self.id, "results")
         return results
 
     @property
@@ -606,7 +591,7 @@ class EverestTracker(EverestHandler):
         Returns:
             The tracked controls.
         """
-        results = self._tracker["results"]
+        results = self.plan.get(self.id, "results")
         return None if results is None else results.evaluations.variables
 
     def reset(self) -> None:
@@ -614,7 +599,7 @@ class EverestTracker(EverestHandler):
 
         Clears any results accumulated so far.
         """
-        self._tracker["results"] = None
+        self.plan.set(self.id, "results", None)
 
     def dataframe(self, kind: str) -> pd.DataFrame | None:
         """Converts the tracked results to a Pandas DataFrame.
@@ -668,9 +653,8 @@ class EverestTracker(EverestHandler):
         return None
 
 
-class EverestTableHandler(EverestHandler):
+class EverestTableHandler(EverestBase):
     """Represents a table handler in an Everest execution plan."""
 
-    def __init__(self, table_handler: ResultHandler, plan: Plan) -> None:
-        super().__init__(plan)
-        self._table_handler = table_handler
+    def __init__(self, plan: Plan, table_handler: uuid.UUID) -> None:
+        super().__init__(plan, table_handler)

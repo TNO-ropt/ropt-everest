@@ -21,6 +21,8 @@ from ._utils import (
 )
 
 if TYPE_CHECKING:
+    import uuid
+
     from everest.config import EverestConfig
     from ropt.plan import Event, Plan
 
@@ -31,10 +33,10 @@ class EverestDefaultTableHandler(ResultHandler):
         plan: Plan,
         *,
         everest_config: EverestConfig,
-        tags: set[str] | None = None,
+        sources: set[uuid.UUID] | None = None,
     ) -> None:
         super().__init__(plan)
-        self._tags = set() if tags is None else tags
+        self._sources = set() if sources is None else sources
         self._tables = []
         names = get_names(everest_config)
         for type_, table_type in TABLE_TYPE_MAP.items():
@@ -53,7 +55,7 @@ class EverestDefaultTableHandler(ResultHandler):
         if (
             event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
-            and (event.tag in self._tags)
+            and (event.source in self._sources)
         ):
             for table in self._tables:
                 table.add_results(event.data["results"])

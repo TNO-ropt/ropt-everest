@@ -36,7 +36,6 @@ class EverestConfigStep(PlanStep):
             spec.loader.exec_module(module)
 
             if hasattr(module, "run_plan"):
-                self.plan.clear_handlers()
                 self.plan.add_function(
                     partial(_run_plan, func=module.run_plan, config=everest_config)
                 )
