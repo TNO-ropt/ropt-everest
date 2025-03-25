@@ -8,6 +8,7 @@ from functools import partial
 from typing import TYPE_CHECKING, Any, Callable
 
 from ropt.enums import OptimizerExitCode
+from ropt.exceptions import PlanAborted
 from ropt.plugins.plan.base import PlanStep
 
 from ._everest_plan import EverestPlan
@@ -53,5 +54,8 @@ def _run_plan(
     config: EverestConfig,
 ) -> tuple[ResultHandler | None, OptimizerExitCode]:
     ever_plan = EverestPlan(plan, config, transforms)
-    func(ever_plan, config.model_dump(exclude_none=True))
+    try:
+        func(ever_plan, config.model_dump(exclude_none=True))
+    except PlanAborted:
+        return None, OptimizerExitCode.USER_ABORT
     return None, OptimizerExitCode.UNKNOWN

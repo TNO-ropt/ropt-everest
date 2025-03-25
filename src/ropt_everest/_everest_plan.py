@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal, Sequence
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
-from ert.run_models.everest_run_model import EverestRunModel
+from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import _everest2ropt
 from ropt.config.enopt import EnOptConfig
@@ -210,7 +210,9 @@ class EverestPlan:
         return EverestTableHandler(self._plan, self._id)
 
     @classmethod
-    def everest(cls, config_file: str) -> None:
+    def everest(
+        cls, config_file: str, *, report_exit_code: bool = True
+    ) -> EverestExitCode:
         """Runs an Everest optimization directly from a configuration file.
 
         This class method provides a convenient way to execute an Everest
@@ -225,13 +227,28 @@ class EverestPlan:
           command, this does not redirect standard output.
         - Error traces: If errors occur during the optimization, you'll get a
           full Python stack trace, making debugging easier.
+        - Exceptional exit conditions, such as maximum number batch reached, or
+          a user abort are reported, if `report_exit_code` is set.
 
         Args:
-            config_file: The path to the Everest configuration file (YAML).
+            config_file:      The path to the Everest configuration file (YAML).
+            report_exit_code: If `True`, report the exit code.
+
+        Returns:
+            The Everest exit code.
         """
-        EverestRunModel.create(EverestConfig.load_file(config_file)).run_experiment(
-            EvaluatorServerConfig()
-        )
+        run_model = EverestRunModel.create(EverestConfig.load_file(config_file))
+        run_model.run_experiment(EvaluatorServerConfig())
+        if report_exit_code:
+            match run_model.exit_code:
+                case EverestExitCode.MAX_BATCH_NUM_REACHED:
+                    msg = "Optimization aborted: maximum number of batches reached."
+                case EverestExitCode.USER_ABORT:
+                    msg = "Optimization aborted: user abort."
+                case _:
+                    msg = "Optimization completed."
+            print(msg)  # noqa: T201
+        return run_model.exit_code
 
 
 class EverestBase:
