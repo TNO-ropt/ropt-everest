@@ -1521,7 +1521,7 @@ be generated and saved in the output directory.</p>
 
 
 <h3 id="ropt_everest.EverestPlan.everest" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">everest</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">everest</span><span class="p">(</span><span class="n">config_file</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">report_exit_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
@@ -1544,6 +1544,8 @@ several advantages, including:</p>
   command, this does not redirect standard output.</li>
 <li>Error traces: If errors occur during the optimization, you'll get a
   full Python stack trace, making debugging easier.</li>
+<li>Exceptional exit conditions, such as maximum number batch reached, or
+  a user abort are reported, if <code>report_exit_code</code> is set.</li>
 </ul>
 
 
@@ -1572,6 +1574,45 @@ several advantages, including:</p>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>report_exit_code</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>True</code>, report the exit code.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ert.run_models.everest_run_model.EverestExitCode">EverestExitCode</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Everest exit code.</p>
+              </div>
             </td>
           </tr>
       </tbody>
