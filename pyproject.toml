@@ -16,7 +16,7 @@ classifiers = [
 ]
 requires-python = ">=3.11"
 dynamic = ["version"]
-dependencies = ["tabulate", "numpy<2"]
+dependencies = ["tabulate", "numpy"]
 
 [project.urls]
 "Homepage" = "https://github.com/TNO-ropt/ropt-everest"
