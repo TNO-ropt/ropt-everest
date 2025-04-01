@@ -28,7 +28,8 @@ _RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {
 class EverestPlanHandlerPlugin(PlanHandlerPlugin):
     """The everest plan handler class."""
 
-    def create(self, name: str, plan: Plan, **kwargs: dict[str, Any]) -> ResultHandler:
+    @classmethod
+    def create(cls, name: str, plan: Plan, **kwargs: dict[str, Any]) -> ResultHandler:
         """Create a result  handler.
 
         See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.
@@ -43,7 +44,8 @@ class EverestPlanHandlerPlugin(PlanHandlerPlugin):
         msg = f"Unknown results handler object type: {name}"
         raise TypeError(msg)
 
-    def is_supported(self, method: str) -> bool:
+    @classmethod
+    def is_supported(cls, method: str) -> bool:
         """Check if a method is supported.
 
         See the [ropt.plugins.base.Plugin][] abstract base class.
@@ -56,7 +58,8 @@ class EverestPlanHandlerPlugin(PlanHandlerPlugin):
 class EverestPlanStepPlugin(PlanStepPlugin):
     """The everest plan step class."""
 
-    def create(self, name: str, plan: Plan, **kwargs: Any) -> PlanStep:  # noqa: ANN401
+    @classmethod
+    def create(cls, name: str, plan: Plan, **kwargs: Any) -> PlanStep:  # noqa: ANN401
         """Create a step.
 
         See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.
@@ -71,7 +74,8 @@ class EverestPlanStepPlugin(PlanStepPlugin):
         msg = f"Unknown step type: {name}"
         raise TypeError(msg)
 
-    def is_supported(self, method: str) -> bool:
+    @classmethod
+    def is_supported(cls, method: str) -> bool:
         """Check if a method is supported.
 
         See the [ropt.plugins.base.Plugin][] abstract base class.
