@@ -41,13 +41,13 @@ def run_plan_loop(plan, config):
             metadata={"iteration": idx},
             output_dir=f"output{idx}",
         )
-    print(store.dataframe("gradients"))
+    print(store.dataframe("results"))
 
 
 def run_plan_evaluator(plan):
     evaluator = plan.add_evaluator()
     store = plan.add_store(evaluator)
-    evaluator.run(controls=[[0, 0, 0], [1, 1, 1]])
+    evaluator.run(controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
     print(store.dataframe("results"))
 
 

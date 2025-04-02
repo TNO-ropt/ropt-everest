@@ -20,7 +20,6 @@ _STEP_OBJECTS: Final[dict[str, Type[PlanStep]]] = {
 }
 
 _RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {
-    "everest_config": EverestDefaultTableHandler,
     "table": EverestDefaultTableHandler,
 }
 

@@ -23,7 +23,9 @@ if TYPE_CHECKING:
 
 
 class EverestConfigStep(PlanStep):
-    def run(self, *, everest_config: EverestConfig) -> None:
+    def run(
+        self, *, everest_config: EverestConfig, transforms: OptModelTransforms
+    ) -> None:
         path = everest_config.config_path
         if path.suffix == ".yml" and (path := path.with_suffix(".py")).exists():
             module_name = path.stem
@@ -43,6 +45,13 @@ class EverestConfigStep(PlanStep):
             else:
                 msg = f"Function `run_plan` not found in module {module_name}"
                 raise ImportError(msg)
+        else:
+            self.plan.add_handler(
+                "everest/table",
+                everest_config=everest_config,
+                transforms=transforms,
+                all_sources=True,
+            )
 
 
 def _run_plan(

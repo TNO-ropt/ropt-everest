@@ -123,7 +123,9 @@ class EverestPlan:
         """
         if isinstance(steps, EverestBase):
             steps = [steps]
-        self._id = self._plan.add_handler("store", sources={step.id for step in steps})
+        self._id = self._plan.add_handler(
+            "store", sources={step.id for step in steps}, transforms=self._transforms
+        )
         return EverestStore(self._plan, self._id, get_names(self._config))
 
     def add_tracker(
@@ -181,6 +183,7 @@ class EverestPlan:
             what=what,
             constraint_tolerance=constraint_tolerance,
             sources={step.id for step in steps},
+            transforms=self._transforms,
         )
         return EverestTracker(self._plan, self._id, get_names(self._config))
 
@@ -203,7 +206,8 @@ class EverestPlan:
         if isinstance(steps, EverestBase):
             steps = [steps]
         self._id = self._plan.add_handler(
-            "table",
+            "everest/table",
+            transforms=self._transforms,
             everest_config=self._config,
             sources={step.id for step in steps},
         )
@@ -336,23 +340,21 @@ class EverestOptimizerStep(EverestBase):
                         results of the optimizer's results.
             output_dir: An optional output directory for the optimizer.
         """
-        config_dir = (
-            _everest2ropt(self._config, transforms=self._transforms)
+        config_dict = (
+            _everest2ropt(self._config)
             if config is None
-            else _everest2ropt(
-                EverestConfig.model_validate(config), transforms=self._transforms
-            )
+            else _everest2ropt(EverestConfig.model_validate(config))
         )
         if output_dir is not None:
             output_path = Path(output_dir)
             if not output_path.is_absolute():
-                output_path = config_dir["optimizer"]["output_dir"] / output_path
-            config_dir["optimizer"]["output_dir"] = output_path
+                output_path = config_dict["optimizer"]["output_dir"] / output_path
+            config_dict["optimizer"]["output_dir"] = output_path
             output_path.mkdir(parents=True, exist_ok=True)
 
         self.plan.run_step(
             self.id,
-            config=EnOptConfig.model_validate(config_dir),
+            config=EnOptConfig.model_validate(config_dict, context=self._transforms),
             transforms=self._transforms,
             metadata=metadata,
             variables=controls,
@@ -420,15 +422,14 @@ class EverestEvaluatorStep(EverestBase):
             metadata: An optional dictionary of metadata to associate with the
                       results of the optimizer's results.
         """
+        config_dict = (
+            _everest2ropt(self._config)
+            if config is None
+            else _everest2ropt(EverestConfig.model_validate(config))
+        )
         self.plan.run_step(
             self.id,
-            config=EnOptConfig.model_validate(
-                _everest2ropt(self._config, transforms=self._transforms)
-                if config is None
-                else _everest2ropt(
-                    EverestConfig.model_validate(config), transforms=self._transforms
-                )
-            ),
+            config=EnOptConfig.model_validate(config_dict, context=self._transforms),
             transforms=self._transforms,
             metadata=metadata,
             variables=controls,
@@ -503,7 +504,7 @@ class EverestStore(EverestBase):
         Returns:
             The stored controls.
         """
-        results = self.plan.get(self.id, "results")
+        results = self.results
         if results is None:
             return None
         return [item.evaluations.variables for item in results]
@@ -602,13 +603,10 @@ class EverestTracker(EverestBase):
     def controls(self) -> NDArray[np.float64] | None:
         """Retrieves the tracked controls.
 
-        The tracked controls can be a single NumPy array, a list of NumPy
-        arrays, or None if no controls have been tracked.
-
         Returns:
             The tracked controls.
         """
-        results = self.plan.get(self.id, "results")
+        results = self.results
         return None if results is None else results.evaluations.variables
 
     def reset(self) -> None:

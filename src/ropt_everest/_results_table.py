@@ -25,18 +25,23 @@ if TYPE_CHECKING:
 
     from everest.config import EverestConfig
     from ropt.plan import Event, Plan
+    from ropt.transforms import OptModelTransforms
 
 
 class EverestDefaultTableHandler(ResultHandler):
     def __init__(
         self,
         plan: Plan,
+        transforms: OptModelTransforms | None,
         *,
         everest_config: EverestConfig,
         sources: set[uuid.UUID] | None = None,
+        all_sources: bool = True,
     ) -> None:
         super().__init__(plan)
+        self._transforms = transforms
         self._sources = set() if sources is None else sources
+        self._all_sources = all_sources
         self._tables = []
         names = get_names(everest_config)
         for type_, table_type in TABLE_TYPE_MAP.items():
@@ -51,14 +56,17 @@ class EverestDefaultTableHandler(ResultHandler):
             )
 
     def handle_event(self, event: Event) -> None:
-        """Handle an event."""
         if (
             event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
-            and (event.source in self._sources)
+            and (self._all_sources or event.source in self._sources)
         ):
+            results = tuple(
+                item.transform_from_optimizer(self._transforms)
+                for item in event.data["results"]
+            )
             for table in self._tables:
-                table.add_results(event.data["results"])
+                table.add_results(results)
 
 
 class ResultsTable:
