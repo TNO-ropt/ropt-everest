@@ -10,7 +10,7 @@ from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import _everest2ropt
 from ropt.config.enopt import EnOptConfig
-from ropt.results import FunctionResults, Results, results_to_dataframe
+from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 
 from ._utils import (
     TABLE_COLUMNS,
@@ -507,7 +507,11 @@ class EverestStore(EverestBase):
         results = self.results
         if results is None:
             return None
-        return [item.evaluations.variables for item in results]
+        return [
+            item.evaluations.variables
+            for item in results
+            if isinstance(item, (FunctionResults, GradientResults))
+        ]
 
     def reset(self) -> None:
         """Reset the store.
