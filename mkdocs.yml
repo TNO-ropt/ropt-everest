@@ -43,6 +43,9 @@ plugins:
             show_symbol_type_heading: true
             separate_signature: true
             show_signature_annotations: True
+          inventories:
+            - https://docs.python.org/3/objects.inv
+            - https://tno-ropt.github.io/ropt/latest/objects.inv
 
 markdown_extensions:
   - admonition

@@ -1,7 +1,7 @@
 # `ropt-everest`
 
-The `ropt-everest` plugin extends `ropt` with functionality specific to Everest.
-It primarily offers two key features:
+The `ropt-everest` plugin extends [`ropt`](https://tno-ropt.github.io/ropt/latest/)
+with functionality specific to Everest. It primarily offers two key features:
 
 1. **Enhanced Reporting:** It generates tables containing optimization results,
    which are saved to disk after each batch evaluation.
