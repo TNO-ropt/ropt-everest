@@ -21,13 +21,13 @@ optimization:
 
 install_jobs:
   - name: distance3
-    source: jobs/DISTANCE3
+    executable: jobs/distance3.py
 
 install_workflow_jobs:
   - name: report
-    source: jobs/REPORT
+    executable: jobs/report
   - name: fail
-    source: jobs/FAIL
+    executable: jobs/fail
 
 model:
   realizations: [0]

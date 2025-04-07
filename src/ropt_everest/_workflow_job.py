@@ -7,9 +7,9 @@ from tempfile import NamedTemporaryFile
 from typing import TYPE_CHECKING, Any
 
 from ert.config import Workflow
-from ert.config.workflow_job import workflow_job_from_file
 from ert.substitutions import Substitutions
 from ert.workflow_runner import WorkflowRunner
+from everest.simulator.everest_to_ert import get_workflow_jobs
 from ropt.plugins.plan.base import PlanStep
 
 if TYPE_CHECKING:
@@ -18,10 +18,7 @@ if TYPE_CHECKING:
 
 class EverestWorkflowJob(PlanStep):
     def run(self, config: EverestConfig, jobs: list[str]) -> Any:  # noqa: ANN401
-        installed_jobs = {
-            item.name: workflow_job_from_file(item.source, item.name)
-            for item in config.install_workflow_jobs
-        }
+        installed_jobs = get_workflow_jobs(config)
 
         with NamedTemporaryFile(
             "w", encoding="utf-8", suffix=".workflow", delete=False
