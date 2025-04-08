@@ -343,7 +343,7 @@ class EverestOptimizerStep(EverestBase):
         config_dict = (
             _everest2ropt(self._config)
             if config is None
-            else _everest2ropt(EverestConfig.model_validate(config))
+            else _everest2ropt(EverestConfig.with_plugins(config))
         )
         if output_dir is not None:
             output_path = Path(output_dir)
@@ -425,7 +425,7 @@ class EverestEvaluatorStep(EverestBase):
         config_dict = (
             _everest2ropt(self._config)
             if config is None
-            else _everest2ropt(EverestConfig.model_validate(config))
+            else _everest2ropt(EverestConfig.with_plugins(config))
         )
         self.plan.run_step(
             self.id,
