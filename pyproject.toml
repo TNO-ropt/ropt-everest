@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ropt-everest"
-description = "A Dakota optimizer plugin for ropt"
+description = "A ropt plugin to extend Everest functionality"
 readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
