@@ -17,7 +17,7 @@ controls:
 
 objective_functions:
   - name: distance
-    auto_scale: True
+    auto_scale: False
 
 input_constraints:
   - weights:
@@ -62,7 +62,7 @@ optimization:
   convergence_tolerance: 0.0001
   constraint_tolerance: 0.0001
   speculative: True
-  max_batch_num: 8
+  max_batch_num: 2
 
 environment:
   random_seed: 123

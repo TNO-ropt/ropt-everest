@@ -10,7 +10,6 @@ def run_plan(plan, config):
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
 
-    config["optimization"]["max_function_evaluations"] = 2
     for idx in range(3):
         optimizer.run(
             config=config,

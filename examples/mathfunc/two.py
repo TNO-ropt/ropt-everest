@@ -10,8 +10,6 @@ def run_plan(plan, config):
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
 
-    config["optimization"]["max_function_evaluations"] = 2
-
     print("Running first optimizer...")
     optimizer.run(config=config, output_dir="output1")
 
