@@ -6,9 +6,10 @@ from pathlib import Path
 
 
 def run_plan(plan, _):
-    optimizer = plan.add_optimizer()
-    plan.add_table(optimizer)
-    optimizer.run()
+    evaluator = plan.add_evaluator()
+    store = plan.add_store(evaluator)
+    evaluator.run(controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
+    print(store.dataframe("results"))
 
 
 if __name__ == "__main__":
