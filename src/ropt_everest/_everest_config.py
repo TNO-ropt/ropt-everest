@@ -16,7 +16,7 @@ from ._everest_plan import EverestPlan
 if TYPE_CHECKING:
     from everest.config import EverestConfig
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import ResultHandler
+    from ropt.plugins.plan.base import PlanHandler
     from ropt.transforms import OptModelTransforms
 
     from ._everest_plan import EverestTracker
@@ -61,7 +61,7 @@ def _run_plan(
         [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, OptimizerExitCode]
     ],
     config: EverestConfig,
-) -> tuple[ResultHandler | None, OptimizerExitCode]:
+) -> tuple[PlanHandler | None, OptimizerExitCode]:
     ever_plan = EverestPlan(plan, config, transforms)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))

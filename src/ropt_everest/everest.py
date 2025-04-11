@@ -12,14 +12,14 @@ from ._workflow_job import EverestWorkflowJob
 
 if TYPE_CHECKING:
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import PlanStep, ResultHandler
+    from ropt.plugins.plan.base import PlanHandler, PlanStep
 
 _STEP_OBJECTS: Final[dict[str, Type[PlanStep]]] = {
     "everest_config": EverestConfigStep,
     "workflow_job": EverestWorkflowJob,
 }
 
-_RESULT_HANDLER_OBJECTS: Final[dict[str, Type[ResultHandler]]] = {
+_RESULT_HANDLER_OBJECTS: Final[dict[str, Type[PlanHandler]]] = {
     "table": EverestDefaultTableHandler,
 }
 
@@ -28,7 +28,7 @@ class EverestPlanHandlerPlugin(PlanHandlerPlugin):
     """The everest plan handler class."""
 
     @classmethod
-    def create(cls, name: str, plan: Plan, **kwargs: dict[str, Any]) -> ResultHandler:
+    def create(cls, name: str, plan: Plan, **kwargs: dict[str, Any]) -> PlanHandler:
         """Create a result  handler.
 
         See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.

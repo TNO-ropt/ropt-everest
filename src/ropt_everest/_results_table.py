@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Literal, Sequence
 
 import pandas as pd
 from ropt.enums import EventType
-from ropt.plugins.plan.base import ResultHandler
+from ropt.plugins.plan.base import PlanHandler
 from ropt.results import Results, results_to_dataframe
 from tabulate import tabulate
 
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from ropt.transforms import OptModelTransforms
 
 
-class EverestDefaultTableHandler(ResultHandler):
+class EverestDefaultTableHandler(PlanHandler):
     def __init__(
         self,
         plan: Plan,
