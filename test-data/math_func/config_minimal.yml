@@ -37,5 +37,4 @@ forward_model:
 
 environment:
   simulation_folder: sim_output
-  log_level: debug
   random_seed: 123

@@ -65,6 +65,5 @@ optimization:
   max_batch_num: 8
 
 environment:
-  log_level: debug
   random_seed: 123
   output_folder: everest_output/
