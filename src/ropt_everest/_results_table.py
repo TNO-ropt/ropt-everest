@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Literal, Sequence
+from typing import TYPE_CHECKING, Literal
 
 import pandas as pd
 from ropt.enums import EventType
@@ -22,6 +22,7 @@ from ._utils import (
 
 if TYPE_CHECKING:
     import uuid
+    from collections.abc import Sequence
 
     from everest.config import EverestConfig
     from ropt.plan import Event, Plan

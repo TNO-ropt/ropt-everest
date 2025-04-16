@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final, Literal, Sequence
+from typing import TYPE_CHECKING, Final, Literal
 
 from ropt.enums import ResultAxis
 
 if TYPE_CHECKING:
+    from collections.abc import Sequence
+
     import pandas as pd
     from everest.config import EverestConfig
 

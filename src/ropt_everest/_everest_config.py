@@ -5,7 +5,7 @@ from __future__ import annotations
 import importlib
 import sys
 from functools import partial
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 from ropt.enums import OptimizerExitCode
 from ropt.exceptions import PlanAborted
@@ -14,6 +14,8 @@ from ropt.plugins.plan.base import PlanStep
 from ._everest_plan import EverestPlan
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from everest.config import EverestConfig
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanHandler

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Final, Type
+from typing import TYPE_CHECKING, Any, Final
 
 from ropt.plugins.plan.base import PlanHandlerPlugin, PlanStepPlugin
 
@@ -14,12 +14,12 @@ if TYPE_CHECKING:
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanHandler, PlanStep
 
-_STEP_OBJECTS: Final[dict[str, Type[PlanStep]]] = {
+_STEP_OBJECTS: Final[dict[str, type[PlanStep]]] = {
     "everest_config": EverestConfigStep,
     "workflow_job": EverestWorkflowJob,
 }
 
-_RESULT_HANDLER_OBJECTS: Final[dict[str, Type[PlanHandler]]] = {
+_RESULT_HANDLER_OBJECTS: Final[dict[str, type[PlanHandler]]] = {
     "table": EverestDefaultTableHandler,
 }
 
