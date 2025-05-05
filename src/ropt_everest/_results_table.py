@@ -26,21 +26,18 @@ if TYPE_CHECKING:
 
     from everest.config import EverestConfig
     from ropt.plan import Event, Plan
-    from ropt.transforms import OptModelTransforms
 
 
 class EverestDefaultTableHandler(PlanHandler):
     def __init__(
         self,
         plan: Plan,
-        transforms: OptModelTransforms | None,
         *,
         everest_config: EverestConfig,
         sources: set[uuid.UUID] | None = None,
         all_sources: bool = True,
     ) -> None:
         super().__init__(plan)
-        self._transforms = transforms
         self._sources = set() if sources is None else sources
         self._all_sources = all_sources
         self._tables = []
@@ -63,7 +60,7 @@ class EverestDefaultTableHandler(PlanHandler):
             and (self._all_sources or event.source in self._sources)
         ):
             results = tuple(
-                item.transform_from_optimizer(self._transforms)
+                item.transform_from_optimizer(event.config.transforms)
                 for item in event.data["results"]
             )
             for table in self._tables:

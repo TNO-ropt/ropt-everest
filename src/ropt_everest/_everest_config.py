@@ -19,15 +19,12 @@ if TYPE_CHECKING:
     from everest.config import EverestConfig
     from ropt.plan import Plan
     from ropt.plugins.plan.base import PlanHandler
-    from ropt.transforms import OptModelTransforms
 
     from ._everest_plan import EverestTracker
 
 
 class EverestConfigStep(PlanStep):
-    def run(
-        self, *, everest_config: EverestConfig, transforms: OptModelTransforms
-    ) -> None:
+    def run(self, *, everest_config: EverestConfig) -> None:
         path = everest_config.config_path
         if path.suffix == ".yml" and (path := path.with_suffix(".py")).exists():
             module_name = path.stem
@@ -49,22 +46,18 @@ class EverestConfigStep(PlanStep):
                 raise ImportError(msg)
         else:
             self.plan.add_handler(
-                "everest/table",
-                everest_config=everest_config,
-                transforms=transforms,
-                all_sources=True,
+                "everest/table", everest_config=everest_config, all_sources=True
             )
 
 
 def _run_plan(
     plan: Plan,
-    transforms: OptModelTransforms,
     func: Callable[
         [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, OptimizerExitCode]
     ],
     config: EverestConfig,
 ) -> tuple[PlanHandler | None, OptimizerExitCode]:
-    ever_plan = EverestPlan(plan, config, transforms)
+    ever_plan = EverestPlan(plan, config)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))
     except PlanAborted:

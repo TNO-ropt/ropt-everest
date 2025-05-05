@@ -9,6 +9,7 @@ from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import _everest2ropt
+from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
 from ropt.config.enopt import EnOptConfig
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 
@@ -27,7 +28,6 @@ if TYPE_CHECKING:
     import pandas as pd
     from numpy.typing import ArrayLike, NDArray
     from ropt.plan import Plan
-    from ropt.transforms import OptModelTransforms
 
 
 class EverestPlan:
@@ -40,11 +40,12 @@ class EverestPlan:
     """
 
     def __init__(
-        self, plan: Plan, config: EverestConfig, transforms: OptModelTransforms
+        self,
+        plan: Plan,
+        config: EverestConfig,
     ) -> None:
         self._plan = plan
         self._config = config
-        self._transforms = transforms
         self._id: uuid.UUID = uuid.uuid4()
 
     def add_optimizer(self) -> EverestOptimizerStep:
@@ -60,9 +61,7 @@ class EverestPlan:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
         self._id = self._plan.add_step("optimizer")
-        return EverestOptimizerStep(
-            self._plan, self._id, self._config, self._transforms
-        )
+        return EverestOptimizerStep(self._plan, self._id, self._config)
 
     def add_evaluator(self) -> EverestEvaluatorStep:
         """Adds an evaluator to the execution plan.
@@ -77,9 +76,7 @@ class EverestPlan:
             An `EverestEvaluatorStep` object, representing the added evaluator.
         """
         self._id = self._plan.add_step("evaluator")
-        return EverestEvaluatorStep(
-            self._plan, self._id, self._config, self._transforms
-        )
+        return EverestEvaluatorStep(self._plan, self._id, self._config)
 
     def add_workflow_job(self) -> EverestWorkflowJobStep:
         """Adds a workflow job step to the execution plan.
@@ -125,9 +122,7 @@ class EverestPlan:
         """
         if isinstance(steps, EverestBase):
             steps = [steps]
-        self._id = self._plan.add_handler(
-            "store", sources={step.id for step in steps}, transforms=self._transforms
-        )
+        self._id = self._plan.add_handler("store", sources={step.id for step in steps})
         return EverestStore(self._plan, self._id, get_names(self._config))
 
     def add_tracker(
@@ -185,7 +180,6 @@ class EverestPlan:
             what=what,
             constraint_tolerance=constraint_tolerance,
             sources={step.id for step in steps},
-            transforms=self._transforms,
         )
         return EverestTracker(self._plan, self._id, get_names(self._config))
 
@@ -209,7 +203,6 @@ class EverestPlan:
             steps = [steps]
         self._id = self._plan.add_handler(
             "everest/table",
-            transforms=self._transforms,
             everest_config=self._config,
             sources={step.id for step in steps},
         )
@@ -283,11 +276,9 @@ class EverestOptimizerStep(EverestBase):
         plan: Plan,
         optimizer: uuid.UUID,
         config: EverestConfig,
-        transforms: OptModelTransforms,
     ) -> None:
         super().__init__(plan, optimizer)
         self._config = config
-        self._transforms = transforms
 
     def run(
         self,
@@ -342,11 +333,17 @@ class EverestOptimizerStep(EverestBase):
                         results of the optimizer's results.
             output_dir: An optional output directory for the optimizer.
         """
-        config_dict = (
-            _everest2ropt(self._config)
-            if config is None
-            else _everest2ropt(EverestConfig.with_plugins(config))
+        everest_config = (
+            self._config if config is None else EverestConfig.with_plugins(config)
         )
+        config_dict = _everest2ropt(everest_config)
+        transforms = get_optimization_domain_transforms(
+            everest_config.controls,
+            everest_config.objective_functions,
+            everest_config.output_constraints,
+            everest_config.model,
+        )
+
         if output_dir is not None:
             output_path = Path(output_dir)
             if not output_path.is_absolute():
@@ -356,8 +353,7 @@ class EverestOptimizerStep(EverestBase):
 
         self.plan.run_step(
             self.id,
-            config=EnOptConfig.model_validate(config_dict, context=self._transforms),
-            transforms=self._transforms,
+            config=EnOptConfig.model_validate(config_dict, context=transforms),
             metadata=metadata,
             variables=controls,
         )
@@ -375,11 +371,9 @@ class EverestEvaluatorStep(EverestBase):
         plan: Plan,
         evaluator: uuid.UUID,
         config: EverestConfig,
-        transforms: OptModelTransforms,
     ) -> None:
         super().__init__(plan, evaluator)
         self._config = config
-        self._transforms = transforms
 
     def run(
         self,
@@ -424,15 +418,19 @@ class EverestEvaluatorStep(EverestBase):
             metadata: An optional dictionary of metadata to associate with the
                       results of the optimizer's results.
         """
-        config_dict = (
-            _everest2ropt(self._config)
-            if config is None
-            else _everest2ropt(EverestConfig.with_plugins(config))
+        everest_config = (
+            self._config if config is None else EverestConfig.with_plugins(config)
+        )
+        config_dict = _everest2ropt(everest_config)
+        transforms = get_optimization_domain_transforms(
+            everest_config.controls,
+            everest_config.objective_functions,
+            everest_config.output_constraints,
+            everest_config.model,
         )
         self.plan.run_step(
             self.id,
-            config=EnOptConfig.model_validate(config_dict, context=self._transforms),
-            transforms=self._transforms,
+            config=EnOptConfig.model_validate(config_dict, context=transforms),
             metadata=metadata,
             variables=controls,
         )
