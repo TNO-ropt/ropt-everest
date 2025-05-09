@@ -36,8 +36,8 @@ class EverestPlan:
 
     The `EverestPlan` class provides a high-level interface for defining and
     managing optimization workflows in Everest. It allows you to add various
-    steps to the plan, such as optimizers, evaluators, and workflow jobs, that
-    are then executed to achieve the desired optimization goal.
+    steps to the plan, such as optimizers and evaluators, that are then executed
+    to achieve the desired optimization goal.
     """
 
     def __init__(
@@ -78,25 +78,6 @@ class EverestPlan:
         """
         self._id = self._plan.add_step("evaluator")
         return EverestEvaluatorStep(self._plan, self._id, self._config)
-
-    def add_workflow_job(self) -> EverestWorkflowJobStep:
-        """Adds a workflow job step to the execution plan.
-
-        This method incorporates a workflow job into the execution plan.
-        Workflow jobs are used to run external operations. Invoking this method
-        returns an
-        [`EverestWorkflowJobStep`][ropt_everest.EverestWorkflowJobStep] object,
-        which you can execute using its
-        [`run`][ropt_everest.EverestWorkflowJobStep.run] method.
-
-        This step can be used to incorporate different external programs or
-        scripts into the current optimization process.
-
-        Returns:
-            An `EverestWorkflowJobStep` object, representing the added workflow job step.
-        """
-        self._id = self._plan.add_step("workflow_job")
-        return EverestWorkflowJobStep(self._plan, self._id, self._config)
 
     def add_store(
         self,
@@ -452,39 +433,6 @@ class EverestEvaluatorStep(EverestBase):
             config=EnOptConfig.model_validate(config_dict, context=transforms),
             metadata=metadata,
             variables=controls,
-        )
-
-
-class EverestWorkflowJobStep(EverestBase):
-    """Represents a workflow job step in an Everest execution plan.
-
-    This class encapsulates a workflow job step within an Everest workflow. It
-    provides a method to execute the workflow job.
-    """
-
-    def __init__(
-        self, plan: Plan, workflow_job: uuid.UUID, config: EverestConfig
-    ) -> None:
-        super().__init__(plan, workflow_job)
-        self._config = config
-
-    def run(self, jobs: list[str]) -> dict[str, Any]:
-        """Runs the workflow job.
-
-        This method executes the workflow jobs as defined by the provided job
-        names. The jobs must have been defined in the Everest configuration
-        file in the `install_workflow_jobs` section.
-
-        Args:
-            jobs: A list of commands to run.
-
-        Returns:
-            A dictionary containing the workflow report.
-        """
-        return self.plan.run_step(  # type: ignore[no-any-return]
-            self.id,
-            config=self._config,
-            jobs=jobs,
         )
 
 

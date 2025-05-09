@@ -4,8 +4,6 @@
 
 ::: ropt_everest.EverestEvaluatorStep
 
-::: ropt_everest.EverestWorkflowJobStep
-
 ::: ropt_everest.EverestStore
 
 ::: ropt_everest.EverestTracker

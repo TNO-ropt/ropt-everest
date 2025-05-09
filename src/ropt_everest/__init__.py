@@ -7,7 +7,6 @@ from ._everest_plan import (
     EverestStore,
     EverestTableHandler,
     EverestTracker,
-    EverestWorkflowJobStep,
 )
 
 __all__ = [
@@ -17,5 +16,4 @@ __all__ = [
     "EverestStore",
     "EverestTableHandler",
     "EverestTracker",
-    "EverestWorkflowJobStep",
 ]
