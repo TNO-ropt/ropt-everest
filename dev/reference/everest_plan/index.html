@@ -535,15 +535,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.add_workflow_job" class="md-nav__link">
-    <span class="md-ellipsis">
-      add_workflow_job
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#ropt_everest.EverestPlan.add_store" class="md-nav__link">
     <span class="md-ellipsis">
       add_store
@@ -620,30 +611,6 @@
         
           <li class="md-nav__item">
   <a href="#ropt_everest.EverestEvaluatorStep.run" class="md-nav__link">
-    <span class="md-ellipsis">
-      run
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ropt_everest.EverestWorkflowJobStep" class="md-nav__link">
-    <span class="md-ellipsis">
-      EverestWorkflowJobStep
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="EverestWorkflowJobStep">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ropt_everest.EverestWorkflowJobStep.run" class="md-nav__link">
     <span class="md-ellipsis">
       run
     </span>
@@ -836,15 +803,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.add_workflow_job" class="md-nav__link">
-    <span class="md-ellipsis">
-      add_workflow_job
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#ropt_everest.EverestPlan.add_store" class="md-nav__link">
     <span class="md-ellipsis">
       add_store
@@ -921,30 +879,6 @@
         
           <li class="md-nav__item">
   <a href="#ropt_everest.EverestEvaluatorStep.run" class="md-nav__link">
-    <span class="md-ellipsis">
-      run
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ropt_everest.EverestWorkflowJobStep" class="md-nav__link">
-    <span class="md-ellipsis">
-      EverestWorkflowJobStep
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="EverestWorkflowJobStep">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#ropt_everest.EverestWorkflowJobStep.run" class="md-nav__link">
     <span class="md-ellipsis">
       run
     </span>
@@ -1106,8 +1040,8 @@
         <p>Represents an execution plan for an Everest optimization workflow.</p>
 <p>The <code>EverestPlan</code> class provides a high-level interface for defining and
 managing optimization workflows in Everest. It allows you to add various
-steps to the plan, such as optimizers, evaluators, and workflow jobs, that
-are then executed to achieve the desired optimization goal.</p>
+steps to the plan, such as optimizers and evaluators, that are then executed
+to achieve the desired optimization goal.</p>
 
 
 
@@ -1213,57 +1147,6 @@ which you can execute using its
             <td>
               <div class="doc-md-description">
                 <p>An <code>EverestEvaluatorStep</code> object, representing the added evaluator.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="ropt_everest.EverestPlan.add_workflow_job" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">add_workflow_job</span>
-
-
-</h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_workflow_job</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">EverestWorkflowJobStep</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Adds a workflow job step to the execution plan.</p>
-<p>This method incorporates a workflow job into the execution plan.
-Workflow jobs are used to run external operations. Invoking this method
-returns an
-<a class="autorefs autorefs-internal" title="            ropt_everest.EverestWorkflowJobStep" href="#ropt_everest.EverestWorkflowJobStep"><code>EverestWorkflowJobStep</code></a> object,
-which you can execute using its
-<a class="autorefs autorefs-internal" title="            run" href="#ropt_everest.EverestWorkflowJobStep.run"><code>run</code></a> method.</p>
-<p>This step can be used to incorporate different external programs or
-scripts into the current optimization process.</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="            ropt_everest.EverestWorkflowJobStep (ropt_everest._everest_plan.EverestWorkflowJobStep)" href="#ropt_everest.EverestWorkflowJobStep">EverestWorkflowJobStep</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>An <code>EverestWorkflowJobStep</code> object, representing the added workflow job step.</p>
               </div>
             </td>
           </tr>
@@ -2019,130 +1902,6 @@ the initial values from the configuration.</p>
             </td>
             <td>
                   <code>None</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="ropt_everest.EverestWorkflowJobStep" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">ropt_everest.EverestWorkflowJobStep</span>
-
-
-</h2>
-
-
-    <div class="doc doc-contents first">
-            <p class="doc doc-class-bases">
-              Bases: <code><span title="ropt_everest._everest_plan.EverestBase">EverestBase</span></code></p>
-
-
-        <p>Represents a workflow job step in an Everest execution plan.</p>
-<p>This class encapsulates a workflow job step within an Everest workflow. It
-provides a method to execute the workflow job.</p>
-
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="ropt_everest.EverestWorkflowJobStep.run" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">run</span>
-
-
-</h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">run</span><span class="p">(</span><span class="n">jobs</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Runs the workflow job.</p>
-<p>This method executes the workflow jobs as defined by the provided job
-names. The jobs must have been defined in the Everest configuration
-file in the <code>install_workflow_jobs</code> section.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>jobs</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#list">list</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A list of commands to run.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A dictionary containing the workflow report.</p>
-              </div>
             </td>
           </tr>
       </tbody>
