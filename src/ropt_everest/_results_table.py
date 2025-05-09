@@ -35,11 +35,9 @@ class EverestDefaultTableHandler(PlanHandler):
         *,
         everest_config: EverestConfig,
         sources: set[uuid.UUID] | None = None,
-        all_sources: bool = True,
     ) -> None:
         super().__init__(plan)
-        self._sources = set() if sources is None else sources
-        self._all_sources = all_sources
+        self._sources = sources
         self._tables = []
         names = get_names(everest_config)
         for type_, table_type in TABLE_TYPE_MAP.items():
@@ -57,7 +55,7 @@ class EverestDefaultTableHandler(PlanHandler):
         if (
             event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
-            and (self._all_sources or event.source in self._sources)
+            and (self._sources is None or event.source in self._sources)
         ):
             results = tuple(
                 item.transform_from_optimizer(event.config.transforms)
