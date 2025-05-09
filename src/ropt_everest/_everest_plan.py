@@ -12,6 +12,7 @@ from everest.optimizer.everest2ropt import _everest2ropt
 from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
 from ropt.config.enopt import EnOptConfig
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
+from ropt.transforms import OptModelTransforms
 
 from ._utils import (
     TABLE_COLUMNS,
@@ -337,11 +338,20 @@ class EverestOptimizerStep(EverestBase):
             self._config if config is None else EverestConfig.with_plugins(config)
         )
         config_dict = _everest2ropt(everest_config)
-        transforms = get_optimization_domain_transforms(
+        everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
             everest_config.output_constraints,
             everest_config.model,
+        )
+        transforms = (
+            OptModelTransforms(
+                variables=everest_transforms["control_scaler"],
+                objectives=everest_transforms["objective_scaler"],
+                nonlinear_constraints=everest_transforms["constraint_scaler"],
+            )
+            if everest_transforms
+            else None
         )
 
         if output_dir is not None:
@@ -422,11 +432,20 @@ class EverestEvaluatorStep(EverestBase):
             self._config if config is None else EverestConfig.with_plugins(config)
         )
         config_dict = _everest2ropt(everest_config)
-        transforms = get_optimization_domain_transforms(
+        everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
             everest_config.output_constraints,
             everest_config.model,
+        )
+        transforms = (
+            OptModelTransforms(
+                variables=everest_transforms["control_scaler"],
+                objectives=everest_transforms["objective_scaler"],
+                nonlinear_constraints=everest_transforms["constraint_scaler"],
+            )
+            if everest_transforms
+            else None
         )
         self.plan.run_step(
             self.id,
