@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.12">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.13">
     
     
       
@@ -22,7 +22,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.2afb09e1.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.342714a4.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
@@ -526,9 +526,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.add_evaluator" class="md-nav__link">
+  <a href="#ropt_everest.EverestPlan.add_ensemble_evaluator" class="md-nav__link">
     <span class="md-ellipsis">
-      add_evaluator
+      add_ensemble_evaluator
     </span>
   </a>
   
@@ -600,17 +600,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ropt_everest.EverestEvaluatorStep" class="md-nav__link">
+  <a href="#ropt_everest.EverestEnsembleEvaluatorStep" class="md-nav__link">
     <span class="md-ellipsis">
-      EverestEvaluatorStep
+      EverestEnsembleEvaluatorStep
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="EverestEvaluatorStep">
+    <nav class="md-nav" aria-label="EverestEnsembleEvaluatorStep">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestEvaluatorStep.run" class="md-nav__link">
+  <a href="#ropt_everest.EverestEnsembleEvaluatorStep.run" class="md-nav__link">
     <span class="md-ellipsis">
       run
     </span>
@@ -794,9 +794,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.add_evaluator" class="md-nav__link">
+  <a href="#ropt_everest.EverestPlan.add_ensemble_evaluator" class="md-nav__link">
     <span class="md-ellipsis">
-      add_evaluator
+      add_ensemble_evaluator
     </span>
   </a>
   
@@ -868,17 +868,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ropt_everest.EverestEvaluatorStep" class="md-nav__link">
+  <a href="#ropt_everest.EverestEnsembleEvaluatorStep" class="md-nav__link">
     <span class="md-ellipsis">
-      EverestEvaluatorStep
+      EverestEnsembleEvaluatorStep
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="EverestEvaluatorStep">
+    <nav class="md-nav" aria-label="EverestEnsembleEvaluatorStep">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestEvaluatorStep.run" class="md-nav__link">
+  <a href="#ropt_everest.EverestEnsembleEvaluatorStep.run" class="md-nav__link">
     <span class="md-ellipsis">
       run
     </span>
@@ -1113,22 +1113,22 @@ which you can execute using its
 <div class="doc doc-object doc-function">
 
 
-<h3 id="ropt_everest.EverestPlan.add_evaluator" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">add_evaluator</span>
+<h3 id="ropt_everest.EverestPlan.add_ensemble_evaluator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">add_ensemble_evaluator</span>
 
 
 </h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_evaluator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">EverestEvaluatorStep</span>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_ensemble_evaluator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">EverestEnsembleEvaluatorStep</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
         <p>Adds an evaluator to the execution plan.</p>
-<p>This method integrates an evaluation step into your Everest workflow.
-Invoking this method returns an
-<a class="autorefs autorefs-internal" title="            ropt_everest.EverestEvaluatorStep" href="#ropt_everest.EverestEvaluatorStep"><code>EverestEvaluatorStep</code></a> object,
-which you can execute using its
-<a class="autorefs autorefs-internal" title="            run" href="#ropt_everest.EverestEvaluatorStep.run"><code>run</code></a> method.</p>
+<p>This method integrates an ensemble evaluator step into your Everest
+workflow. Invoking this method returns an
+<a class="autorefs autorefs-internal" title="            ropt_everest.EverestEnsembleEvaluatorStep" href="#ropt_everest.EverestEnsembleEvaluatorStep"><code>EverestEnsembleEvaluatorStep</code></a>
+object, which you can execute using its
+<a class="autorefs autorefs-internal" title="            run" href="#ropt_everest.EverestEnsembleEvaluatorStep.run"><code>run</code></a> method.</p>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
@@ -1142,11 +1142,11 @@ which you can execute using its
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><a class="autorefs autorefs-internal" title="            ropt_everest.EverestEvaluatorStep (ropt_everest._everest_plan.EverestEvaluatorStep)" href="#ropt_everest.EverestEvaluatorStep">EverestEvaluatorStep</a></code>
+                  <code><a class="autorefs autorefs-internal" title="            ropt_everest.EverestEnsembleEvaluatorStep (ropt_everest._everest_plan.EverestEnsembleEvaluatorStep)" href="#ropt_everest.EverestEnsembleEvaluatorStep">EverestEnsembleEvaluatorStep</a></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An <code>EverestEvaluatorStep</code> object, representing the added evaluator.</p>
+                <p>An <code>EverestEnsembleEvaluatorStep</code> object, representing the added evaluator.</p>
               </div>
             </td>
           </tr>
@@ -1393,10 +1393,10 @@ is not set, constraints are not tested.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Adds a handler that create a table to the execution plan.</p>
-<p>This handler will monitor the progress of specified optimization or
-evaluation steps and record relevant results. A set of tables will then
-be generated and saved in the output directory.</p>
+        <p>Adds an event handler that create a table to the execution plan.</p>
+<p>This event handler will monitor the progress of specified optimization
+or evaluation steps and record relevant results. A set of tables will
+then be generated and saved in the output directory.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -1763,8 +1763,8 @@ interpreted as relative to the <code>optimization_output</code> directory.</p>
 
 
 
-<h2 id="ropt_everest.EverestEvaluatorStep" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">ropt_everest.EverestEvaluatorStep</span>
+<h2 id="ropt_everest.EverestEnsembleEvaluatorStep" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">ropt_everest.EverestEnsembleEvaluatorStep</span>
 
 
 </h2>
@@ -1801,7 +1801,7 @@ provides a method to execute the evaluator .</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="ropt_everest.EverestEvaluatorStep.run" class="doc doc-heading">
+<h3 id="ropt_everest.EverestEnsembleEvaluatorStep.run" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">run</span>
 
 
@@ -2456,7 +2456,7 @@ gradient of an objective <code>distance</code> with respect to a control
               Bases: <code><span title="ropt_everest._everest_plan.EverestBase">EverestBase</span></code></p>
 
 
-        <p>Represents a table handler in an Everest execution plan.</p>
+        <p>Represents a table event handler in an Everest execution plan.</p>
 
 
 
@@ -2533,10 +2533,10 @@ gradient of an objective <code>distance</code> with respect to a control
     
     
       
-      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.top", "navigation.expand", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+      <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.top", "navigation.expand", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../../assets/javascripts/bundle.13a4f30d.min.js"></script>
       
         <script src="../../javascripts/mathjax.js"></script>
       
