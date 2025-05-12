@@ -1815,14 +1815,14 @@ provides a method to execute the evaluator .</p>
 
     <div class="doc doc-contents ">
 
-        <p>Runs the evaluator.</p>
-<p>This method executes the underlying evaluator with the given parameters.
-You can tailor the evaluators's behavior by providing an optional
-configuration dictionary.</p>
+        <p>Runs the ensemble evaluator.</p>
+<p>This method executes the underlying ensemble evaluator with the given
+parameters. You can tailor the evaluators's behavior by providing an
+optional configuration dictionary.</p>
 <p><strong>Configuration</strong>:</p>
 <ul>
-<li>If no <code>config</code> is provided, the evaluator will use the default
-  Everest configuration loaded during startup.</li>
+<li>If no <code>config</code> is provided, the ensemble evaluator step will use the
+  default Everest configuration loaded during startup.</li>
 <li>If a <code>config</code> dictionary is provided, it will override the default
   configuration. It should be a dictionary that can be validated as an
   <code>EverestConfig</code> object.</li>
