@@ -1,4 +1,4 @@
-"""A handler for creating report tables."""
+"""An event  handler for creating report tables."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Literal
 
 import pandas as pd
 from ropt.enums import EventType
-from ropt.plugins.plan.base import PlanHandler
+from ropt.plugins.plan.base import EventHandler
 from ropt.results import Results, results_to_dataframe
 from tabulate import tabulate
 
@@ -28,7 +28,7 @@ if TYPE_CHECKING:
     from ropt.plan import Event, Plan
 
 
-class EverestDefaultTableHandler(PlanHandler):
+class EverestDefaultTableHandler(EventHandler):
     def __init__(
         self,
         plan: Plan,

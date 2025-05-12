@@ -104,7 +104,9 @@ class EverestPlan:
         """
         if isinstance(steps, EverestBase):
             steps = [steps]
-        self._id = self._plan.add_handler("store", sources={step.id for step in steps})
+        self._id = self._plan.add_event_handler(
+            "store", sources={step.id for step in steps}
+        )
         return EverestStore(self._plan, self._id, get_names(self._config))
 
     def add_tracker(
@@ -157,7 +159,7 @@ class EverestPlan:
         """
         if isinstance(steps, EverestBase):
             steps = [steps]
-        self._id = self._plan.add_handler(
+        self._id = self._plan.add_event_handler(
             "tracker",
             what=what,
             constraint_tolerance=constraint_tolerance,
@@ -169,11 +171,11 @@ class EverestPlan:
         self,
         steps: EverestBase | Sequence[EverestBase],
     ) -> EverestTableHandler:
-        """Adds a handler that create a table to the execution plan.
+        """Adds an event handler that create a table to the execution plan.
 
-        This handler will monitor the progress of specified optimization or
-        evaluation steps and record relevant results. A set of tables will then
-        be generated and saved in the output directory.
+        This event handler will monitor the progress of specified optimization
+        or evaluation steps and record relevant results. A set of tables will
+        then be generated and saved in the output directory.
 
         Args:
             steps: The EverestStep(s) to monitor.
@@ -183,7 +185,7 @@ class EverestPlan:
         """
         if isinstance(steps, EverestBase):
             steps = [steps]
-        self._id = self._plan.add_handler(
+        self._id = self._plan.add_event_handler(
             "everest/table",
             everest_config=self._config,
             sources={step.id for step in steps},
@@ -640,7 +642,7 @@ class EverestTracker(EverestBase):
 
 
 class EverestTableHandler(EverestBase):
-    """Represents a table handler in an Everest execution plan."""
+    """Represents a table event handler in an Everest execution plan."""
 
     def __init__(self, plan: Plan, table_handler: uuid.UUID) -> None:
         super().__init__(plan, table_handler)

@@ -29,13 +29,13 @@ evaluation steps in the workflow to modify their behavior.
 Developing and executing a custom workflow involves two key aspects:
 
 1.  **Defining the Workflow:** This entails adding the individual steps and
-    their associated result handlers to the `EverestPlan`. These steps can
+    their associated event handlers to the `EverestPlan`. These steps can
     include optimizers, evaluators, and other custom operations. Result
     handlers, such as trackers and table outputs, capture the outcomes of each
     step.
 
 2.  **Executing and Inspecting:** This process involves arranging the defined
-    steps in the desired order of execution and leveraging the result handlers
+    steps in the desired order of execution and leveraging the event handlers
     to analyze the output data. The `EverestPlan` automatically manages the
     execution of these steps, guaranteeing their correct operation and ensuring
     that results are consistently captured and made accessible. Because the
@@ -53,22 +53,23 @@ start an optimization).
 
 The `run` method may accept additional arguments to customize the step's
 behavior. As steps execute, they may generate results. The plan receives these
-results and forwards them to any handler objects that have expressed interest.
-When creating handler objects, you specify one or more step objects they should
-monitor, indicating their interest in receiving results from those steps.
-Handlers may also accept additional configuration arguments during
+results and forwards them to any event handler objects that have expressed
+interest. When creating event handler objects, you specify one or more step
+objects they should monitor, indicating their interest in receiving results from
+those steps. Handlers may also accept additional configuration arguments during
 creation to refine how they process these results.
 
 In summary, building an optimization workflow involves: 1) defining one or more
-steps, 2) adding handlers to process the results of those steps, and 3) finally,
-executing the steps by calling their `run` methods, potentially multiple times.
+steps, 2) adding event handlers to process the results of those steps, and 3)
+finally, executing the steps by calling their `run` methods, potentially
+multiple times.
 
 For example, this `run_plan` function reproduces the default Everest optimization:
 
 ```py
 def run_plan(plan, config):
     optimizer = plan.add_optimizer()  # Add an optimizer step
-    plan.add_table(optimizer)         # Add a table handler
+    plan.add_table(optimizer)         # Add a table event handler
     optimizer.run()                   # Run the optimizer
 ```
 
@@ -80,9 +81,9 @@ This function executes a basic optimization workflow by performing these steps:
     dictionary, although it is not used in this example.
 2.  **Optimizer Addition**: An optimizer step is added to the plan using the
     [`add_optimizer`][ropt_everest.EverestPlan.add_optimizer] method.
-3.  **Table Handler Addition**: A table handler is added to the plan using the
-    [`add_table`][ropt_everest.EverestPlan.add_table] method. This will save the
-    optimization results in a set of tables.
+3.  **Table Handler Addition**: A table event handler is added to the plan using
+    the [`add_table`][ropt_everest.EverestPlan.add_table] method. This will save
+    the optimization results in a set of tables.
 4.  **Optimizer Execution**: The optimization process is started by calling the
     [`run`][ropt_everest.EverestOptimizerStep.run] method of the optimizer step. It
     uses the configuration that was passed to Everest without modification.
@@ -201,7 +202,7 @@ In addition, the following methods are available:
     as Pandas data frames.
 
 ### [`add_table`][ropt_everest.EverestPlan.add_table]
-Adds a table result handler to the plan. The resulting
+Adds a table event handler to the plan. The resulting
 [`EverestTableHandler`][ropt_everest.EverestTableHandler] object tracks and
 stores results emitted by optimizers and evaluators in tables on file. It
 accepts a single argument:

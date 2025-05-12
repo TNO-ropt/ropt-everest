@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
     from everest.config import EverestConfig
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import PlanHandler
+    from ropt.plugins.plan.base import EventHandler
 
     from ._everest_plan import EverestTracker
 
@@ -45,7 +45,7 @@ class EverestConfigStep(PlanStep):
                 msg = f"Function `run_plan` not found in module {module_name}"
                 raise ImportError(msg)
         else:
-            self.plan.add_handler("everest/table", everest_config=everest_config)
+            self.plan.add_event_handler("everest/table", everest_config=everest_config)
 
 
 def _run_plan(
@@ -54,7 +54,7 @@ def _run_plan(
         [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, OptimizerExitCode]
     ],
     config: EverestConfig,
-) -> tuple[PlanHandler | None, OptimizerExitCode]:
+) -> tuple[EventHandler | None, OptimizerExitCode]:
     ever_plan = EverestPlan(plan, config)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))
