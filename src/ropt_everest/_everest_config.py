@@ -16,7 +16,10 @@ from ._everest_plan import EverestPlan
 if TYPE_CHECKING:
     from collections.abc import Callable
 
+    import numpy as np
     from everest.config import EverestConfig
+    from numpy.typing import NDArray
+    from ropt.evaluator import EvaluatorContext, EvaluatorResult
     from ropt.plan import Plan
     from ropt.plugins.plan.base import EventHandler
 
@@ -24,7 +27,12 @@ if TYPE_CHECKING:
 
 
 class EverestConfigStep(PlanStep):
-    def run(self, *, everest_config: EverestConfig) -> None:
+    def run_step_from_plan(
+        self,
+        *,
+        everest_config: EverestConfig,
+        evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
+    ) -> None:
         path = everest_config.config_path
         if path.suffix == ".yml" and (path := path.with_suffix(".py")).exists():
             module_name = path.stem
@@ -38,8 +46,13 @@ class EverestConfigStep(PlanStep):
             spec.loader.exec_module(module)
 
             if hasattr(module, "run_plan"):
-                self.plan.add_function(
-                    partial(_run_plan, func=module.run_plan, config=everest_config)
+                self.plan.set_run_function(
+                    partial(
+                        _run_plan,
+                        func=module.run_plan,
+                        config=everest_config,
+                        evaluator=evaluator,
+                    )
                 )
             else:
                 msg = f"Function `run_plan` not found in module {module_name}"
@@ -54,8 +67,9 @@ def _run_plan(
         [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, OptimizerExitCode]
     ],
     config: EverestConfig,
+    evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
 ) -> tuple[EventHandler | None, OptimizerExitCode]:
-    ever_plan = EverestPlan(plan, config)
+    ever_plan = EverestPlan(plan, config, evaluator)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))
     except PlanAborted:

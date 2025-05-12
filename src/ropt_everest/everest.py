@@ -26,7 +26,13 @@ class EverestEventHandlerPlugin(EventHandlerPlugin):
     """The everest event handler class."""
 
     @classmethod
-    def create(cls, name: str, plan: Plan, **kwargs: dict[str, Any]) -> EventHandler:
+    def create(
+        cls,
+        name: str,
+        plan: Plan,
+        sources: set[PlanStep] | None = None,
+        **kwargs: dict[str, Any],
+    ) -> EventHandler:
         """Create a event event handler.
 
         See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.
@@ -36,7 +42,7 @@ class EverestEventHandlerPlugin(EventHandlerPlugin):
         _, _, name = name.lower().rpartition("/")
         obj = _EVENT_HANDLER_OBJECTS.get(name)
         if obj is not None:
-            return obj(plan, **kwargs)
+            return obj(plan, sources=sources, **kwargs)
 
         msg = f"Unknown event handler object type: {name}"
         raise TypeError(msg)
