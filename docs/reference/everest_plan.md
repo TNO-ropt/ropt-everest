@@ -2,7 +2,7 @@
 
 ::: ropt_everest.EverestOptimizerStep
 
-::: ropt_everest.EverestEvaluatorStep
+::: ropt_everest.EverestEnsembleEvaluatorStep
 
 ::: ropt_everest.EverestStore
 

@@ -1,7 +1,7 @@
 """Main ropt_everest package."""
 
 from ._everest_plan import (
-    EverestEvaluatorStep,
+    EverestEnsembleEvaluatorStep,
     EverestOptimizerStep,
     EverestPlan,
     EverestStore,
@@ -10,7 +10,7 @@ from ._everest_plan import (
 )
 
 __all__ = [
-    "EverestEvaluatorStep",
+    "EverestEnsembleEvaluatorStep",
     "EverestOptimizerStep",
     "EverestPlan",
     "EverestStore",

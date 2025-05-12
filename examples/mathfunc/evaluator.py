@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def run_plan(plan, _):
-    evaluator = plan.add_evaluator()
+    evaluator = plan.add_ensemble_evaluator()
     store = plan.add_store(evaluator)
     evaluator.run(controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
     print(store.dataframe("results"))

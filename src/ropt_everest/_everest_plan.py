@@ -64,20 +64,20 @@ class EverestPlan:
         self._id = self._plan.add_step("optimizer")
         return EverestOptimizerStep(self._plan, self._id, self._config)
 
-    def add_evaluator(self) -> EverestEvaluatorStep:
+    def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
         """Adds an evaluator to the execution plan.
 
-        This method integrates an evaluation step into your Everest workflow.
-        Invoking this method returns an
-        [`EverestEvaluatorStep`][ropt_everest.EverestEvaluatorStep] object,
-        which you can execute using its
-        [`run`][ropt_everest.EverestEvaluatorStep.run] method.
+        This method integrates an ensemble evaluator step into your Everest
+        workflow. Invoking this method returns an
+        [`EverestEnsembleEvaluatorStep`][ropt_everest.EverestEnsembleEvaluatorStep]
+        object, which you can execute using its
+        [`run`][ropt_everest.EverestEnsembleEvaluatorStep.run] method.
 
         Returns:
-            An `EverestEvaluatorStep` object, representing the added evaluator.
+            An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
-        self._id = self._plan.add_step("evaluator")
-        return EverestEvaluatorStep(self._plan, self._id, self._config)
+        self._id = self._plan.add_step("ensemble_evaluator")
+        return EverestEnsembleEvaluatorStep(self._plan, self._id, self._config)
 
     def add_store(
         self,
@@ -352,7 +352,7 @@ class EverestOptimizerStep(EverestBase):
         )
 
 
-class EverestEvaluatorStep(EverestBase):
+class EverestEnsembleEvaluatorStep(EverestBase):
     """Represents an evaluator step in an Everest execution plan.
 
     This class encapsulates an evaluation step within an Everest workflow. It

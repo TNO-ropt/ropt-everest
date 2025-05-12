@@ -133,11 +133,12 @@ executed using its [`run`][ropt_everest.EverestOptimizerStep.run] method. The
 - **output_dir** (`string`, optional): A directory (absolute or relative) where
     the optimizer stores output.
     
-### [`add_evaluator`][ropt_everest.EverestPlan.add_evaluator]
-Adds an evaluator step to the workflow plan. The resulting
-[`EverestEvaluatorStep`][ropt_everest.EverestEvaluatorStep] object can be
-executed using its [`run`][ropt_everest.EverestEvaluatorStep.run] method. The
-`run` method supports the following parameters to customize its behavior:
+### [`add_ensemble_evaluator`][ropt_everest.EverestPlan.add_ensemble_evaluator]
+Adds an ensemble evaluator step to the workflow plan. The resulting
+[`EverestEnsembleEvaluatorStep`][ropt_everest.EverestEnsembleEvaluatorStep]
+object can be executed using its
+[`run`][ropt_everest.EverestEnsembleEvaluatorStep.run] method. The `run` method
+supports the following parameters to customize its behavior:
 
 - **config** (`dict`, optional): A dictionary to override the default Everest
     configuration. If not specified, the original Everest configuration is used.
