@@ -21,7 +21,6 @@ if TYPE_CHECKING:
     from numpy.typing import NDArray
     from ropt.evaluator import EvaluatorContext, EvaluatorResult
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import EventHandler
 
     from ._everest_plan import EverestTracker
 
@@ -32,7 +31,7 @@ class EverestConfigStep(PlanStep):
         *,
         everest_config: EverestConfig,
         evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
-    ) -> None:
+    ) -> Callable[[Plan], OptimizerExitCode] | None:
         path = everest_config.config_path
         if path.suffix == ".yml" and (path := path.with_suffix(".py")).exists():
             module_name = path.stem
@@ -46,19 +45,18 @@ class EverestConfigStep(PlanStep):
             spec.loader.exec_module(module)
 
             if hasattr(module, "run_plan"):
-                self.plan.set_run_function(
-                    partial(
-                        _run_plan,
-                        func=module.run_plan,
-                        config=everest_config,
-                        evaluator=evaluator,
-                    )
+                return partial(
+                    _run_plan,
+                    func=module.run_plan,
+                    config=everest_config,
+                    evaluator=evaluator,
                 )
-            else:
-                msg = f"Function `run_plan` not found in module {module_name}"
-                raise ImportError(msg)
-        else:
-            self.plan.add_event_handler("everest/table", everest_config=everest_config)
+
+            msg = f"Function `run_plan` not found in module {module_name}"
+            raise ImportError(msg)
+
+        self.plan.add_event_handler("everest/table", everest_config=everest_config)
+        return None
 
 
 def _run_plan(
@@ -68,10 +66,10 @@ def _run_plan(
     ],
     config: EverestConfig,
     evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
-) -> tuple[EventHandler | None, OptimizerExitCode]:
+) -> OptimizerExitCode:
     ever_plan = EverestPlan(plan, config, evaluator)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))
     except PlanAborted:
-        return None, OptimizerExitCode.USER_ABORT
-    return None, OptimizerExitCode.UNKNOWN
+        return OptimizerExitCode.USER_ABORT
+    return OptimizerExitCode.UNKNOWN
