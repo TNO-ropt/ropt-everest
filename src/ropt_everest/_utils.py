@@ -1,5 +1,3 @@
-"""An event handler for creating report tables."""
-
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final, Literal

@@ -1,5 +1,3 @@
-"""This module implements the K2 optimizer step."""
-
 from __future__ import annotations
 
 import importlib
