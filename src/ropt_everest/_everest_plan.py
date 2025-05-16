@@ -49,7 +49,7 @@ class EverestPlan:
     ) -> None:
         self._plan = plan
         self._config = config
-        plan.add_evaluator("forwarding_evaluator", evaluator=evaluator)
+        plan.add_evaluator("function_evaluator", evaluator=evaluator)
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
