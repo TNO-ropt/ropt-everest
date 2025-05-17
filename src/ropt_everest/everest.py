@@ -11,7 +11,7 @@ from ._results_table import EverestDefaultTableHandler
 
 if TYPE_CHECKING:
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import EventHandler, PlanStep
+    from ropt.plugins.plan.base import EventHandler, PlanComponent, PlanStep
 
 _STEP_OBJECTS: Final[dict[str, type[PlanStep]]] = {
     "everest_config": EverestConfigStep,
@@ -30,7 +30,8 @@ class EverestEventHandlerPlugin(EventHandlerPlugin):
         cls,
         name: str,
         plan: Plan,
-        sources: set[PlanStep] | None = None,
+        tags: set[str] | None = None,
+        sources: set[PlanComponent | str] | None = None,
         **kwargs: dict[str, Any],
     ) -> EventHandler:
         """Create a event event handler.
@@ -42,7 +43,7 @@ class EverestEventHandlerPlugin(EventHandlerPlugin):
         _, _, name = name.lower().rpartition("/")
         obj = _EVENT_HANDLER_OBJECTS.get(name)
         if obj is not None:
-            return obj(plan, sources=sources, **kwargs)
+            return obj(plan, tags, sources, **kwargs)
 
         msg = f"Unknown event handler object type: {name}"
         raise TypeError(msg)
@@ -62,7 +63,13 @@ class EverestPlanStepPlugin(PlanStepPlugin):
     """The everest plan step class."""
 
     @classmethod
-    def create(cls, name: str, plan: Plan, **kwargs: Any) -> PlanStep:  # noqa: ANN401
+    def create(
+        cls,
+        name: str,
+        plan: Plan,
+        tags: set[str] | None = None,
+        **kwargs: Any,  # noqa: ANN401
+    ) -> PlanStep:
         """Create a step.
 
         See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.
@@ -72,7 +79,7 @@ class EverestPlanStepPlugin(PlanStepPlugin):
         _, _, name = name.lower().rpartition("/")
         step_obj = _STEP_OBJECTS.get(name)
         if step_obj is not None:
-            return step_obj(plan, **kwargs)
+            return step_obj(plan, tags, **kwargs)
 
         msg = f"Unknown step type: {name}"
         raise TypeError(msg)

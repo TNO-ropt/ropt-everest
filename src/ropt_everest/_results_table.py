@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Literal
 
 import pandas as pd
 from ropt.enums import EventType
-from ropt.plugins.plan.base import EventHandler, PlanStep
+from ropt.plugins.plan.base import EventHandler, PlanComponent
 from ropt.results import Results, results_to_dataframe
 from tabulate import tabulate
 
@@ -29,11 +29,12 @@ class EverestDefaultTableHandler(EventHandler):
     def __init__(
         self,
         plan: Plan,
+        tags: set[str] | None = None,
+        sources: set[PlanComponent | str] | None = None,
         *,
         everest_config: EverestConfig,
-        sources: set[PlanStep] | None = None,
     ) -> None:
-        super().__init__(plan, sources)
+        super().__init__(plan, tags, sources)
         self._tables = []
         names = get_names(everest_config)
         for type_, table_type in TABLE_TYPE_MAP.items():
@@ -51,7 +52,6 @@ class EverestDefaultTableHandler(EventHandler):
         if (
             event.event_type == EventType.FINISHED_EVALUATION
             and "results" in event.data
-            and (self.source_ids is None or event.source in self.source_ids)
         ):
             results = tuple(
                 item.transform_from_optimizer(event.config.transforms)

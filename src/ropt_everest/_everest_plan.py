@@ -49,7 +49,11 @@ class EverestPlan:
     ) -> None:
         self._plan = plan
         self._config = config
-        plan.add_evaluator("function_evaluator", evaluator=evaluator)
+        plan.add_evaluator(
+            "function_evaluator",
+            evaluator=evaluator,
+            clients={"optimizer", "evaluator"},
+        )
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
@@ -63,7 +67,7 @@ class EverestPlan:
         Returns:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
-        step = self._plan.add_step("optimizer")
+        step = self._plan.add_step("optimizer", tags={"optimizer"})
         return EverestOptimizerStep(self._plan, step, self._config)
 
     def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
@@ -78,7 +82,7 @@ class EverestPlan:
         Returns:
             An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
-        step = self._plan.add_step("ensemble_evaluator")
+        step = self._plan.add_step("ensemble_evaluator", tags={"evaluator"})
         return EverestEnsembleEvaluatorStep(self._plan, step, self._config)
 
     def add_store(
