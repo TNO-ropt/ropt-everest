@@ -49,16 +49,17 @@ class EverestDefaultTableHandler(EventHandler):
             )
 
     def handle_event(self, event: Event) -> None:
-        if (
-            event.event_type == EventType.FINISHED_EVALUATION
-            and "results" in event.data
-        ):
+        if "results" in event.data:
             results = tuple(
                 item.transform_from_optimizer(event.config.transforms)
                 for item in event.data["results"]
             )
             for table in self._tables:
                 table.add_results(results)
+
+    @property
+    def event_types(self) -> set[EventType]:
+        return {EventType.FINISHED_EVALUATION}
 
 
 class ResultsTable:
