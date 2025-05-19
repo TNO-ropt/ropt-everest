@@ -517,6 +517,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#ropt_everest.EverestPlan.add_to_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_to_cache
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ropt_everest.EverestPlan.remove_from_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      remove_from_cache
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#ropt_everest.EverestPlan.add_optimizer" class="md-nav__link">
     <span class="md-ellipsis">
       add_optimizer
@@ -783,6 +801,24 @@
   
     <nav class="md-nav" aria-label="EverestPlan">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ropt_everest.EverestPlan.add_to_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      add_to_cache
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ropt_everest.EverestPlan.remove_from_cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      remove_from_cache
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#ropt_everest.EverestPlan.add_optimizer" class="md-nav__link">
@@ -1061,6 +1097,51 @@ to achieve the desired optimization goal.</p>
 
 
 
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ropt_everest.EverestPlan.add_to_cache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">add_to_cache</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_to_cache</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">EverestEventHandlerBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Adds a cache to the execution plan.</p>
+<p>This method add a result handler to the caching mechanism into your
+Everest workflow. If a result is present in the handler, it will be used
+instead of calling the evaluator.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="ropt_everest.EverestPlan.remove_from_cache" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">remove_from_cache</span>
+
+
+</h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">remove_from_cache</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">EverestEventHandlerBase</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Removes a cache from the execution plan.</p>
+<p>This method removes a result handler from the caching mechanism from
+your Everest workflow.</p>
+
+
+    </div>
+
+</div>
 
 <div class="doc doc-object doc-function">
 
