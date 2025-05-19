@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final, Literal
 
-from ropt.enums import ResultAxis
+from ropt.enums import AxisName
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -31,6 +31,7 @@ TABLE_COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.variables": "Control",
         "evaluations.objectives": "Objective",
         "evaluations.constraints": "Constraint",
+        "evaluations.evaluation_info.batch_ids": "Source-batch",
         "evaluations.evaluation_info.sim_ids": "Simulation",
     },
     "perturbations": {
@@ -40,6 +41,7 @@ TABLE_COLUMNS: Final[dict[str, dict[str, str]]] = {
         "evaluations.perturbed_variables": "Control",
         "evaluations.perturbed_objectives": "Objective",
         "evaluations.perturbed_constraints": "Constraint",
+        "evaluations.evaluation_info.batch_ids": "Source-batch",
         "evaluations.evaluation_info.sim_ids": "Simulation",
     },
     "constraints": {
@@ -72,10 +74,10 @@ def get_names(
         return None
 
     return {
-        ResultAxis.VARIABLE: everest_config.formatted_control_names,
-        ResultAxis.OBJECTIVE: everest_config.objective_names,
-        ResultAxis.NONLINEAR_CONSTRAINT: everest_config.constraint_names,
-        ResultAxis.REALIZATION: everest_config.model.realizations,
+        AxisName.VARIABLE: everest_config.formatted_control_names,
+        AxisName.OBJECTIVE: everest_config.objective_names,
+        AxisName.NONLINEAR_CONSTRAINT: everest_config.constraint_names,
+        AxisName.REALIZATION: everest_config.model.realizations,
     }
 
 

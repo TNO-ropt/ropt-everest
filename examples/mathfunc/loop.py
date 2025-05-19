@@ -9,6 +9,7 @@ def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
+    plan.add_to_cache(tracker)
 
     for idx in range(3):
         optimizer.run(
@@ -17,7 +18,7 @@ def run_plan(plan, config):
             metadata={"iteration": idx},
             output_dir=f"output{idx}",
         )
-    print(store.dataframe("results"))
+    print(store.dataframe("simulations"))
 
 
 if __name__ == "__main__":

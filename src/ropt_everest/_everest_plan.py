@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Literal
+from typing import TYPE_CHECKING, Any, Callable, Literal, cast
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
@@ -31,6 +31,8 @@ if TYPE_CHECKING:
     from ropt.plan import Plan
     from ropt.plugins.plan.base import EventHandler, PlanStep
 
+    from ._cached_evaluator import EverestDefaultCachedEvaluator
+
 
 class EverestPlan:
     """Represents an execution plan for an Everest optimization workflow.
@@ -49,11 +51,44 @@ class EverestPlan:
     ) -> None:
         self._plan = plan
         self._config = config
-        plan.add_evaluator(
+        self._evaluator = plan.add_evaluator(
             "function_evaluator",
             evaluator=evaluator,
-            clients={"optimizer", "evaluator"},
+            clients={"__optimizer__", "__evaluator__"},
         )
+        self._cached_evaluator = cast(
+            "EverestDefaultCachedEvaluator",
+            self._plan.add_evaluator("everest/cached_evaluator"),
+        )
+
+    def add_to_cache(self, source: EverestEventHandlerBase) -> None:
+        """Adds a cache to the execution plan.
+
+        This method add a result handler to the caching mechanism into your
+        Everest workflow. If a result is present in the handler, it will be used
+        instead of calling the evaluator.
+        """
+        if "__optimizer__" in self._evaluator.clients:
+            self._evaluator.remove_client("__optimizer__")
+            self._evaluator.remove_client("__evaluator__")
+            self._evaluator.add_client(self._cached_evaluator)
+            self._cached_evaluator.add_client("__optimizer__")
+            self._cached_evaluator.add_client("__evaluator__")
+        self._cached_evaluator.add_source(source.handler)
+
+    def remove_from_cache(self, source: EverestEventHandlerBase) -> None:
+        """Removes a cache from the execution plan.
+
+        This method removes a result handler from the caching mechanism from
+        your Everest workflow.
+        """
+        if "__optimizer__" in self._cached_evaluator.clients:
+            self._evaluator.add_client("__optimizer__")
+            self._evaluator.add_client("__evaluator__")
+            self._evaluator.remove_client(self._cached_evaluator)
+            self._cached_evaluator.remove_client("__optimizer__")
+            self._cached_evaluator.remove_client("__evaluator__")
+        self._cached_evaluator.remove_source(source.handler)
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
@@ -67,7 +102,7 @@ class EverestPlan:
         Returns:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
-        step = self._plan.add_step("optimizer", tags={"optimizer"})
+        step = self._plan.add_step("optimizer", tags={"__optimizer__"})
         return EverestOptimizerStep(self._plan, step, self._config)
 
     def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
@@ -82,7 +117,7 @@ class EverestPlan:
         Returns:
             An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
-        step = self._plan.add_step("ensemble_evaluator", tags={"evaluator"})
+        step = self._plan.add_step("ensemble_evaluator", tags={"__evaluator__"})
         return EverestEnsembleEvaluatorStep(self._plan, step, self._config)
 
     def add_store(
@@ -112,7 +147,7 @@ class EverestPlan:
         handler = self._plan.add_event_handler(
             "store", sources={obj.step for obj in step_set}
         )
-        return EverestStore(self._plan, handler, get_names(self._config))
+        return EverestStore(self._plan, handler)
 
     def add_tracker(
         self,
@@ -169,7 +204,7 @@ class EverestPlan:
             constraint_tolerance=constraint_tolerance,
             sources={obj.step for obj in step_set},
         )
-        return EverestTracker(self._plan, handler, get_names(self._config))
+        return EverestTracker(self._plan, handler)
 
     def add_table(
         self,
@@ -334,6 +369,7 @@ class EverestOptimizerStep(EverestStepBase):
             self._config if config is None else EverestConfig.with_plugins(config)
         )
         config_dict = _everest2ropt(everest_config)
+        config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
@@ -428,6 +464,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             self._config if config is None else EverestConfig.with_plugins(config)
         )
         config_dict = _everest2ropt(everest_config)
+        config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
@@ -464,10 +501,8 @@ class EverestStore(EverestEventHandlerBase):
         self,
         plan: Plan,
         store: EventHandler,
-        names: dict[str, Sequence[str | int] | None] | None,
     ) -> None:
         super().__init__(plan, store)
-        self._names = names
 
     @property
     def results(self) -> list[Results] | None:
@@ -546,7 +581,6 @@ class EverestStore(EverestEventHandlerBase):
                         results,
                         fields=set(columns),
                         result_type=TABLE_TYPE_MAP[kind],
-                        names=self._names,
                     ),
                     columns,
                 )
@@ -570,10 +604,8 @@ class EverestTracker(EverestEventHandlerBase):
         self,
         plan: Plan,
         tracker: EventHandler,
-        names: dict[str, Sequence[str | int] | None] | None,
     ) -> None:
         super().__init__(plan, tracker)
-        self._names = names
 
     @property
     def results(self) -> FunctionResults | None:
@@ -646,7 +678,6 @@ class EverestTracker(EverestEventHandlerBase):
                         [results],
                         fields=set(columns),
                         result_type=TABLE_TYPE_MAP[kind],
-                        names=self._names,
                     ),
                     columns,
                 )

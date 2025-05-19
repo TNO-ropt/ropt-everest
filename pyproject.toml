@@ -30,6 +30,9 @@ everest = "ropt_everest.everest:EverestEventHandlerPlugin"
 [project.entry-points."ropt.plugins.plan_step"]
 everest = "ropt_everest.everest:EverestPlanStepPlugin"
 
+[project.entry-points."ropt.plugins.evaluator"]
+everest = "ropt_everest.everest:EverestEvaluatorPlugin"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 

@@ -19,23 +19,20 @@ if __name__ == "__main__":
 A basic plan that corresponds to the default Everest optimization:
 
 ```py
-def run_plan(plan, config):
+def run_plan(plan, _):
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
     optimizer.run()
 ```
 
 ## Running two optimizers
-Running two optimizers with different configurations, sending optimizer output
-to different directories:
+Running two optimizers, sending optimizer output to different directories:
 
 ```py
 def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
-
-    config["optimization"]["max_function_evaluations"] = 2
 
     print("Running first optimizer...")
     optimizer.run(config=config, output_dir="output1")
@@ -46,17 +43,18 @@ def run_plan(plan, config):
 
 ## Running optimizers in a loop
 Run an optimizer in a loop, each time starting from the last result of the
-previous. Store all results in memory and export the gradients of all results to
-a Pandas data frame. In addition, add the index of the loop to the metadata,
-which an additional `iteration` column to the data frame:
+previous. Add the tracker that stores the last value to the plan as a cache.
+Store all results in memory and export the gradients of all results to a Pandas
+data frame. In addition, add the index of the loop to the metadata, which an
+additional `iteration` column to the data frame:
 
 ```py
 def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
+    plan.add_to_cache(tracker)
 
-    config["optimization"]["max_function_evaluations"] = 2
     for idx in range(3):
         optimizer.run(
             config=config,
@@ -64,7 +62,8 @@ def run_plan(plan, config):
             metadata={"iteration": idx},
             output_dir=f"output{idx}",
         )
-    print(store.dataframe("gradients"))
+    print(store.dataframe("simulations"))
+
 ```
 
 ## Running an evaluation
@@ -72,9 +71,9 @@ Run an evaluation of the function for two control vectors and export the results
 to a Pandas data frame:
 
 ```py
-def run_plan(plan, config):
-    evaluator = plan.add_evaluator()
+def run_plan(plan, _):
+    evaluator = plan.add_ensemble_evaluator()
     store = plan.add_store(evaluator)
-    evaluator.run(controls=[[0, 0, 0], [1, 1, 1]])
+    evaluator.run(controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
     print(store.dataframe("results"))
 ```

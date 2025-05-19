@@ -10,13 +10,7 @@ from ropt.plugins.plan.base import EventHandler, PlanComponent
 from ropt.results import Results, results_to_dataframe
 from tabulate import tabulate
 
-from ._utils import (
-    TABLE_COLUMNS,
-    TABLE_TYPE_MAP,
-    get_names,
-    rename_columns,
-    reorder_columns,
-)
+from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, rename_columns, reorder_columns
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -36,14 +30,12 @@ class EverestDefaultTableHandler(EventHandler):
     ) -> None:
         super().__init__(plan, tags, sources)
         self._tables = []
-        names = get_names(everest_config)
         for type_, table_type in TABLE_TYPE_MAP.items():
             self._tables.append(
                 ResultsTable(
                     TABLE_COLUMNS[type_],
                     Path(everest_config.optimization_output_dir) / f"{type_}.txt",
                     table_type=table_type,
-                    names=names,
                     min_header_len=3,
                 )
             )
@@ -51,8 +43,7 @@ class EverestDefaultTableHandler(EventHandler):
     def handle_event(self, event: Event) -> None:
         if "results" in event.data:
             results = tuple(
-                item.transform_from_optimizer(event.config.transforms)
-                for item in event.data["results"]
+                item.transform_from_optimizer() for item in event.data["results"]
             )
             for table in self._tables:
                 table.add_results(results)
@@ -69,7 +60,6 @@ class ResultsTable:
         path: Path,
         *,
         table_type: Literal["functions", "gradients"] = "functions",
-        names: dict[str, Sequence[str | int] | None] | None = None,
         min_header_len: int | None = None,
     ) -> None:
         if path.parent.exists():
@@ -81,7 +71,6 @@ class ResultsTable:
 
         self._columns = columns
         self._path = path
-        self._names = names
         self._results_type = table_type
         self._min_header_len = min_header_len
         self._frames: list[pd.DataFrame] = []
@@ -95,7 +84,6 @@ class ResultsTable:
             results,
             set(columns),
             result_type=self._results_type,
-            names=self._names,
         )
         if not frame.empty:
             self._frames.append(frame)
