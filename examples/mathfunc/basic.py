@@ -5,10 +5,10 @@ from ropt_everest import EverestPlan
 from pathlib import Path
 
 
-def run_plan(plan, _):
+def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
-    optimizer.run()
+    optimizer.run(config)
 
 
 if __name__ == "__main__":

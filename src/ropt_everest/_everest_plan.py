@@ -46,11 +46,9 @@ class EverestPlan:
     def __init__(
         self,
         plan: Plan,
-        config: EverestConfig,
         evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
     ) -> None:
         self._plan = plan
-        self._config = config
         self._evaluator = plan.add_evaluator(
             "function_evaluator",
             evaluator=evaluator,
@@ -103,7 +101,7 @@ class EverestPlan:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
         step = self._plan.add_step("optimizer", tags={"__optimizer__"})
-        return EverestOptimizerStep(self._plan, step, self._config)
+        return EverestOptimizerStep(self._plan, step)
 
     def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
         """Adds an evaluator to the execution plan.
@@ -118,7 +116,7 @@ class EverestPlan:
             An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
         step = self._plan.add_step("ensemble_evaluator", tags={"__evaluator__"})
-        return EverestEnsembleEvaluatorStep(self._plan, step, self._config)
+        return EverestEnsembleEvaluatorStep(self._plan, step)
 
     def add_store(
         self,
@@ -306,13 +304,12 @@ class EverestOptimizerStep(EverestStepBase):
     provides a method to execute the optimizer.
     """
 
-    def __init__(self, plan: Plan, optimizer: PlanStep, config: EverestConfig) -> None:
+    def __init__(self, plan: Plan, optimizer: PlanStep) -> None:
         super().__init__(plan, optimizer)
-        self._config = config
 
     def run(
         self,
-        config: dict[str, Any] | None = None,
+        config: dict[str, Any],
         controls: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
         output_dir: str | None = None,
@@ -320,16 +317,11 @@ class EverestOptimizerStep(EverestStepBase):
         """Runs the optimizer.
 
         This method executes the underlying optimizer with the given parameters.
-        You can tailor the optimizer's behavior by providing an optional
-        configuration dictionary.
 
         **Configuration**:
 
-        - If no `config` is provided, the optimizer will use the default
-          Everest configuration loaded during startup.
-        - If a `config` dictionary is provided, it will override the default
-          configuration. It should be a dictionary that can be validated as an
-          `EverestConfig` object.
+        - The `config` dictionary should be a dictionary that can be validated
+          as an `EverestConfig` object.
 
         **Controls**:
 
@@ -363,9 +355,7 @@ class EverestOptimizerStep(EverestStepBase):
                         results of the optimizer's results.
             output_dir: An optional output directory for the optimizer.
         """
-        everest_config = (
-            self._config if config is None else EverestConfig.with_plugins(config)
-        )
+        everest_config = EverestConfig.with_plugins(config)
         config_dict = _everest2ropt(everest_config)
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
@@ -406,34 +396,24 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
     provides a method to execute the evaluator .
     """
 
-    def __init__(
-        self,
-        plan: Plan,
-        ensemble_evaluator: PlanStep,
-        config: EverestConfig,
-    ) -> None:
+    def __init__(self, plan: Plan, ensemble_evaluator: PlanStep) -> None:
         super().__init__(plan, ensemble_evaluator)
-        self._config = config
 
     def run(
         self,
-        config: dict[str, Any] | None = None,
+        config: dict[str, Any],
         controls: ArrayLike | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> None:
         """Runs the ensemble evaluator.
 
         This method executes the underlying ensemble evaluator with the given
-        parameters. You can tailor the evaluators's behavior by providing an
-        optional configuration dictionary.
+        parameters.
 
         **Configuration**:
 
-        - If no `config` is provided, the ensemble evaluator step will use the
-          default Everest configuration loaded during startup.
-        - If a `config` dictionary is provided, it will override the default
-          configuration. It should be a dictionary that can be validated as an
-          `EverestConfig` object.
+        - The `config` dictionary should be a dictionary that can be validated
+          as an `EverestConfig` object.
 
         **Controls**:
 
@@ -458,9 +438,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             metadata: An optional dictionary of metadata to associate with the
                       results of the optimizer's results.
         """
-        everest_config = (
-            self._config if config is None else EverestConfig.with_plugins(config)
-        )
+        everest_config = EverestConfig.with_plugins(config)
         config_dict = _everest2ropt(everest_config)
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
@@ -495,11 +473,7 @@ class EverestStore(EverestEventHandlerBase):
     analysis.
     """
 
-    def __init__(
-        self,
-        plan: Plan,
-        store: EventHandler,
-    ) -> None:
+    def __init__(self, plan: Plan, store: EventHandler) -> None:
         super().__init__(plan, store)
 
     @property

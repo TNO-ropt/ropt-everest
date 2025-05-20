@@ -65,7 +65,7 @@ def _run_plan(
     config: EverestConfig,
     evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
 ) -> OptimizerExitCode:
-    ever_plan = EverestPlan(plan, config, evaluator)
+    ever_plan = EverestPlan(plan, evaluator)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))
     except PlanAborted:

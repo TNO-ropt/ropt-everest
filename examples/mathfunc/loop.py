@@ -13,7 +13,7 @@ def run_plan(plan, config):
 
     for idx in range(3):
         optimizer.run(
-            config=config,
+            config,
             controls=tracker.controls,
             metadata={"iteration": idx},
             output_dir=f"output{idx}",
