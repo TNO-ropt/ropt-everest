@@ -53,11 +53,7 @@ class EverestConfigStep(PlanStep):
             msg = f"Function `run_plan` not found in module {module_name}"
             raise ImportError(msg)
 
-        self.plan.add_event_handler(
-            "everest/table",
-            everest_config=everest_config,
-            sources={"__basic_optimizer__"},
-        )
+        self.plan.add_event_handler("everest/table", sources={"__basic_optimizer__"})
         return None
 
 

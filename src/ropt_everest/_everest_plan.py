@@ -224,9 +224,7 @@ class EverestPlan:
         """
         step_set = {steps} if isinstance(steps, EverestBase) else set(steps)
         handler = self._plan.add_event_handler(
-            "everest/table",
-            everest_config=self._config,
-            sources={obj.step for obj in step_set},
+            "everest/table", sources={obj.step for obj in step_set}
         )
         return EverestTableHandler(self._plan, handler)
 
