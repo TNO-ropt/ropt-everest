@@ -1704,7 +1704,7 @@ provides a method to execute the optimizer.</p>
 
 </h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">run</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">controls</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1714,16 +1714,11 @@ provides a method to execute the optimizer.</p>
     <div class="doc doc-contents ">
 
         <p>Runs the optimizer.</p>
-<p>This method executes the underlying optimizer with the given parameters.
-You can tailor the optimizer's behavior by providing an optional
-configuration dictionary.</p>
+<p>This method executes the underlying optimizer with the given parameters.</p>
 <p><strong>Configuration</strong>:</p>
 <ul>
-<li>If no <code>config</code> is provided, the optimizer will use the default
-  Everest configuration loaded during startup.</li>
-<li>If a <code>config</code> dictionary is provided, it will override the default
-  configuration. It should be a dictionary that can be validated as an
-  <code>EverestConfig</code> object.</li>
+<li>The <code>config</code> dictionary should be a dictionary that can be validated
+  as an <code>EverestConfig</code> object.</li>
 </ul>
 <p><strong>Controls</strong>:</p>
 <p>If no controls are provided, the optimizer will use the initial values
@@ -1762,7 +1757,7 @@ interpreted as relative to the <code>optimization_output</code> directory.</p>
                 <code>config</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>] | None</code>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1772,7 +1767,7 @@ interpreted as relative to the <code>optimization_output</code> directory.</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                <em>required</em>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -1888,7 +1883,7 @@ provides a method to execute the evaluator .</p>
 
 </h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">run</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">controls</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">metadata</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
@@ -1898,15 +1893,11 @@ provides a method to execute the evaluator .</p>
 
         <p>Runs the ensemble evaluator.</p>
 <p>This method executes the underlying ensemble evaluator with the given
-parameters. You can tailor the evaluators's behavior by providing an
-optional configuration dictionary.</p>
+parameters.</p>
 <p><strong>Configuration</strong>:</p>
 <ul>
-<li>If no <code>config</code> is provided, the ensemble evaluator step will use the
-  default Everest configuration loaded during startup.</li>
-<li>If a <code>config</code> dictionary is provided, it will override the default
-  configuration. It should be a dictionary that can be validated as an
-  <code>EverestConfig</code> object.</li>
+<li>The <code>config</code> dictionary should be a dictionary that can be validated
+  as an <code>EverestConfig</code> object.</li>
 </ul>
 <p><strong>Controls</strong>:</p>
 <p>The <code>controls</code> parameter can be a single vector, a sequence of multiple
@@ -1939,7 +1930,7 @@ the initial values from the configuration.</p>
                 <code>config</code>
             </td>
             <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>] | None</code>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1949,7 +1940,7 @@ the initial values from the configuration.</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                <em>required</em>
             </td>
           </tr>
           <tr class="doc-section-item">
