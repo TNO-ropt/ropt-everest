@@ -9,3 +9,5 @@
 ::: ropt_everest.EverestTracker
 
 ::: ropt_everest.EverestTableHandler
+
+::: ropt_everest.EverestCachedEvaluator

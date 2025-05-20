@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Literal, cast
+from typing import TYPE_CHECKING, Any, Callable, Literal
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
@@ -29,9 +29,7 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike, NDArray
     from ropt.evaluator import EvaluatorContext, EvaluatorResult
     from ropt.plan import Plan
-    from ropt.plugins.plan.base import EventHandler, PlanStep
-
-    from ._cached_evaluator import EverestDefaultCachedEvaluator
+    from ropt.plugins.plan.base import Evaluator, EventHandler, PlanStep
 
 
 class EverestPlan:
@@ -49,44 +47,7 @@ class EverestPlan:
         evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
     ) -> None:
         self._plan = plan
-        self._evaluator = plan.add_evaluator(
-            "function_evaluator",
-            evaluator=evaluator,
-            clients={"__optimizer__", "__evaluator__"},
-        )
-        self._cached_evaluator = cast(
-            "EverestDefaultCachedEvaluator",
-            self._plan.add_evaluator("everest/cached_evaluator"),
-        )
-
-    def add_to_cache(self, source: EverestEventHandlerBase) -> None:
-        """Adds a cache to the execution plan.
-
-        This method add a result handler to the caching mechanism into your
-        Everest workflow. If a result is present in the handler, it will be used
-        instead of calling the evaluator.
-        """
-        if "__optimizer__" in self._evaluator.clients:
-            self._evaluator.remove_client("__optimizer__")
-            self._evaluator.remove_client("__evaluator__")
-            self._evaluator.add_client(self._cached_evaluator)
-            self._cached_evaluator.add_client("__optimizer__")
-            self._cached_evaluator.add_client("__evaluator__")
-        self._cached_evaluator.add_source(source.handler)
-
-    def remove_from_cache(self, source: EverestEventHandlerBase) -> None:
-        """Removes a cache from the execution plan.
-
-        This method removes a result handler from the caching mechanism from
-        your Everest workflow.
-        """
-        if "__optimizer__" in self._cached_evaluator.clients:
-            self._evaluator.add_client("__optimizer__")
-            self._evaluator.add_client("__evaluator__")
-            self._evaluator.remove_client(self._cached_evaluator)
-            self._cached_evaluator.remove_client("__optimizer__")
-            self._cached_evaluator.remove_client("__evaluator__")
-        self._cached_evaluator.remove_source(source.handler)
+        self._evaluator = plan.add_evaluator("function_evaluator", evaluator=evaluator)
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
@@ -100,7 +61,8 @@ class EverestPlan:
         Returns:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
-        step = self._plan.add_step("optimizer", tags={"__optimizer__"})
+        step = self._plan.add_step("optimizer")
+        self._evaluator.add_clients(step)
         return EverestOptimizerStep(self._plan, step)
 
     def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
@@ -115,8 +77,48 @@ class EverestPlan:
         Returns:
             An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
-        step = self._plan.add_step("ensemble_evaluator", tags={"__evaluator__"})
+        step = self._plan.add_step("ensemble_evaluator")
+        self._evaluator.add_clients(step)
         return EverestEnsembleEvaluatorStep(self._plan, step)
+
+    def add_cache(
+        self,
+        steps: EverestStepBase | Sequence[EverestStepBase] | set[EverestStepBase],
+        sources: EverestEventHandlerBase
+        | Sequence[EverestEventHandlerBase]
+        | set[EverestEventHandlerBase],
+    ) -> EverestCachedEvaluator:
+        """Adds an cache to the execution plan.
+
+        This method integrates a caching mechanism into your Everest workflow.
+        Invoking this method returns an
+        [`EverestCachedEvaluator`][ropt_everest.EverestCachedEvaluator] object,
+        which will act as a cache.
+
+        The cache is only serving the steps specified in the `steps` argument.
+        Cached values are retrieved from the specified source(s) and used to
+        avoid redundant evaluations. The sources must be an event handler that
+        stores the results produced by the optimization or evaluation steps.
+
+        Args:
+            steps:   The steps that will use the cache.
+            sources: The source(s) of cached values.
+
+        Returns:
+            A cache object.
+        """
+        steps = {steps} if isinstance(steps, EverestStepBase) else set(steps)
+        sources = (
+            {sources} if isinstance(sources, EverestEventHandlerBase) else set(sources)
+        )
+        cache = self._plan.add_evaluator(
+            "everest/cached_evaluator",
+            clients={step.step for step in steps},
+            sources={source.handler for source in sources},
+        )
+        self._evaluator.remove_clients({step.step for step in steps})
+        self._evaluator.add_clients(cache)
+        return EverestCachedEvaluator(self._plan, cache)
 
     def add_store(
         self,
@@ -295,6 +297,21 @@ class EverestEventHandlerBase(EverestBase):
     @property
     def handler(self) -> EventHandler:
         return self._handler
+
+
+class EverestEvaluatorBase(EverestBase):
+    def __init__(self, plan: Plan, evaluator: Evaluator) -> None:
+        super().__init__(plan)
+        self._evaluator = evaluator
+
+    @property
+    def evaluator(self) -> Evaluator:
+        return self._evaluator
+
+
+class EverestCachedEvaluator(EverestEvaluatorBase):
+    def __init__(self, plan: Plan, cache: Evaluator) -> None:
+        super().__init__(plan, cache)
 
 
 class EverestOptimizerStep(EverestStepBase):
