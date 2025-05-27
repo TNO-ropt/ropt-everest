@@ -24,10 +24,12 @@ class EverestDefaultTableHandler(EventHandler):
         plan: Plan,
         tags: set[str] | None = None,
         sources: set[PlanComponent | str] | None = None,
+        names: dict[str, tuple[str | int, ...]] | None = None,
     ) -> None:
         super().__init__(plan, tags, sources)
         self._path: Path | None = None
         self._tables = []
+        self._names = names
         for type_, table_type in TABLE_TYPE_MAP.items():
             self._tables.append(
                 ResultsTable(
@@ -43,6 +45,10 @@ class EverestDefaultTableHandler(EventHandler):
             results = tuple(
                 item.transform_from_optimizer() for item in event.data["results"]
             )
+            if self._names is not None:
+                results = tuple(deepcopy(item) for item in results)
+                for item in results:
+                    item.config.names = self._names
             if self._path is None:
                 self._path = Path(results[0].config.optimizer.output_dir)
                 if self._path.exists() and not self._path.is_dir():

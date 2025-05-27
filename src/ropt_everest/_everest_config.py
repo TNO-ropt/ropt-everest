@@ -10,6 +10,7 @@ from ropt.exceptions import PlanAborted
 from ropt.plugins.plan.base import PlanStep
 
 from ._everest_plan import EverestPlan
+from ._utils import get_names
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -53,7 +54,11 @@ class EverestConfigStep(PlanStep):
             msg = f"Function `run_plan` not found in module {module_name}"
             raise ImportError(msg)
 
-        self.plan.add_event_handler("everest/table", sources={"__basic_optimizer__"})
+        self.plan.add_event_handler(
+            "everest/table",
+            sources={"__basic_optimizer__"},
+            names=get_names(everest_config),
+        )
         return None
 
 
