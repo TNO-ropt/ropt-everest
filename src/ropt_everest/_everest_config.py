@@ -3,8 +3,10 @@ from __future__ import annotations
 import importlib
 import sys
 from functools import partial
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from everest.config import EverestConfig
 from ropt.enums import OptimizerExitCode
 from ropt.exceptions import PlanAborted
 from ropt.plugins.plan.base import PlanStep
@@ -16,7 +18,6 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
     import numpy as np
-    from everest.config import EverestConfig
     from numpy.typing import NDArray
     from ropt.evaluator import EvaluatorContext, EvaluatorResult
     from ropt.plan import Plan
@@ -28,11 +29,18 @@ class EverestConfigStep(PlanStep):
     def run_step_from_plan(
         self,
         *,
-        everest_config: EverestConfig,
+        everest_config: Path,
         evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
     ) -> Callable[[Plan], OptimizerExitCode] | None:
-        path = everest_config.config_path
-        if path.suffix == ".yml" and (path := path.with_suffix(".py")).exists():
+        try:
+            config = EverestConfig.load_file(everest_config)
+        except:  # noqa: E722
+            return None
+
+        if (
+            everest_config.suffix == ".yml"
+            and (path := everest_config.with_suffix(".py")).exists()
+        ):
             module_name = path.stem
             spec = importlib.util.spec_from_file_location(module_name, path)
             if spec is None:
@@ -47,18 +55,20 @@ class EverestConfigStep(PlanStep):
                 return partial(
                     _run_plan,
                     func=module.run_plan,
-                    config=everest_config,
+                    config=config,
                     evaluator=evaluator,
                 )
 
             msg = f"Function `run_plan` not found in module {module_name}"
             raise ImportError(msg)
 
-        self.plan.add_event_handler(
-            "everest/table",
-            sources={"__basic_optimizer__"},
-            names=get_names(everest_config),
-        )
+        if Path(sys.argv[0]).name != "pytest":
+            self.plan.add_event_handler(
+                "everest/table",
+                sources={"__basic_optimizer__"},
+                names=get_names(config),
+            )
+
         return None
 
 
