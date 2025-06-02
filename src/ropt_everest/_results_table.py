@@ -29,7 +29,10 @@ class EverestDefaultTableHandler(EventHandler):
         super().__init__(plan, tags, sources)
         self._path: Path | None = None
         self._tables = []
-        self._names = names
+        if names is None:
+            self._names = None
+        else:
+            self._names = deepcopy(names)
         for type_, table_type in TABLE_TYPE_MAP.items():
             self._tables.append(
                 ResultsTable(
@@ -43,14 +46,15 @@ class EverestDefaultTableHandler(EventHandler):
     def handle_event(self, event: Event) -> None:
         if "results" in event.data:
             results = tuple(
-                item.transform_from_optimizer() for item in event.data["results"]
+                item.transform_from_optimizer(event.data["config"].transforms)
+                for item in event.data["results"]
             )
             if self._names is not None:
                 results = tuple(deepcopy(item) for item in results)
                 for item in results:
-                    item.config.names = self._names
+                    item.names = self._names
             if self._path is None:
-                self._path = Path(results[0].config.optimizer.output_dir)
+                self._path = Path(event.data["config"].optimizer.output_dir)
                 if self._path.exists() and not self._path.is_dir():
                     msg = f"Cannot write table to: {self._path}"
                     raise RuntimeError(msg)
