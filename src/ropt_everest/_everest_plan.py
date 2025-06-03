@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Callable, Literal
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
 from everest.config import EverestConfig
-from everest.optimizer.everest2ropt import _everest2ropt
+from everest.optimizer.everest2ropt import everest2ropt
 from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
 from ropt.config.enopt import EnOptConfig
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
@@ -373,7 +373,7 @@ class EverestOptimizerStep(EverestStepBase):
             output_dir: An optional output directory for the optimizer.
         """
         everest_config = EverestConfig.with_plugins(config)
-        config_dict = _everest2ropt(everest_config)
+        config_dict = everest2ropt(everest_config)
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
@@ -400,7 +400,8 @@ class EverestOptimizerStep(EverestStepBase):
 
         self.plan.run_step(
             self.step,
-            config=EnOptConfig.model_validate(config_dict, context=transforms),
+            config=EnOptConfig.model_validate(config_dict),
+            transforms=transforms,
             metadata=metadata,
             variables=controls,
         )
@@ -456,7 +457,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
                       results of the optimizer's results.
         """
         everest_config = EverestConfig.with_plugins(config)
-        config_dict = _everest2ropt(everest_config)
+        config_dict = everest2ropt(everest_config)
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
@@ -475,7 +476,8 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
         )
         self.plan.run_step(
             self.step,
-            config=EnOptConfig.model_validate(config_dict, context=transforms),
+            config=EnOptConfig.model_validate(config_dict),
+            transforms=transforms,
             metadata=metadata,
             variables=controls,
         )
