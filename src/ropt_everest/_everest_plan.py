@@ -9,7 +9,7 @@ from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
 from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
-from ropt.config.enopt import EnOptConfig
+from ropt.config import EnOptConfig
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 from ropt.transforms import OptModelTransforms
 
