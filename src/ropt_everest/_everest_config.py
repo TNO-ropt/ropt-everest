@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from everest.config import EverestConfig
-from ropt.enums import OptimizerExitCode
+from ropt.enums import ExitCode
 from ropt.exceptions import PlanAborted
 from ropt.plugins.plan.base import PlanStep
 
@@ -31,7 +31,7 @@ class EverestConfigStep(PlanStep):
         *,
         everest_config: Path,
         evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
-    ) -> Callable[[Plan], OptimizerExitCode] | None:
+    ) -> Callable[[Plan], ExitCode] | None:
         try:
             config = EverestConfig.load_file(everest_config)
         except:  # noqa: E722
@@ -75,14 +75,14 @@ class EverestConfigStep(PlanStep):
 def _run_plan(
     plan: Plan,
     func: Callable[
-        [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, OptimizerExitCode]
+        [EverestPlan, dict[str, Any]], tuple[EverestTracker | None, ExitCode]
     ],
     config: EverestConfig,
     evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
-) -> OptimizerExitCode:
+) -> ExitCode:
     ever_plan = EverestPlan(plan, evaluator)
     try:
         func(ever_plan, config.model_dump(exclude_none=True))
     except PlanAborted:
-        return OptimizerExitCode.USER_ABORT
-    return OptimizerExitCode.UNKNOWN
+        return ExitCode.USER_ABORT
+    return ExitCode.UNKNOWN
