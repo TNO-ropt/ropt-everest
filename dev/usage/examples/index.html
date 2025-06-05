@@ -657,10 +657,10 @@ that output is printed to the console:</p>
 </span></code></pre></div>
 <h2 id="basic-plan">Basic plan</h2>
 <p>A basic plan that corresponds to the default Everest optimization:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="running-two-optimizers">Running two optimizers</h2>
 <p>Running two optimizers, sending optimizer output to different directories:</p>
@@ -678,8 +678,8 @@ that output is printed to the console:</p>
 <h2 id="running-optimizers-in-a-loop">Running optimizers in a loop</h2>
 <p>Run an optimizer in a loop, each time starting from the last result of the
 previous. Add the tracker that stores the last value to the plan as a cache.
-Store all results in memory and export the gradients of all results to a Pandas
-data frame. In addition, add the index of the loop to the metadata, which an
+Store all results in memory and export the simulations of all to a Pandas data
+frame. In addition, add the index of the loop to the metadata, which an
 additional <code>iteration</code> column to the data frame:</p>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>
@@ -702,7 +702,7 @@ to a Pandas data frame:</p>
 <div class="language-py highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">evaluator</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_ensemble_evaluator</span><span class="p">()</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">store</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_store</span><span class="p">(</span><span class="n">evaluator</span><span class="p">)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">evaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">controls</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">evaluator</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">controls</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">dataframe</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">))</span>
 </span></code></pre></div>
 
