@@ -19,10 +19,10 @@ if __name__ == "__main__":
 A basic plan that corresponds to the default Everest optimization:
 
 ```py
-def run_plan(plan, _):
+def run_plan(plan, config):
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
-    optimizer.run()
+    optimizer.run(config)
 ```
 
 ## Running two optimizers
@@ -44,8 +44,8 @@ def run_plan(plan, config):
 ## Running optimizers in a loop
 Run an optimizer in a loop, each time starting from the last result of the
 previous. Add the tracker that stores the last value to the plan as a cache.
-Store all results in memory and export the gradients of all results to a Pandas
-data frame. In addition, add the index of the loop to the metadata, which an
+Store all results in memory and export the simulations of all to a Pandas data
+frame. In addition, add the index of the loop to the metadata, which an
 additional `iteration` column to the data frame:
 
 ```py
@@ -73,6 +73,6 @@ to a Pandas data frame:
 def run_plan(plan, _):
     evaluator = plan.add_ensemble_evaluator()
     store = plan.add_store(evaluator)
-    evaluator.run(controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
+    evaluator.run(config, controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
     print(store.dataframe("results"))
 ```

@@ -48,3 +48,28 @@ and are typically not relevant during the development of a custom `run_plan`
 function. We then execute the `everest` class method, passing the path to the
 corresponding configuration file, which we construct dynamically by replacing
 the `.py` suffix of the current file (`__file__`) with `.yml`.
+
+
+**Note: Running on a HPC cluster**
+
+The standard Everest command interface runs the optimization as a separate
+server process. If Everest is configured for an HPC cluster, this server
+process, which manages the optimization, is submitted to and executes on the
+cluster.
+
+In contrast, the direct execution method (`EverestPlan.everest`) runs the
+optimization within the current Python process. Consequently, the optimization
+executes on the machine where your script is run (e.g., a login node or your
+local machine), *not* automatically on an HPC cluster compute node. This is true
+even if Everest is configured to use the cluster for other tasks, such as
+forward model evaluations.
+
+Importantly, regardless of how the optimization process itself is launched
+(standard CLI or direct execution), forward model evaluations managed by Everest
+will still be submitted to the HPC cluster if Everest is configured to do so.
+
+If you intend for the main optimization process (when using direct execution via
+`EverestPlan.everest`) to also run on an HPC cluster, you must explicitly submit
+your Python script to the cluster. This is done using standard cluster job
+submission procedures, such as creating a batch script for schedulers like SLURM
+or PBS.
