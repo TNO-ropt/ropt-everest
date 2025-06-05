@@ -373,7 +373,7 @@ class EverestOptimizerStep(EverestStepBase):
             output_dir: An optional output directory for the optimizer.
         """
         everest_config = EverestConfig.with_plugins(config)
-        config_dict = everest2ropt(everest_config)
+        config_dict, initial_values = everest2ropt(everest_config)
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
@@ -403,7 +403,7 @@ class EverestOptimizerStep(EverestStepBase):
             config=EnOptConfig.model_validate(config_dict),
             transforms=transforms,
             metadata=metadata,
-            variables=controls,
+            variables=initial_values if controls is None else controls,
         )
 
 
@@ -457,7 +457,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
                       results of the optimizer's results.
         """
         everest_config = EverestConfig.with_plugins(config)
-        config_dict = everest2ropt(everest_config)
+        config_dict, initial_values = everest2ropt(everest_config)
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
@@ -479,7 +479,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             config=EnOptConfig.model_validate(config_dict),
             transforms=transforms,
             metadata=metadata,
-            variables=controls,
+            variables=initial_values if controls is None else controls,
         )
 
 
