@@ -13,13 +13,7 @@ from ropt.config import EnOptConfig
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 from ropt.transforms import OptModelTransforms
 
-from ._utils import (
-    TABLE_COLUMNS,
-    TABLE_TYPE_MAP,
-    fix_columns,
-    get_names,
-    reorder_columns,
-)
+from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, fix_columns, reorder_columns
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -374,7 +368,6 @@ class EverestOptimizerStep(EverestStepBase):
         """
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(everest_config)
-        config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
@@ -458,7 +451,6 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
         """
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(everest_config)
-        config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
