@@ -373,7 +373,16 @@ class EverestOptimizerStep(EverestStepBase):
             output_dir: An optional output directory for the optimizer.
         """
         everest_config = EverestConfig.with_plugins(config)
-        config_dict, initial_values = everest2ropt(everest_config)
+        config_dict, initial_values = everest2ropt(
+            everest_config.controls,
+            everest_config.objective_functions,
+            everest_config.input_constraints,
+            everest_config.output_constraints,
+            everest_config.optimization,
+            everest_config.model.realizations_weights,
+            everest_config.environment.random_seed,
+            everest_config.optimization_output_dir,
+        )
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
@@ -457,7 +466,16 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
                       results of the optimizer's results.
         """
         everest_config = EverestConfig.with_plugins(config)
-        config_dict, initial_values = everest2ropt(everest_config)
+        config_dict, initial_values = everest2ropt(
+            everest_config.controls,
+            everest_config.objective_functions,
+            everest_config.input_constraints,
+            everest_config.output_constraints,
+            everest_config.optimization,
+            everest_config.model.realizations_weights,
+            everest_config.environment.random_seed,
+            everest_config.optimization_output_dir,
+        )
         config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,

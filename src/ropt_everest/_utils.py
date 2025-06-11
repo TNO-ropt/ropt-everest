@@ -74,7 +74,11 @@ def get_names(
         return None
 
     return {
-        AxisName.VARIABLE: everest_config.formatted_control_names,
+        AxisName.VARIABLE: [
+            name
+            for config in everest_config.controls
+            for name in config.formatted_control_names
+        ],
         AxisName.OBJECTIVE: everest_config.objective_names,
         AxisName.NONLINEAR_CONSTRAINT: everest_config.constraint_names,
         AxisName.REALIZATION: everest_config.model.realizations,
