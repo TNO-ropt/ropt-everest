@@ -8,6 +8,8 @@ from ._everest_plan import (
     EverestStore,
     EverestTableHandler,
     EverestTracker,
+    load_config,
+    run_everest,
 )
 
 __all__ = [
@@ -18,4 +20,6 @@ __all__ = [
     "EverestStore",
     "EverestTableHandler",
     "EverestTracker",
+    "load_config",
+    "run_everest",
 ]

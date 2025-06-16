@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from copy import deepcopy
-from pathlib import Path
 from typing import TYPE_CHECKING, Literal
 
 import pandas as pd
@@ -14,6 +13,7 @@ from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, rename_columns, reorder_colum
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from pathlib import Path
 
     from ropt.plan import Event, Plan
 
@@ -24,15 +24,10 @@ class EverestDefaultTableHandler(EventHandler):
         plan: Plan,
         tags: set[str] | None = None,
         sources: set[PlanComponent | str] | None = None,
-        names: dict[str, tuple[str | int, ...]] | None = None,
     ) -> None:
         super().__init__(plan, tags, sources)
         self._path: Path | None = None
         self._tables = []
-        if names is None:
-            self._names = None
-        else:
-            self._names = deepcopy(names)
         for type_, table_type in TABLE_TYPE_MAP.items():
             self._tables.append(
                 ResultsTable(
@@ -44,24 +39,23 @@ class EverestDefaultTableHandler(EventHandler):
             )
 
     def handle_event(self, event: Event) -> None:
-        if "results" in event.data:
-            results = tuple(
-                item.transform_from_optimizer(event.data["transforms"])
-                for item in event.data["results"]
-            )
-            if self._names is not None:
-                results = tuple(deepcopy(item) for item in results)
-                for item in results:
-                    item.names = self._names
-            if self._path is None:
-                self._path = Path(event.data["config"].optimizer.output_dir)
-                if self._path.exists() and not self._path.is_dir():
-                    msg = f"Cannot write table to: {self._path}"
-                    raise RuntimeError(msg)
-            else:
-                self._path.mkdir(parents=True, exist_ok=True)
-            for table in self._tables:
-                table.add_results(results, self._path)
+        parent_path = event.data["config"].optimizer.output_dir
+        if parent_path is None or (results := event.data.get("results")) is None:
+            return
+
+        if self._path is None:
+            if parent_path.exists() and not parent_path.is_dir():
+                msg = f"Cannot write tables to: {parent_path}"
+                raise RuntimeError(msg)
+            self._path = parent_path
+
+        transforms = event.data["transforms"]
+        results = tuple(
+            item if transforms is None else item.transform_from_optimizer(transforms)
+            for item in results
+        )
+        for table in self._tables:
+            table.add_results(results, self._path)
 
     @property
     def event_types(self) -> set[EventType]:

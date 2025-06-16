@@ -35,7 +35,7 @@ jobs:
       - name: Install ropt and ert
         run: |
           uv sync --all-extras --dev
-          uv pip install -U git+https://github.com/verveerpj/ert@update-ropt-0.21[everest,dev]
+          uv pip install -U git+https://github.com/equinor/ert[everest,dev]
           uv pip install -U git+https://github.com/TNO-ropt/ropt-dakota
           uv pip install -U git+https://github.com/TNO-ropt/ropt
       - name: Run pytest

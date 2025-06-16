@@ -2,8 +2,7 @@ It is recommended to run these examples directly using this script template, so
 that output is printed to the console:
 
 ```py
-from ropt_everest import EverestPlan
-from pathlib import Path
+from ropt_everest import load_config, run_everest
 
 def run_plan(plan):
     ...
@@ -12,14 +11,15 @@ if __name__ == "__main__":
     import warnings
 
     warnings.filterwarnings("ignore")
-    EverestPlan.everest(Path(__file__).with_suffix(".yml"))
+    run_everest("config_example.yml", script=__file__)
 ```
 
 ## Basic plan
 A basic plan that corresponds to the default Everest optimization:
 
 ```py
-def run_plan(plan, config):
+def run_plan(plan):
+    config = load_config("config_example.yml")
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
     optimizer.run(config)
@@ -29,7 +29,8 @@ def run_plan(plan, config):
 Running two optimizers, sending optimizer output to different directories:
 
 ```py
-def run_plan(plan, config):
+def run_plan(plan):
+    config = load_config("config_example.yml")
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
     plan.add_table(optimizer)
@@ -49,7 +50,8 @@ frame. In addition, add the index of the loop to the metadata, which an
 additional `iteration` column to the data frame:
 
 ```py
-def run_plan(plan, config):
+def run_plan(plan):
+    config = load_config("config_example.yml")
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
@@ -70,7 +72,8 @@ Run an evaluation of the function for two control vectors and export the results
 to a Pandas data frame:
 
 ```py
-def run_plan(plan, _):
+def run_plan(plan):
+    config = load_config("config_example.yml")
     evaluator = plan.add_ensemble_evaluator()
     store = plan.add_store(evaluator)
     evaluator.run(config, controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])

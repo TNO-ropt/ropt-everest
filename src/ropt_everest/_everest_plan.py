@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from copy import deepcopy
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Literal
@@ -13,13 +14,7 @@ from ropt.config import EnOptConfig
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 from ropt.transforms import OptModelTransforms
 
-from ._utils import (
-    TABLE_COLUMNS,
-    TABLE_TYPE_MAP,
-    fix_columns,
-    get_names,
-    reorder_columns,
-)
+from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, fix_columns, reorder_columns
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -228,47 +223,6 @@ class EverestPlan:
         )
         return EverestTableHandler(self._plan, handler)
 
-    @classmethod
-    def everest(
-        cls, config_file: str, *, report_exit_code: bool = True
-    ) -> EverestExitCode:
-        """Runs an Everest optimization directly from a configuration file.
-
-        This class method provides a convenient way to execute an Everest
-        optimization plan  without having to use the `everest` command. This
-        method will run a full optimization, but it will not produce the usual
-        monitoring output of Everest.
-
-        Using this method instead of the `everest` command-line tool offers
-        several advantages, including:
-
-        - Direct access to standard output (stdout): Unlike the `everest`
-          command, this does not redirect standard output.
-        - Error traces: If errors occur during the optimization, you'll get a
-          full Python stack trace, making debugging easier.
-        - Exceptional exit conditions, such as maximum number batch reached, or
-          a user abort are reported, if `report_exit_code` is set.
-
-        Args:
-            config_file:      The path to the Everest configuration file (YAML).
-            report_exit_code: If `True`, report the exit code.
-
-        Returns:
-            The Everest exit code.
-        """
-        run_model = EverestRunModel.create(EverestConfig.load_file(config_file))
-        run_model.run_experiment(EvaluatorServerConfig())
-        if report_exit_code:
-            match run_model.exit_code:
-                case EverestExitCode.MAX_BATCH_NUM_REACHED:
-                    msg = "Optimization aborted: maximum number of batches reached."
-                case EverestExitCode.USER_ABORT:
-                    msg = "Optimization aborted: user abort."
-                case _:
-                    msg = "Optimization completed."
-            print(msg)  # noqa: T201
-        return run_model.exit_code
-
 
 class EverestBase:
     def __init__(self, plan: Plan) -> None:
@@ -379,11 +333,10 @@ class EverestOptimizerStep(EverestStepBase):
             everest_config.input_constraints,
             everest_config.output_constraints,
             everest_config.optimization,
-            everest_config.model.realizations_weights,
+            everest_config.model,
             everest_config.environment.random_seed,
             everest_config.optimization_output_dir,
         )
-        config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
@@ -472,11 +425,10 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             everest_config.input_constraints,
             everest_config.output_constraints,
             everest_config.optimization,
-            everest_config.model.realizations_weights,
+            everest_config.model,
             everest_config.environment.random_seed,
             everest_config.optimization_output_dir,
         )
-        config_dict["names"] = get_names(everest_config)
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
@@ -699,3 +651,81 @@ class EverestTableHandler(EverestEventHandlerBase):
 
     def __init__(self, plan: Plan, table_handler: EventHandler) -> None:
         super().__init__(plan, table_handler)
+
+
+def load_config(config_file: str) -> dict[str, Any]:
+    """Loads an Everest configuration from a YAML file.
+
+    This function reads an Everest configuration specified by the `config_file`
+    path, parses it, and returns it as a Python dictionary.
+
+    Args:
+        config_file: The path to the Everest configuration YAML file.
+
+    Returns:
+        A dictionary representing the Everest configuration.
+    """
+    config: dict[str, Any] = EverestConfig.load_file(config_file).model_dump(
+        exclude_none=True
+    )
+    return config
+
+
+def run_everest(
+    config_file: str,
+    *,
+    script: Path | str | None = None,
+    report_exit_code: bool = True,
+) -> EverestExitCode:
+    """Runs an Everest optimization directly from a configuration file.
+
+    This function provides a convenient way to execute an Everest optimization
+    plan  without having to use the `everest` command. This method will run a
+    full optimization, but it will not produce the usual monitoring output of
+    Everest.
+
+    Using this method instead of the `everest` command-line tool offers
+    several advantages, including:
+
+    - Direct access to standard output (stdout): Unlike the `everest`
+        command, this does not redirect standard output.
+    - Error traces: If errors occur during the optimization, you'll get a
+        full Python stack trace, making debugging easier.
+    - Exceptional exit conditions, such as maximum number batch reached, or
+        a user abort are reported, if `report_exit_code` is set.
+
+    The optional `script` argument is used to define a custom script that runs
+    the optimization. If the file named by `script` does not exists, the
+    argument is ignored and the default optimization workflow is run.
+
+    Args:
+        config_file:      The path to the Everest configuration file (YAML).
+        script:           Optional script to replace the default optimization.
+        report_exit_code: If `True`, report the exit code.
+
+    Returns:
+        The Everest exit code.
+    """
+    run_model = EverestRunModel.create(EverestConfig.load_file(config_file))
+    if script is not None and Path(script).exists():
+        env_var = os.environ.get("ROPT_SCRIPT", None)
+        try:
+            os.environ["ROPT_SCRIPT"] = str(script)
+            run_model.run_experiment(EvaluatorServerConfig())
+        finally:
+            if env_var is not None:
+                os.environ["ROPT_SCRIPT"] = env_var
+            else:
+                del os.environ["ROPT_SCRIPT"]
+    else:
+        run_model.run_experiment(EvaluatorServerConfig())
+    if report_exit_code:
+        match run_model.exit_code:
+            case EverestExitCode.MAX_BATCH_NUM_REACHED:
+                msg = "Optimization aborted: maximum number of batches reached."
+            case EverestExitCode.USER_ABORT:
+                msg = "Optimization aborted: user abort."
+            case _:
+                msg = "Optimization completed."
+        print(msg)  # noqa: T201
+    return run_model.exit_code

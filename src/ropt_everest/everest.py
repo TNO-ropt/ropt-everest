@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Any, Final
 from ropt.plugins.plan.base import EvaluatorPlugin, EventHandlerPlugin, PlanStepPlugin
 
 from ._cached_evaluator import EverestDefaultCachedEvaluator
-from ._everest_config import EverestConfigStep
+from ._everest_run_plan import EverestRunPlanStep
 from ._results_table import EverestDefaultTableHandler
 
 if TYPE_CHECKING:
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from ropt.plugins.plan.base import Evaluator, EventHandler, PlanComponent, PlanStep
 
 _STEP_OBJECTS: Final[dict[str, type[PlanStep]]] = {
-    "everest_config": EverestConfigStep,
+    "run_plan": EverestRunPlanStep,
 }
 
 _EVENT_HANDLER_OBJECTS: Final[dict[str, type[EventHandler]]] = {

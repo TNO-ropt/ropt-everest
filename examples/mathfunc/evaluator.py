@@ -1,11 +1,11 @@
 # type: ignore
 # ruff: noqa
 
-from ropt_everest import EverestPlan
-from pathlib import Path
+from ropt_everest import load_config, run_everest
 
 
-def run_plan(plan, config):
+def run_plan(plan):
+    config = load_config("config_example.yml")
     evaluator = plan.add_ensemble_evaluator()
     store = plan.add_store(evaluator)
     evaluator.run(config, controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
@@ -16,4 +16,4 @@ if __name__ == "__main__":
     import warnings
 
     warnings.filterwarnings("ignore")
-    EverestPlan.everest(Path(__file__).with_suffix(".yml"))
+    run_everest("config_example.yml", script=__file__)

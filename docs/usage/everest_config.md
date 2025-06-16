@@ -1,12 +1,13 @@
 ## Modifying Everest Configuration Settings
 
-The `run_plan` function accepts the Everest configuration as an argument when it
-starts. This configuration can be modified before running any optimization or
-evaluation steps. However, it's important to note that not all modifications
-will necessarily take effect, and some may lead to unexpected behavior.
-Currently, it's considered safe to modify most settings within the
-`optimization` section, as well as the `realization_weights` in the `model`
-section.
+Within the `run_plan` function you will usually load an Everest configuration
+using the [`load_config`][ropt_everest.load_config] function. This configuration
+can be modified before running any optimization or evaluation steps. However,
+it's important to note that not all modifications will necessarily take effect,
+and some may lead to unexpected behavior. Currently, it's considered safe to
+modify most settings within the `optimization` section, as well as the
+`realization_weights` in the `model` section.
+
 
 ## Handling `max_batch_num`
 

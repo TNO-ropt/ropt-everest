@@ -11,3 +11,6 @@
 ::: ropt_everest.EverestTableHandler
 
 ::: ropt_everest.EverestCachedEvaluator
+
+::: ropt_everest.load_config
+::: ropt_everest.run_everest
