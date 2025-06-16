@@ -570,15 +570,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.everest" class="md-nav__link">
-    <span class="md-ellipsis">
-      everest
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -747,6 +738,24 @@
   <a href="#ropt_everest.EverestCachedEvaluator" class="md-nav__link">
     <span class="md-ellipsis">
       EverestCachedEvaluator
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ropt_everest.load_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_config
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ropt_everest.run_everest" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_everest
     </span>
   </a>
   
@@ -856,15 +865,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.everest" class="md-nav__link">
-    <span class="md-ellipsis">
-      everest
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1033,6 +1033,24 @@
   <a href="#ropt_everest.EverestCachedEvaluator" class="md-nav__link">
     <span class="md-ellipsis">
       EverestCachedEvaluator
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ropt_everest.load_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      load_config
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ropt_everest.run_everest" class="md-nav__link">
+    <span class="md-ellipsis">
+      run_everest
     </span>
   </a>
   
@@ -1587,116 +1605,6 @@ then be generated and saved in the output directory.</p>
             <td>
               <div class="doc-md-description">
                 <p>An <code>EverestTableHandler</code> object.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="ropt_everest.EverestPlan.everest" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">everest</span>
-
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
-  </span>
-
-</h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">everest</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">report_exit_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EverestExitCode</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Runs an Everest optimization directly from a configuration file.</p>
-<p>This class method provides a convenient way to execute an Everest
-optimization plan  without having to use the <code>everest</code> command. This
-method will run a full optimization, but it will not produce the usual
-monitoring output of Everest.</p>
-<p>Using this method instead of the <code>everest</code> command-line tool offers
-several advantages, including:</p>
-<ul>
-<li>Direct access to standard output (stdout): Unlike the <code>everest</code>
-  command, this does not redirect standard output.</li>
-<li>Error traces: If errors occur during the optimization, you'll get a
-  full Python stack trace, making debugging easier.</li>
-<li>Exceptional exit conditions, such as maximum number batch reached, or
-  a user abort are reported, if <code>report_exit_code</code> is set.</li>
-</ul>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>config_file</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The path to the Everest configuration file (YAML).</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>report_exit_code</code>
-            </td>
-            <td>
-                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>If <code>True</code>, report the exit code.</p>
-              </div>
-            </td>
-            <td>
-                  <code>True</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="ert.run_models.everest_run_model.EverestExitCode">EverestExitCode</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The Everest exit code.</p>
               </div>
             </td>
           </tr>
@@ -2655,6 +2563,212 @@ gradient of an objective <code>distance</code> with respect to a control
 
 
   </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="ropt_everest.load_config" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">ropt_everest.load_config</span>
+
+
+</h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">load_config</span><span class="p">(</span><span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents first">
+
+        <p>Loads an Everest configuration from a YAML file.</p>
+<p>This function reads an Everest configuration specified by the <code>config_file</code>
+path, parses it, and returns it as a Python dictionary.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>config_file</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the Everest configuration YAML file.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#dict">dict</a>[<a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a>, <a class="autorefs autorefs-external" title="typing.Any" href="https://docs.python.org/3/library/typing.html#typing.Any">Any</a>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A dictionary representing the Everest configuration.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="ropt_everest.run_everest" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">ropt_everest.run_everest</span>
+
+
+</h2>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">run_everest</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">*</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">script</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">report_exit_code</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EverestExitCode</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents first">
+
+        <p>Runs an Everest optimization directly from a configuration file.</p>
+<p>This function provides a convenient way to execute an Everest optimization
+plan  without having to use the <code>everest</code> command. This method will run a
+full optimization, but it will not produce the usual monitoring output of
+Everest.</p>
+<p>Using this method instead of the <code>everest</code> command-line tool offers
+several advantages, including:</p>
+<ul>
+<li>Direct access to standard output (stdout): Unlike the <code>everest</code>
+    command, this does not redirect standard output.</li>
+<li>Error traces: If errors occur during the optimization, you'll get a
+    full Python stack trace, making debugging easier.</li>
+<li>Exceptional exit conditions, such as maximum number batch reached, or
+    a user abort are reported, if <code>report_exit_code</code> is set.</li>
+</ul>
+<p>The optional <code>script</code> argument is used to define a custom script that runs
+the optimization. If it is <code>None</code>, a script name is constructed from the
+<code>config_file</code> argument by replacing the <code>.yml</code> extension with <code>.py</code>. If the
+file named by <code>script</code> does not exists, the argument is ignored and the
+default optimization workflow is run.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>config_file</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The path to the Everest configuration file (YAML).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>script</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#str">str</a> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Optional script to replace the default optimization.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>report_exit_code</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-external" href="https://docs.python.org/3/library/functions.html#bool">bool</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>True</code>, report the exit code.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ert.run_models.everest_run_model.EverestExitCode">EverestExitCode</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The Everest exit code.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
 
     </div>
 

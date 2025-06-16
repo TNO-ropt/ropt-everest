@@ -606,13 +606,13 @@
   <h1>Everest configuration</h1>
 
 <h2 id="modifying-everest-configuration-settings">Modifying Everest Configuration Settings</h2>
-<p>The <code>run_plan</code> function accepts the Everest configuration as an argument when it
-starts. This configuration can be modified before running any optimization or
-evaluation steps. However, it's important to note that not all modifications
-will necessarily take effect, and some may lead to unexpected behavior.
-Currently, it's considered safe to modify most settings within the
-<code>optimization</code> section, as well as the <code>realization_weights</code> in the <code>model</code>
-section.</p>
+<p>Within the <code>run_plan</code> function you will usually load an Everest configuration
+using the <a class="autorefs autorefs-internal" title="            ropt_everest.load_config" href="../../reference/everest_plan/#ropt_everest.load_config"><code>load_config</code></a> function. This configuration
+can be modified before running any optimization or evaluation steps. However,
+it's important to note that not all modifications will necessarily take effect,
+and some may lead to unexpected behavior. Currently, it's considered safe to
+modify most settings within the <code>optimization</code> section, as well as the
+<code>realization_weights</code> in the <code>model</code> section.</p>
 <h2 id="handling-max_batch_num">Handling <code>max_batch_num</code></h2>
 <p>Modifying the <code>max_batch_num</code> setting within the <code>optimization</code> section after
 the plan has started will have no effect. It's crucial to understand that
