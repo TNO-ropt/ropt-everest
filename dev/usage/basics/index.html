@@ -740,10 +740,8 @@ is used to define and execute the optimization workflow. This object is created
 by Everest and provided to <code>run_plan</code> via the <code>plan</code> parameter. </p>
 <p>Everest can now directed to use this function to run the optimization by setting the
 <code>ROPT_SCRIPT</code> environment variable. For instance:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">ROPT_SCRIPT</span><span class="o">=</span>config.py<span class="w"> </span>everest<span class="w"> </span>run<span class="w"> </span>config.py
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">ROPT_SCRIPT</span><span class="o">=</span>run.py<span class="w"> </span>everest<span class="w"> </span>run<span class="w"> </span>config.yml
 </span></code></pre></div>
-<p>This might be useful if you prefer to name your script differently from the, or
-keep it in different location.</p>
 <p>Developing and executing a custom workflow involves two key aspects:</p>
 <ol>
 <li>
@@ -782,13 +780,15 @@ creation to refine how they process these results.</p>
 steps, 2) adding event handlers to process the results of those steps, and 3)
 finally, executing the steps by calling their <code>run</code> methods, potentially
 multiple times.</p>
-<p>For example, this <code>run_plan</code> function reproduces the default Everest
-optimization, assuming the Everest configuration file is called <code>config.yml</code>:</p>
-<div class="language-py highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">):</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span>  <span class="c1"># Load the configuration</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>    <span class="c1"># Add an optimizer step</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>           <span class="c1"># Add a table event handler</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>               <span class="c1"># Run the optimizer</span>
+<p>For example, this script reproduces the default Everest optimization, assuming
+the Everest configuration file is called <code>config.yml</code>:</p>
+<div class="language-py highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ropt_everest</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_config</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_plan</span><span class="p">(</span><span class="n">plan</span><span class="p">):</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="n">config</span> <span class="o">=</span> <span class="n">load_config</span><span class="p">(</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span>  <span class="c1"># Load the configuration</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">plan</span><span class="o">.</span><span class="n">add_optimizer</span><span class="p">()</span>    <span class="c1"># Add an optimizer step</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">plan</span><span class="o">.</span><span class="n">add_table</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span>           <span class="c1"># Add a table event handler</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>               <span class="c1"># Run the optimizer</span>
 </span></code></pre></div>
 <p>This function executes a basic optimization workflow by performing these steps:</p>
 <ol>
