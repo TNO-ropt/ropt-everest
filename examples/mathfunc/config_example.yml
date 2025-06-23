@@ -60,7 +60,6 @@ install_templates: []
 optimization:
   algorithm: SLSQP
   convergence_tolerance: 0.0001
-  constraint_tolerance: 0.0001
   speculative: True
   max_batch_num: 2
 
