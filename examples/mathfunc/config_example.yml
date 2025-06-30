@@ -55,8 +55,6 @@ install_data:
     source: r{{ configpath }}/adv_target_r{{ realization }}.json
     target: data/r{{ realization}}/target.json
 
-install_templates: []
-
 optimization:
   algorithm: SLSQP
   convergence_tolerance: 0.0001
