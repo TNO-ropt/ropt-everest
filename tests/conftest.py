@@ -1,8 +1,7 @@
 import shutil
 import warnings
-from collections.abc import Callable
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import pytest
 from ert.config import ConfigWarning
