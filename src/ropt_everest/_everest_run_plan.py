@@ -4,7 +4,7 @@ import importlib
 import sys
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from ropt.enums import ExitCode
 from ropt.exceptions import PlanAborted
@@ -13,20 +13,13 @@ from ropt.plugins.plan.base import PlanStep
 from ._everest_plan import EverestPlan
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
-
-    import numpy as np
-    from numpy.typing import NDArray
-    from ropt.evaluator import EvaluatorContext, EvaluatorResult
+    from ropt.evaluator import EvaluatorCallback
     from ropt.plan import Plan
 
 
 class EverestRunPlanStep(PlanStep):
-    def run_step_from_plan(
-        self,
-        *,
-        evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
-        script: Path | str,
+    def run(
+        self, *, evaluator: EvaluatorCallback, script: Path | str
     ) -> Callable[[Plan], ExitCode] | None:
         path = Path(script)
         if path.exists():
@@ -54,9 +47,7 @@ class EverestRunPlanStep(PlanStep):
 
 
 def _run_plan(
-    plan: Plan,
-    func: Callable[[EverestPlan], None],
-    evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
+    plan: Plan, func: Callable[[EverestPlan], None], evaluator: EvaluatorCallback
 ) -> ExitCode:
     ever_plan = EverestPlan(plan, evaluator)
     try:

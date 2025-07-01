@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 from copy import deepcopy
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
 from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     import numpy as np
     import pandas as pd
     from numpy.typing import ArrayLike, NDArray
-    from ropt.evaluator import EvaluatorContext, EvaluatorResult
+    from ropt.evaluator import EvaluatorCallback
     from ropt.plan import Plan
     from ropt.plugins.plan.base import Evaluator, EventHandler, PlanStep
 
@@ -36,11 +36,7 @@ class EverestPlan:
     to achieve the desired optimization goal.
     """
 
-    def __init__(
-        self,
-        plan: Plan,
-        evaluator: Callable[[NDArray[np.float64], EvaluatorContext], EvaluatorResult],
-    ) -> None:
+    def __init__(self, plan: Plan, evaluator: EvaluatorCallback) -> None:
         self._plan = plan
         self._evaluator = plan.add_evaluator("function_evaluator", evaluator=evaluator)
 
@@ -360,8 +356,7 @@ class EverestOptimizerStep(EverestStepBase):
             config_dict["optimizer"]["output_dir"] = output_path
             output_path.mkdir(parents=True, exist_ok=True)
 
-        self.plan.run_step(
-            self.step,
+        self.step.run(
             config=EnOptConfig.model_validate(config_dict),
             transforms=transforms,
             metadata=metadata,
@@ -444,8 +439,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             if everest_transforms
             else None
         )
-        self.plan.run_step(
-            self.step,
+        self.step.run(
             config=EnOptConfig.model_validate(config_dict),
             transforms=transforms,
             metadata=metadata,
