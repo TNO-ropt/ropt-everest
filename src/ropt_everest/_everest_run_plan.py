@@ -4,7 +4,7 @@ import importlib
 import sys
 from functools import partial
 from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from ropt.enums import ExitCode
 from ropt.exceptions import PlanAborted
@@ -13,6 +13,8 @@ from ropt.plugins.plan.base import PlanStep
 from ._everest_plan import EverestPlan
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from ropt.evaluator import EvaluatorCallback
     from ropt.plan import Plan
 

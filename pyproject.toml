@@ -59,14 +59,8 @@ exclude = ["src/ropt_everest/version.py", "build"]
 exclude = ["test-data/*"]
 select = ["ALL"]
 ignore = [
-    "AIR",    # airflow-variable-name-task-id-mismatch
     "COM812", # missing-trailing-comma
     "E501",   # line-too-lone
-    "ISC001", # single-line-implicit-string-concatenation   
-    "DJ",     # flake8-django
-    "FA",     # flake8-future-annotations
-    "PGH004", # blanket-noqa
-    "UP",     # pyupgrade 
     "S101",   # assert
 ]
 
@@ -78,6 +72,10 @@ ignore = [
     "FBT",     # flake8-boolean-trap
     "PLR2004", # magic-value-comparison
     "PLR0913", # too-many-arguments
+]
+"examples/*" = [
+    "PGH004", # blanket-noqa
+    "T201",   # print
 ]
 
 [tool.ruff.lint.pydocstyle]
