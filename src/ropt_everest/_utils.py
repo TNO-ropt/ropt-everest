@@ -2,13 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Final, Literal
 
-from ropt.enums import AxisName
-
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     import pandas as pd
-    from everest.config import EverestConfig
 
 TABLE_COLUMNS: Final[dict[str, dict[str, str]]] = {
     "results": {
@@ -67,24 +62,6 @@ TABLE_TYPE_MAP: Final[dict[str, Literal["functions", "gradients"]]] = {
 }
 
 
-def get_names(
-    everest_config: EverestConfig | None,
-) -> dict[str, Sequence[str | int] | None] | None:
-    if everest_config is None:
-        return None
-
-    return {
-        AxisName.VARIABLE: [
-            name
-            for config in everest_config.controls
-            for name in config.formatted_control_names
-        ],
-        AxisName.OBJECTIVE: everest_config.objective_names,
-        AxisName.NONLINEAR_CONSTRAINT: everest_config.constraint_names,
-        AxisName.REALIZATION: everest_config.model.realizations,
-    }
-
-
 def reorder_columns(
     data: pd.DataFrame, columns: list[str] | dict[str, str]
 ) -> pd.DataFrame:
@@ -95,16 +72,6 @@ def reorder_columns(
         if name == key or (isinstance(name, tuple) and name[0] == key)
     ]
     return data.reindex(columns=reordered_columns)
-
-
-def rename_columns(data: pd.DataFrame, columns: dict[str, str]) -> pd.DataFrame:
-    renamed_columns = [
-        "\n".join([columns[name[0]]] + [str(item) for item in name[1:]])
-        if isinstance(name, tuple)
-        else columns[name]
-        for name in data.columns.to_numpy()
-    ]
-    return data.set_axis(renamed_columns, axis="columns")
 
 
 def fix_columns(data: pd.DataFrame) -> pd.DataFrame:

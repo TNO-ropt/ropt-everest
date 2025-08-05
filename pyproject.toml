@@ -24,9 +24,6 @@ dependencies = ["tabulate", "numpy"]
 "Bug Tracker" = "https://github.com/TNO-ropt/ropt-everest/issues"
 "Documentation" = "https://tno-ropt.github.io/ropt-everest"
 
-[project.entry-points."ropt.plugins.event_handler"]
-everest = "ropt_everest.everest:EverestEventHandlerPlugin"
-
 [project.entry-points."ropt.plugins.plan_step"]
 everest = "ropt_everest.everest:EverestPlanStepPlugin"
 

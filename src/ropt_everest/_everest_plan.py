@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import os
 from copy import deepcopy
 from pathlib import Path
@@ -207,6 +208,11 @@ class EverestPlan:
         or evaluation steps and record relevant results. A set of tables will
         then be generated and saved in the output directory.
 
+        Note:
+            This requires that the `everest-table` plugin for `ropt` is
+            installed. If it is not installed, this method will do nothing and
+            return `None`. In this case, no tables will be generated.
+
         Args:
             steps: The EverestStep(s) to monitor.
 
@@ -214,10 +220,12 @@ class EverestPlan:
             An `EverestTableHandler` object.
         """
         step_set = {steps} if isinstance(steps, EverestBase) else set(steps)
-        handler = self._plan.add_event_handler(
-            "everest/table", sources={obj.step for obj in step_set}
-        )
-        return EverestTableHandler(self._plan, handler)
+        with contextlib.suppress(ValueError):
+            handler = self._plan.add_event_handler(
+                "everest_table/table", sources={obj.step for obj in step_set}
+            )
+            return EverestTableHandler(self._plan, handler)
+        return None
 
 
 class EverestBase:
