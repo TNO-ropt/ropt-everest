@@ -201,7 +201,7 @@ class EverestPlan:
     def add_table(
         self,
         steps: EverestStepBase | Sequence[EverestStepBase],
-    ) -> EverestTableHandler:
+    ) -> EverestTableHandler | None:
         """Adds an event handler that create a table to the execution plan.
 
         This event handler will monitor the progress of specified optimization
@@ -341,21 +341,6 @@ class EverestOptimizerStep(EverestStepBase):
             everest_config.environment.random_seed,
             everest_config.optimization_output_dir,
         )
-        everest_transforms = get_optimization_domain_transforms(
-            everest_config.controls,
-            everest_config.objective_functions,
-            everest_config.output_constraints,
-            everest_config.model,
-        )
-        transforms = (
-            OptModelTransforms(
-                variables=everest_transforms["control_scaler"],
-                objectives=everest_transforms["objective_scaler"],
-                nonlinear_constraints=everest_transforms["constraint_scaler"],
-            )
-            if everest_transforms
-            else None
-        )
 
         if output_dir is not None:
             output_path = Path(output_dir)
@@ -364,8 +349,29 @@ class EverestOptimizerStep(EverestStepBase):
             config_dict["optimizer"]["output_dir"] = output_path
             output_path.mkdir(parents=True, exist_ok=True)
 
+        enopt_config = EnOptConfig.model_validate(config_dict)
+
+        everest_transforms = get_optimization_domain_transforms(
+            everest_config.controls,
+            everest_config.objective_functions,
+            everest_config.output_constraints,
+            everest_config.model,
+            auto_scale=everest_config.optimization.auto_scale,
+        )
+
+        transforms = (
+            OptModelTransforms(
+                variables=everest_transforms["control_scaler"],
+                objectives=everest_transforms["objective_scaler"],
+                nonlinear_constraints=everest_transforms["constraint_scaler"],
+                objective_weights=enopt_config.objectives.weights,
+            )
+            if everest_transforms
+            else None
+        )
+
         self.step.run(
-            config=EnOptConfig.model_validate(config_dict),
+            config=enopt_config,
             transforms=transforms,
             metadata=metadata,
             variables=initial_values if controls is None else controls,
@@ -432,23 +438,28 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             everest_config.environment.random_seed,
             everest_config.optimization_output_dir,
         )
+
+        enopt_config = EnOptConfig.model_validate(config_dict)
+
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
             everest_config.output_constraints,
             everest_config.model,
+            auto_scale=everest_config.optimization.auto_scale,
         )
         transforms = (
             OptModelTransforms(
                 variables=everest_transforms["control_scaler"],
                 objectives=everest_transforms["objective_scaler"],
                 nonlinear_constraints=everest_transforms["constraint_scaler"],
+                objective_weights=enopt_config.objectives.weights,
             )
             if everest_transforms
             else None
         )
         self.step.run(
-            config=EnOptConfig.model_validate(config_dict),
+            config=enopt_config,
             transforms=transforms,
             metadata=metadata,
             variables=initial_values if controls is None else controls,

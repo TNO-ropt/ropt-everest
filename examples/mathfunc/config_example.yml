@@ -17,7 +17,6 @@ controls:
 
 objective_functions:
   - name: distance
-    auto_scale: False
 
 input_constraints:
   - weights:
@@ -29,7 +28,6 @@ input_constraints:
 output_constraints:
   - name: x-0_coord
     lower_bound: 0.1
-    scale: 0.1
 
 # Optimal value expected at x=0.1, y=0, z=0.4, with distance 3.72
 
