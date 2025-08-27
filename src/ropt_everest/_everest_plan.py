@@ -364,7 +364,6 @@ class EverestOptimizerStep(EverestStepBase):
                 variables=everest_transforms["control_scaler"],
                 objectives=everest_transforms["objective_scaler"],
                 nonlinear_constraints=everest_transforms["constraint_scaler"],
-                objective_weights=enopt_config.objectives.weights,
             )
             if everest_transforms
             else None
@@ -453,7 +452,6 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
                 variables=everest_transforms["control_scaler"],
                 objectives=everest_transforms["objective_scaler"],
                 nonlinear_constraints=everest_transforms["constraint_scaler"],
-                objective_weights=enopt_config.objectives.weights,
             )
             if everest_transforms
             else None
