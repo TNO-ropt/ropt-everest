@@ -354,6 +354,7 @@ class EverestOptimizerStep(EverestStepBase):
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
+            everest_config.input_constraints,
             everest_config.output_constraints,
             everest_config.model,
             auto_scale=everest_config.optimization.auto_scale,
@@ -443,6 +444,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
         everest_transforms = get_optimization_domain_transforms(
             everest_config.controls,
             everest_config.objective_functions,
+            everest_config.input_constraints,
             everest_config.output_constraints,
             everest_config.model,
             auto_scale=everest_config.optimization.auto_scale,
