@@ -6,14 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "ropt-everest"
 description = "A ropt plugin to extend Everest functionality"
 readme = "README.md"
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-    "Natural Language :: English",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3.11",
-    "Topic :: Scientific/Engineering",
-]
+classifiers = ["Private :: Do Not Upload"]
 requires-python = ">=3.11"
 dynamic = ["version"]
 dependencies = ["tabulate", "numpy"]
