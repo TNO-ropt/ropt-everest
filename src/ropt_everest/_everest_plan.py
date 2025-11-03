@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Literal
 
 from ert.ensemble_evaluator.config import EvaluatorServerConfig
-from ert.plugins import ErtPluginContext
+from ert.plugins import get_site_plugins
 from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
 from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
@@ -720,10 +720,9 @@ def run_everest(
     Returns:
         The Everest exit code.
     """
-    with ErtPluginContext() as runtime_plugins:
-        run_model = EverestRunModel.create(
-            EverestConfig.load_file(config_file), runtime_plugins=runtime_plugins
-        )
+    run_model = EverestRunModel.create(
+        EverestConfig.load_file(config_file), runtime_plugins=get_site_plugins()
+    )
     if script is not None and Path(script).exists():
         env_var = os.environ.get("ROPT_SCRIPT", None)
         try:
