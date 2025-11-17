@@ -13,6 +13,7 @@ from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
 from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
 from ropt.config import EnOptConfig
+from ropt.plugins import PluginManager
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 from ropt.transforms import OptModelTransforms
 
@@ -25,8 +26,9 @@ if TYPE_CHECKING:
     import pandas as pd
     from numpy.typing import ArrayLike, NDArray
     from ropt.evaluator import EvaluatorCallback
-    from ropt.plan import Plan
-    from ropt.plugins.plan.base import Evaluator, EventHandler, PlanStep
+    from ropt.plugins.compute_step.base import ComputeStep
+    from ropt.plugins.evaluator.base import Evaluator
+    from ropt.plugins.event_handler.base import EventHandler
 
 
 class EverestPlan:
@@ -38,9 +40,14 @@ class EverestPlan:
     to achieve the desired optimization goal.
     """
 
-    def __init__(self, plan: Plan, evaluator: EvaluatorCallback) -> None:
-        self._plan = plan
-        self._evaluator = plan.add_evaluator("function_evaluator", evaluator=evaluator)
+    def __init__(self, evaluator: EvaluatorCallback) -> None:
+        self._plugin_manager = PluginManager()
+        function_evaluator = self._plugin_manager.create_evaluator(
+            "function_evaluator", evaluator=evaluator
+        )
+        self._evaluator = self._plugin_manager.create_evaluator(
+            "everest/cached_evaluator", evaluator=function_evaluator
+        )
 
     def add_optimizer(self) -> EverestOptimizerStep:
         """Adds an optimizer to the execution plan.
@@ -54,9 +61,13 @@ class EverestPlan:
         Returns:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
-        step = self._plan.add_step("optimizer")
-        self._evaluator.add_clients(step)
-        return EverestOptimizerStep(self._plan, step)
+        return EverestOptimizerStep(
+            self._plugin_manager.create_compute_step(
+                "optimizer",
+                evaluator=self._evaluator,
+                plugin_manager=self._plugin_manager,
+            )
+        )
 
     def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
         """Adds an evaluator to the execution plan.
@@ -70,48 +81,13 @@ class EverestPlan:
         Returns:
             An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
-        step = self._plan.add_step("ensemble_evaluator")
-        self._evaluator.add_clients(step)
-        return EverestEnsembleEvaluatorStep(self._plan, step)
-
-    def add_cache(
-        self,
-        steps: EverestStepBase | Sequence[EverestStepBase] | set[EverestStepBase],
-        sources: EverestEventHandlerBase
-        | Sequence[EverestEventHandlerBase]
-        | set[EverestEventHandlerBase],
-    ) -> EverestCachedEvaluator:
-        """Adds an cache to the execution plan.
-
-        This method integrates a caching mechanism into your Everest workflow.
-        Invoking this method returns an
-        [`EverestCachedEvaluator`][ropt_everest.EverestCachedEvaluator] object,
-        which will act as a cache.
-
-        The cache is only serving the steps specified in the `steps` argument.
-        Cached values are retrieved from the specified source(s) and used to
-        avoid redundant evaluations. The sources must be an event handler that
-        stores the results produced by the optimization or evaluation steps.
-
-        Args:
-            steps:   The steps that will use the cache.
-            sources: The source(s) of cached values.
-
-        Returns:
-            A cache object.
-        """
-        steps = {steps} if isinstance(steps, EverestStepBase) else set(steps)
-        sources = (
-            {sources} if isinstance(sources, EverestEventHandlerBase) else set(sources)
+        return EverestEnsembleEvaluatorStep(
+            self._plugin_manager.create_compute_step(
+                "ensemble_evaluator",
+                evaluator=self._evaluator,
+                plugin_manager=self._plugin_manager,
+            )
         )
-        cache = self._plan.add_evaluator(
-            "everest/cached_evaluator",
-            clients={step.step for step in steps},
-            sources={source.handler for source in sources},
-        )
-        self._evaluator.remove_clients({step.step for step in steps})
-        self._evaluator.add_clients(cache)
-        return EverestCachedEvaluator(self._plan, cache)
 
     def add_store(
         self,
@@ -136,11 +112,11 @@ class EverestPlan:
         Returns:
             An `EverestStore` object, which can be used to access the stored results.
         """
-        step_set = {steps} if isinstance(steps, EverestBase) else set(steps)
-        handler = self._plan.add_event_handler(
-            "store", sources={obj.step for obj in step_set}
-        )
-        return EverestStore(self._plan, handler)
+        step_set = {steps} if isinstance(steps, EverestStepBase) else set(steps)
+        handler = self._plugin_manager.create_event_handler("store")
+        for step in step_set:
+            step.compute_step.add_event_handler(handler)
+        return EverestStore(handler)
 
     def add_tracker(
         self,
@@ -190,14 +166,15 @@ class EverestPlan:
         Returns:
             An `EverestTracker` object, which can be used to access the tracked results.
         """
-        step_set = {steps} if isinstance(steps, EverestBase) else set(steps)
-        handler = self._plan.add_event_handler(
+        step_set = {steps} if isinstance(steps, EverestStepBase) else set(steps)
+        handler = self._plugin_manager.create_event_handler(
             "tracker",
             what=what,
             constraint_tolerance=constraint_tolerance,
-            sources={obj.step for obj in step_set},
         )
-        return EverestTracker(self._plan, handler)
+        for step in step_set:
+            step.compute_step.add_event_handler(handler)
+        return EverestTracker(handler)
 
     def add_table(
         self,
@@ -220,37 +197,26 @@ class EverestPlan:
         Returns:
             An `EverestTableHandler` object.
         """
-        step_set = {steps} if isinstance(steps, EverestBase) else set(steps)
+        step_set = {steps} if isinstance(steps, EverestStepBase) else set(steps)
         with contextlib.suppress(ValueError):
-            handler = self._plan.add_event_handler(
-                "everest_table/table", sources={obj.step for obj in step_set}
-            )
-            return EverestTableHandler(self._plan, handler)
+            handler = self._plugin_manager.create_event_handler("everest_table/table")
+            for step in step_set:
+                step.compute_step.add_event_handler(handler)
+            return EverestTableHandler(handler)
         return None
 
 
-class EverestBase:
-    def __init__(self, plan: Plan) -> None:
-        self._plan = plan
+class EverestStepBase:
+    def __init__(self, compute_step: ComputeStep) -> None:
+        self._compute_step = compute_step
 
     @property
-    def plan(self) -> Plan:
-        return self._plan
+    def compute_step(self) -> ComputeStep:
+        return self._compute_step
 
 
-class EverestStepBase(EverestBase):
-    def __init__(self, plan: Plan, step: PlanStep) -> None:
-        super().__init__(plan)
-        self._step = step
-
-    @property
-    def step(self) -> PlanStep:
-        return self._step
-
-
-class EverestEventHandlerBase(EverestBase):
-    def __init__(self, plan: Plan, handler: EventHandler) -> None:
-        super().__init__(plan)
+class EverestEventHandlerBase:
+    def __init__(self, handler: EventHandler) -> None:
         self._handler = handler
 
     @property
@@ -258,9 +224,9 @@ class EverestEventHandlerBase(EverestBase):
         return self._handler
 
 
-class EverestEvaluatorBase(EverestBase):
-    def __init__(self, plan: Plan, evaluator: Evaluator) -> None:
-        super().__init__(plan)
+class EverestEvaluatorBase:
+    def __init__(self, evaluator: Evaluator) -> None:
+        super().__init__()
         self._evaluator = evaluator
 
     @property
@@ -269,19 +235,19 @@ class EverestEvaluatorBase(EverestBase):
 
 
 class EverestCachedEvaluator(EverestEvaluatorBase):
-    def __init__(self, plan: Plan, cache: Evaluator) -> None:
-        super().__init__(plan, cache)
+    def __init__(self, cache: Evaluator) -> None:
+        super().__init__(cache)
 
 
 class EverestOptimizerStep(EverestStepBase):
     """Represents an optimizer step in an Everest execution plan.
 
-    This class encapsulates an optimization step within an Everest workflow. It
-    provides a method to execute the optimizer.
+    This class encapsulates an optimization step within an Everest
+    workflow. It provides a method to execute the optimizer.
     """
 
-    def __init__(self, plan: Plan, optimizer: PlanStep) -> None:
-        super().__init__(plan, optimizer)
+    def __init__(self, optimizer: ComputeStep) -> None:
+        super().__init__(optimizer)
 
     def run(
         self,
@@ -371,7 +337,7 @@ class EverestOptimizerStep(EverestStepBase):
             else None
         )
 
-        self.step.run(
+        self.compute_step.run(
             config=enopt_config,
             transforms=transforms,
             metadata=metadata,
@@ -386,8 +352,8 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
     provides a method to execute the evaluator .
     """
 
-    def __init__(self, plan: Plan, ensemble_evaluator: PlanStep) -> None:
-        super().__init__(plan, ensemble_evaluator)
+    def __init__(self, ensemble_evaluator: ComputeStep) -> None:
+        super().__init__(ensemble_evaluator)
 
     def run(
         self,
@@ -459,7 +425,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
             if everest_transforms
             else None
         )
-        self.step.run(
+        self.compute_step.run(
             config=enopt_config,
             transforms=transforms,
             metadata=metadata,
@@ -476,8 +442,8 @@ class EverestStore(EverestEventHandlerBase):
     analysis.
     """
 
-    def __init__(self, plan: Plan, store: EventHandler) -> None:
-        super().__init__(plan, store)
+    def __init__(self, store: EventHandler) -> None:
+        super().__init__(store)
 
     @property
     def results(self) -> list[Results] | None:
@@ -577,10 +543,9 @@ class EverestTracker(EverestEventHandlerBase):
 
     def __init__(
         self,
-        plan: Plan,
         tracker: EventHandler,
     ) -> None:
-        super().__init__(plan, tracker)
+        super().__init__(tracker)
 
     @property
     def results(self) -> FunctionResults | None:
@@ -663,8 +628,8 @@ class EverestTracker(EverestEventHandlerBase):
 class EverestTableHandler(EverestEventHandlerBase):
     """Represents a table event handler in an Everest execution plan."""
 
-    def __init__(self, plan: Plan, table_handler: EventHandler) -> None:
-        super().__init__(plan, table_handler)
+    def __init__(self, table_handler: EventHandler) -> None:
+        super().__init__(table_handler)
 
 
 def load_config(config_file: str) -> dict[str, Any]:

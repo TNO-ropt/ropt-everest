@@ -4,17 +4,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Final
 
-from ropt.plugins.plan.base import EvaluatorPlugin, PlanStepPlugin
+from ropt.plugins.compute_step.base import ComputeStepPlugin
+from ropt.plugins.evaluator.base import EvaluatorPlugin
 
 from ._cached_evaluator import EverestDefaultCachedEvaluator
-from ._everest_run_plan import EverestRunPlanStep
+from ._everest_run_plan import EverestRunScriptComputeStep
 
 if TYPE_CHECKING:
-    from ropt.plan import Plan
-    from ropt.plugins.plan.base import Evaluator, PlanComponent, PlanStep
+    from ropt.plugins.compute_step.base import ComputeStep
+    from ropt.plugins.evaluator.base import Evaluator
 
-_STEP_OBJECTS: Final[dict[str, type[PlanStep]]] = {
-    "run_plan": EverestRunPlanStep,
+_STEP_OBJECTS: Final[dict[str, type[ComputeStep]]] = {
+    "run_script": EverestRunScriptComputeStep,
 }
 
 _EVALUATOR_OBJECTS: Final[dict[str, type[Evaluator]]] = {
@@ -22,27 +23,23 @@ _EVALUATOR_OBJECTS: Final[dict[str, type[Evaluator]]] = {
 }
 
 
-class EverestPlanStepPlugin(PlanStepPlugin):
+class EverestComputeStepPlugin(ComputeStepPlugin):
     """The everest plan step class."""
 
     @classmethod
     def create(
         cls,
         name: str,
-        plan: Plan,
-        tags: set[str] | None = None,
         **kwargs: Any,  # noqa: ANN401
-    ) -> PlanStep:
+    ) -> ComputeStep:
         """Create a step.
-
-        See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.
 
         # noqa
         """
         _, _, name = name.lower().rpartition("/")
         step_obj = _STEP_OBJECTS.get(name)
         if step_obj is not None:
-            return step_obj(plan, tags, **kwargs)
+            return step_obj(**kwargs)
 
         msg = f"Unknown step type: {name}"
         raise TypeError(msg)
@@ -50,8 +47,6 @@ class EverestPlanStepPlugin(PlanStepPlugin):
     @classmethod
     def is_supported(cls, method: str) -> bool:
         """Check if a method is supported.
-
-        See the [ropt.plugins.base.Plugin][] abstract base class.
 
         # noqa
         """
@@ -65,21 +60,16 @@ class EverestEvaluatorPlugin(EvaluatorPlugin):
     def create(
         cls,
         name: str,
-        plan: Plan,
-        tags: set[str] | None = None,
-        clients: set[PlanComponent | str] | None = None,
         **kwargs: Any,  # noqa: ANN401
     ) -> Evaluator:
         """Create a step.
-
-        See the [ropt.plugins.plan.base.PlanPlugin][] abstract base class.
 
         # noqa
         """
         _, _, name = name.lower().rpartition("/")
         evaluator_obj = _EVALUATOR_OBJECTS.get(name)
         if evaluator_obj is not None:
-            return evaluator_obj(plan, tags, clients, **kwargs)
+            return evaluator_obj(**kwargs)
 
         msg = f"Unknown evaluator type: {name}"
         raise TypeError(msg)
@@ -87,8 +77,6 @@ class EverestEvaluatorPlugin(EvaluatorPlugin):
     @classmethod
     def is_supported(cls, method: str) -> bool:
         """Check if a method is supported.
-
-        See the [ropt.plugins.base.Plugin][] abstract base class.
 
         # noqa
         """

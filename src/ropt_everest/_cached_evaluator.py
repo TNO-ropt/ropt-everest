@@ -3,25 +3,20 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import numpy as np
-from ropt.plugins.plan.cached_evaluator import DefaultCachedEvaluator
+from ropt.plugins.evaluator.cached_evaluator import DefaultCachedEvaluator
 
 if TYPE_CHECKING:
     from numpy.typing import NDArray
     from ropt.evaluator import EvaluatorContext, EvaluatorResult
-    from ropt.plan import Plan
-    from ropt.plugins.plan.base import EventHandler, PlanComponent
+    from ropt.plugins.evaluator.base import Evaluator
+    from ropt.plugins.event_handler.base import EventHandler
 
 
 class EverestDefaultCachedEvaluator(DefaultCachedEvaluator):
     def __init__(
-        self,
-        plan: Plan,
-        tags: set[str] | None = None,
-        clients: set[PlanComponent | str] | None = None,
-        *,
-        sources: list[EventHandler] | None = None,
+        self, *, evaluator: Evaluator, sources: list[EventHandler] | None = None
     ) -> None:
-        super().__init__(plan, tags, clients, sources=sources)
+        super().__init__(evaluator=evaluator, sources=sources)
 
     def eval(
         self, variables: NDArray[np.float64], context: EvaluatorContext
