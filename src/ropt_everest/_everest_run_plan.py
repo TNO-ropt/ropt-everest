@@ -15,13 +15,12 @@ if TYPE_CHECKING:
 
     from ropt.enums import ExitCode
     from ropt.evaluator import EvaluatorCallback
-    from ropt.optimization import Plan
 
 
 class EverestRunScriptComputeStep(ComputeStep):
     def run(
         self, *, evaluator: EvaluatorCallback, script: Path | str
-    ) -> Callable[[Plan], ExitCode] | None:
+    ) -> Callable[..., ExitCode | None] | None:
         path = Path(script)
         if path.exists():
             module_name = path.stem
@@ -44,7 +43,6 @@ class EverestRunScriptComputeStep(ComputeStep):
 
 
 def _run_plan(
-    func: Callable[[EverestPlan], None], evaluator: EvaluatorCallback
+    func: Callable[[EverestPlan], ExitCode | None], evaluator: EvaluatorCallback
 ) -> ExitCode | None:
-    ever_plan = EverestPlan(evaluator)
-    return func(ever_plan)
+    return func(EverestPlan(evaluator))

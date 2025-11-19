@@ -214,16 +214,6 @@ In addition, the following methods are available:
     as Pandas data frames.
 
 
-### [`add_cache`][ropt_everest.EverestPlan.add_cache]
-The `add_cache` method adds a cache object to the plan. The resulting
-[`EverestCachedEvaluator`][ropt_everest.EverestCachedEvaluator] object can be
-used prevent unnecessary re-evaluation of controls that have already were
-evaluated before. It takes the following two arguments:
-
-- **steps:** A step, or a sequence of steps that can make use of the cache object.
-- **source:** The event handlers to use by the cache object.
-
-
 ### [`add_table`][ropt_everest.EverestPlan.add_table]
 Adds a table event handler to the plan. The resulting
 [`EverestTableHandler`][ropt_everest.EverestTableHandler] object tracks and

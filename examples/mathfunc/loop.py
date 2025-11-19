@@ -9,7 +9,7 @@ def run_plan(plan):
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
     store = plan.add_store(optimizer)
-    plan.add_cache(steps=optimizer, sources=tracker)
+    # plan.add_cache(steps=optimizer, sources=tracker)
 
     for idx in range(3):
         optimizer.run(
