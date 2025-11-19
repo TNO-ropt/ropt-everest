@@ -596,17 +596,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.add_cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        add_cache
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#ropt_everest.EverestPlan.add_store" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -934,17 +923,6 @@
     <span class="md-ellipsis">
       
         add_ensemble_evaluator
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ropt_everest.EverestPlan.add_cache" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        add_cache
       
     </span>
   </a>
@@ -1374,111 +1352,6 @@ object, which you can execute using its
 <div class="doc doc-object doc-function">
 
 
-<h3 id="ropt_everest.EverestPlan.add_cache" class="doc doc-heading">
-<code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">add_cache</span>
-
-
-</h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_cache</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">steps</span><span class="p">:</span> <span class="n">EverestStepBase</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">EverestStepBase</span><span class="p">]</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="o">|</span> <span class="nb">set</span><span class="p">[</span><span class="n">EverestStepBase</span><span class="p">],</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">sources</span><span class="p">:</span> <span class="n">EverestEventHandlerBase</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="o">|</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">EverestEventHandlerBase</span><span class="p">]</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="o">|</span> <span class="nb">set</span><span class="p">[</span><span class="n">EverestEventHandlerBase</span><span class="p">],</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EverestCachedEvaluator</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Adds an cache to the execution plan.</p>
-<p>This method integrates a caching mechanism into your Everest workflow.
-Invoking this method returns an
-<a class="autorefs autorefs-internal" title="            ropt_everest.EverestCachedEvaluator" href="#ropt_everest.EverestCachedEvaluator"><code>EverestCachedEvaluator</code></a> object,
-which will act as a cache.</p>
-<p>The cache is only serving the steps specified in the <code>steps</code> argument.
-Cached values are retrieved from the specified source(s) and used to
-avoid redundant evaluations. The sources must be an event handler that
-stores the results produced by the optimization or evaluation steps.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>steps</code>
-            </td>
-            <td>
-                  <code><span title="ropt_everest._everest_plan.EverestStepBase">EverestStepBase</span> | <a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a>[<span title="ropt_everest._everest_plan.EverestStepBase">EverestStepBase</span>] | <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#set">set</a>[<span title="ropt_everest._everest_plan.EverestStepBase">EverestStepBase</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The steps that will use the cache.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>sources</code>
-            </td>
-            <td>
-                  <code><span title="ropt_everest._everest_plan.EverestEventHandlerBase">EverestEventHandlerBase</span> | <a class="autorefs autorefs-external" title="collections.abc.Sequence" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence">Sequence</a>[<span title="ropt_everest._everest_plan.EverestEventHandlerBase">EverestEventHandlerBase</span>] | <a class="autorefs autorefs-external" href="https://docs.python.org/3/library/stdtypes.html#set">set</a>[<span title="ropt_everest._everest_plan.EverestEventHandlerBase">EverestEventHandlerBase</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The source(s) of cached values.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><a class="autorefs autorefs-internal" title="            ropt_everest.EverestCachedEvaluator (ropt_everest._everest_plan.EverestCachedEvaluator)" href="#ropt_everest.EverestCachedEvaluator">EverestCachedEvaluator</a></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A cache object.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
 <h3 id="ropt_everest.EverestPlan.add_store" class="doc doc-heading">
 <code class="doc-symbol doc-symbol-heading doc-symbol-method"></code>            <span class="doc doc-object-name doc-function-name">add_store</span>
 
@@ -1808,8 +1681,8 @@ return <code>None</code>. In this case, no tables will be generated.</p>
 
 
         <p>Represents an optimizer step in an Everest execution plan.</p>
-<p>This class encapsulates an optimization step within an Everest workflow. It
-provides a method to execute the optimizer.</p>
+<p>This class encapsulates an optimization step within an Everest
+workflow. It provides a method to execute the optimizer.</p>
 
 
 
