@@ -43,7 +43,7 @@ class EverestPlan:
     def __init__(self, evaluator: EvaluatorCallback) -> None:
         self._plugin_manager = PluginManager()
         function_evaluator = self._plugin_manager.create_evaluator(
-            "function_evaluator", evaluator=evaluator
+            "function_evaluator", callback=evaluator
         )
         self._evaluator = self._plugin_manager.create_evaluator(
             "everest/cached_evaluator", evaluator=function_evaluator
