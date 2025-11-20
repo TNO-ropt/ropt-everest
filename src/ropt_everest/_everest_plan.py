@@ -299,7 +299,7 @@ class EverestOptimizerStep(EverestStepBase):
         """
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(
-            everest_config.controls,
+            [control.to_ert_parameter_config() for control in everest_config.controls],
             everest_config.create_ert_objectives_config(),
             everest_config.input_constraints,
             everest_config.create_ert_output_constraints_config(),
@@ -319,7 +319,7 @@ class EverestOptimizerStep(EverestStepBase):
         enopt_config = EnOptConfig.model_validate(config_dict)
 
         everest_transforms = get_optimization_domain_transforms(
-            everest_config.controls,
+            [control.to_ert_parameter_config() for control in everest_config.controls],
             everest_config.create_ert_objectives_config(),
             everest_config.input_constraints,
             everest_config.create_ert_output_constraints_config(),
@@ -396,7 +396,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
         """
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(
-            everest_config.controls,
+            [control.to_ert_parameter_config() for control in everest_config.controls],
             everest_config.create_ert_objectives_config(),
             everest_config.input_constraints,
             everest_config.create_ert_output_constraints_config(),
@@ -409,7 +409,7 @@ class EverestEnsembleEvaluatorStep(EverestStepBase):
         enopt_config = EnOptConfig.model_validate(config_dict)
 
         everest_transforms = get_optimization_domain_transforms(
-            everest_config.controls,
+            [control.to_ert_parameter_config() for control in everest_config.controls],
             everest_config.create_ert_objectives_config(),
             everest_config.input_constraints,
             everest_config.create_ert_output_constraints_config(),
