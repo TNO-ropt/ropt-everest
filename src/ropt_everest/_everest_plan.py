@@ -13,9 +13,9 @@ from everest.config import EverestConfig
 from everest.optimizer.everest2ropt import everest2ropt
 from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
 from ropt.config import EnOptConfig
-from ropt.plugins import PluginManager
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 from ropt.transforms import OptModelTransforms
+from ropt.workflow import create_compute_step, create_evaluator, create_event_handler
 
 from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, fix_columns, reorder_columns
 
@@ -41,11 +41,8 @@ class EverestPlan:
     """
 
     def __init__(self, evaluator: EvaluatorCallback) -> None:
-        self._plugin_manager = PluginManager()
-        function_evaluator = self._plugin_manager.create_evaluator(
-            "function_evaluator", callback=evaluator
-        )
-        self._evaluator = self._plugin_manager.create_evaluator(
+        function_evaluator = create_evaluator("function_evaluator", callback=evaluator)
+        self._evaluator = create_evaluator(
             "everest/cached_evaluator", evaluator=function_evaluator
         )
 
@@ -62,11 +59,7 @@ class EverestPlan:
             An `EverestOptimizerStep` object, representing the added optimizer.
         """
         return EverestOptimizerStep(
-            self._plugin_manager.create_compute_step(
-                "optimizer",
-                evaluator=self._evaluator,
-                plugin_manager=self._plugin_manager,
-            )
+            create_compute_step("optimizer", evaluator=self._evaluator)
         )
 
     def add_ensemble_evaluator(self) -> EverestEnsembleEvaluatorStep:
@@ -82,11 +75,7 @@ class EverestPlan:
             An `EverestEnsembleEvaluatorStep` object, representing the added evaluator.
         """
         return EverestEnsembleEvaluatorStep(
-            self._plugin_manager.create_compute_step(
-                "ensemble_evaluator",
-                evaluator=self._evaluator,
-                plugin_manager=self._plugin_manager,
-            )
+            create_compute_step("ensemble_evaluator", evaluator=self._evaluator)
         )
 
     def add_store(
@@ -113,7 +102,7 @@ class EverestPlan:
             An `EverestStore` object, which can be used to access the stored results.
         """
         step_set = {steps} if isinstance(steps, EverestStepBase) else set(steps)
-        handler = self._plugin_manager.create_event_handler("store")
+        handler = create_event_handler("store")
         for step in step_set:
             step.compute_step.add_event_handler(handler)
         return EverestStore(handler)
@@ -167,7 +156,7 @@ class EverestPlan:
             An `EverestTracker` object, which can be used to access the tracked results.
         """
         step_set = {steps} if isinstance(steps, EverestStepBase) else set(steps)
-        handler = self._plugin_manager.create_event_handler(
+        handler = create_event_handler(
             "tracker",
             what=what,
             constraint_tolerance=constraint_tolerance,
@@ -199,7 +188,7 @@ class EverestPlan:
         """
         step_set = {steps} if isinstance(steps, EverestStepBase) else set(steps)
         with contextlib.suppress(ValueError):
-            handler = self._plugin_manager.create_event_handler("everest_table/table")
+            handler = create_event_handler("everest_table/table")
             for step in step_set:
                 step.compute_step.add_event_handler(handler)
             return EverestTableHandler(handler)
