@@ -1,14 +1,14 @@
 # type: ignore
 # ruff: noqa
 
-from ropt_everest import load_config, run_everest
+from ropt_everest import create_optimizer, load_config, run_everest
 
 
-def run_plan(plan):
+def run(evaluator):
     config = load_config("config_example.yml")
-    optimizer = plan.add_optimizer()
-    tracker = plan.add_tracker(optimizer)
-    plan.add_table(optimizer)
+    optimizer = create_optimizer(evaluator)
+    tracker = optimizer.add_tracker()
+    optimizer.add_table()
 
     print("Running first optimizer...")
     optimizer.run(config=config, output_dir="output1")

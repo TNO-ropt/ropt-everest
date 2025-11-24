@@ -4,7 +4,7 @@ that output is printed to the console:
 ```py
 from ropt_everest import load_config, run_everest
 
-def run_plan(plan):
+def run(plan):
     ...
 
 if __name__ == "__main__":
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 A basic plan that corresponds to the default Everest optimization:
 
 ```py
-def run_plan(plan):
+def run(plan):
     config = load_config("config_example.yml")
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
@@ -29,7 +29,7 @@ def run_plan(plan):
 Running two optimizers, sending optimizer output to different directories:
 
 ```py
-def run_plan(plan):
+def run(plan):
     config = load_config("config_example.yml")
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer)
@@ -50,7 +50,7 @@ frame. In addition, add the index of the loop to the metadata, which an
 additional `iteration` column to the data frame:
 
 ```py
-def run_plan(plan):
+def run(plan):
     config = load_config("config_example.yml")
     optimizer = plan.add_optimizer()
     tracker = plan.add_tracker(optimizer, what="last")
@@ -72,7 +72,7 @@ Run an evaluation of the function for two control vectors and export the results
 to a Pandas data frame:
 
 ```py
-def run_plan(plan):
+def run(plan):
     config = load_config("config_example.yml")
     evaluator = plan.add_ensemble_evaluator()
     store = plan.add_store(evaluator)

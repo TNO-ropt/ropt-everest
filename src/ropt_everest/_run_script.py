@@ -7,14 +7,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from ropt.plugins.compute_step.base import ComputeStep
-
-from ._everest_plan import EverestPlan
+from ropt.workflow import create_evaluator
 
 if TYPE_CHECKING:
     from collections.abc import Callable
 
     from ropt.enums import ExitCode
     from ropt.evaluator import EvaluatorCallback
+    from ropt.plugins.evaluator.base import Evaluator
 
 
 class EverestRunScriptComputeStep(ComputeStep):
@@ -33,16 +33,19 @@ class EverestRunScriptComputeStep(ComputeStep):
             assert spec.loader is not None
             spec.loader.exec_module(module)
 
-            if hasattr(module, "run_plan"):
-                return partial(_run_plan, func=module.run_plan, evaluator=evaluator)
+            if hasattr(module, "run"):
+                return partial(_run_script, func=module.run, evaluator=evaluator)
 
-            msg = f"Function `run_plan` not found in module {module_name}"
+            msg = f"Function `run` not found in module {module_name}"
             raise ImportError(msg)
 
         return None
 
 
-def _run_plan(
-    func: Callable[[EverestPlan], ExitCode | None], evaluator: EvaluatorCallback
+def _run_script(
+    func: Callable[[Evaluator], ExitCode | None], evaluator: EvaluatorCallback
 ) -> ExitCode | None:
-    return func(EverestPlan(evaluator))
+    function_evaluator = create_evaluator("function_evaluator", callback=evaluator)
+    return func(
+        create_evaluator("everest/cached_evaluator", evaluator=function_evaluator)
+    )

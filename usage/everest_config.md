@@ -1,6 +1,6 @@
 ## Modifying Everest Configuration Settings
 
-Within the `run_plan` function you will usually load an Everest configuration
+Within the `run` function you will usually load an Everest configuration
 using the [`load_config`][ropt_everest.load_config] function. This configuration
 can be modified before running any optimization or evaluation steps. However,
 it's important to note that not all modifications will necessarily take effect,
@@ -14,6 +14,6 @@ modify most settings within the `optimization` section, as well as the
 Modifying the `max_batch_num` setting within the `optimization` section after
 the plan has started will have no effect. It's crucial to understand that
 `max_batch_num` determines the total number of batches allowed across the
-*entire* optimization process. Consequently, if your `run_plan` function
+*entire* optimization process. Consequently, if your `run` function
 includes multiple optimization runs, and the first run reaches the
 `max_batch_num` limit, subsequent optimization steps will not be executed.

@@ -1,6 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Final, Literal
+import os
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Final, Literal
+
+from ert.ensemble_evaluator.config import EvaluatorServerConfig
+from ert.plugins import get_site_plugins
+from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
+from everest.config import EverestConfig
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -86,3 +93,83 @@ def fix_columns(data: pd.DataFrame) -> pd.DataFrame:
         for name in data.columns.to_numpy()
     ]
     return data.set_axis(renamed_columns, axis="columns")
+
+
+def load_config(config_file: str) -> dict[str, Any]:
+    """Loads an Everest configuration from a YAML file.
+
+    This function reads an Everest configuration specified by the `config_file`
+    path, parses it, and returns it as a Python dictionary.
+
+    Args:
+        config_file: The path to the Everest configuration YAML file.
+
+    Returns:
+        A dictionary representing the Everest configuration.
+    """
+    config: dict[str, Any] = EverestConfig.load_file(config_file).model_dump(
+        exclude_none=True
+    )
+    return config
+
+
+def run_everest(
+    config_file: str,
+    *,
+    script: Path | str | None = None,
+    report_exit_code: bool = True,
+) -> EverestExitCode:
+    """Runs an Everest optimization directly from a configuration file.
+
+    This function provides a convenient way to execute an Everest optimization
+    workflow without having to use the `everest` command. This method will run a
+    full optimization, but it will not produce the usual monitoring output of
+    Everest.
+
+    Using this method instead of the `everest` command-line tool offers
+    several advantages, including:
+
+    - Direct access to standard output (stdout): Unlike the `everest`
+        command, this does not redirect standard output.
+    - Error traces: If errors occur during the optimization, you'll get a
+        full Python stack trace, making debugging easier.
+    - Exceptional exit conditions, such as maximum number batch reached, or
+        a user abort are reported, if `report_exit_code` is set.
+
+    The optional `script` argument is used to define a custom script that runs
+    the optimization. If the file named by `script` does not exists, the
+    argument is ignored and the default optimization workflow is run.
+
+    Args:
+        config_file:      The path to the Everest configuration file (YAML).
+        script:           Optional script to replace the default optimization.
+        report_exit_code: If `True`, report the exit code.
+
+    Returns:
+        The Everest exit code.
+    """
+    run_model = EverestRunModel.create(
+        EverestConfig.load_file(config_file), runtime_plugins=get_site_plugins()
+    )
+    if script is not None and Path(script).exists():
+        env_var = os.environ.get("ROPT_SCRIPT", None)
+        try:
+            os.environ["ROPT_SCRIPT"] = str(script)
+            run_model.run_experiment(EvaluatorServerConfig())
+        finally:
+            if env_var is not None:
+                os.environ["ROPT_SCRIPT"] = env_var
+            else:
+                del os.environ["ROPT_SCRIPT"]
+    else:
+        run_model.run_experiment(EvaluatorServerConfig())
+    if report_exit_code:
+        match run_model.exit_code:
+            case EverestExitCode.MAX_BATCH_NUM_REACHED:
+                msg = "Optimization aborted: maximum number of batches reached."
+            case EverestExitCode.USER_ABORT:
+                msg = "Optimization aborted: user abort."
+            case _:
+                msg = "Optimization completed."
+        print(msg)  # noqa: T201
+    return run_model.exit_code

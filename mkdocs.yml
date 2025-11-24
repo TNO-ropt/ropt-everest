@@ -78,10 +78,9 @@ watch:
 repo_url: https://github.com/TNO-ropt/ropt-everest
 nav:
   - "About": index.md
-  - "Usage": 
-     - "Basic Usage": usage/basics.md
-     - "Running the plan": usage/running.md
-     - "Everest configuration": usage/everest_config.md
-     - "Examples": usage/examples.md
-  - "Reference":
-    - "Everest Plan": reference/everest_plan.md
+  # - "Usage": 
+  #    - "Basic Usage": usage/basics.md
+  #    - "Running the workflow": usage/running.md
+  #    - "Everest configuration": usage/everest_config.md
+  #    - "Examples": usage/examples.md
+  - "Reference": reference/reference.md

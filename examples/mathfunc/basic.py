@@ -1,14 +1,15 @@
 # type: ignore
 # ruff: noqa
 
-from ropt_everest import load_config, run_everest
+from ropt_everest import create_optimizer, load_config, run_everest
 
 
-def run_plan(plan):
+def run(evaluator):
     config = load_config("config_example.yml")
-    optimizer = plan.add_optimizer()
-    plan.add_table(optimizer)
+    optimizer = create_optimizer(evaluator)
+    tracker = optimizer.add_tracker()
     optimizer.run(config)
+    print(tracker.controls)
 
 
 if __name__ == "__main__":

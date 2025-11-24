@@ -1,13 +1,13 @@
 # type: ignore
 # ruff: noqa
 
-from ropt_everest import load_config, run_everest
+from ropt_everest import create_evaluator, load_config, run_everest
 
 
-def run_plan(plan):
+def run(evaluator):
     config = load_config("config_example.yml")
-    evaluator = plan.add_ensemble_evaluator()
-    store = plan.add_store(evaluator)
+    evaluator = create_evaluator(evaluator)
+    store = evaluator.add_store()
     evaluator.run(config, controls=[[0, 0, 0], [0.25, 0.25, 0.25], [1, 1, 1]])
     print(store.dataframe("results"))
 

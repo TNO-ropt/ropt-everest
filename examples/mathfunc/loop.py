@@ -1,15 +1,15 @@
 # type: ignore
 # ruff: noqa
 
-from ropt_everest import load_config, run_everest
+from ropt_everest import create_optimizer, load_config, run_everest
 
 
-def run_plan(plan):
+def run(evaluator):
     config = load_config("config_example.yml")
-    optimizer = plan.add_optimizer()
-    tracker = plan.add_tracker(optimizer, what="last")
-    store = plan.add_store(optimizer)
-    # plan.add_cache(steps=optimizer, sources=tracker)
+    optimizer = create_optimizer(evaluator)
+    tracker = optimizer.add_tracker(what="last")
+    store = optimizer.add_store()
+    optimizer.add_table()
 
     for idx in range(3):
         optimizer.run(

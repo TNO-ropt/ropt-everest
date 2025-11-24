@@ -1,9 +1,9 @@
 Typically, Everest optimization workflows are executed using the standard
 Everest command-line interface (CLI). This approach works seamlessly even when
-you've implemented a custom `run_plan` function using `ropt-everest`. However,
+you've implemented a custom `run` function using `ropt-everest`. However,
 the Everest CLI often obscures exceptions and errors, providing limited feedback
 or relegating detailed information to log files. This can be cumbersome during
-the development of a custom `run_plan` function, as not all exceptions are
+the development of a custom `run` function, as not all exceptions are
 immediately visible. Moreover, the standard Everest CLI redirects standard
 output (stdout) and standard error (stderr) to files, which can further
 complicate debugging.
@@ -19,9 +19,9 @@ written to `stdout` or `stderr` is sent directly to your console.
 In the simplest case, `run_everest` takes only the name of the Everest
 configuration file, and runs the default optimization workflow. To run a custom
 workflow, the `script` keyword argument can be set to the name of Python script
-that provides a `run_plan` function that executes the custom plan.
+that provides a `run` function that executes the custom plan.
 
-**Example: Custom `run_plan` and Direct Execution**
+**Example: Custom `run` and Direct Execution**
 
 Here's an example of a Python script that customizes the optimization process.
 It can be run using Everest by setting the `ROPT_SCRIPT` variable to the name of
@@ -32,7 +32,7 @@ the `run_everest` function:
 from ropt_everest import load_config, run_everest
 
 
-def run_plan(plan):
+def run(plan):
     config = load_config("config.yml")
     optimizer = plan.add_optimizer()
     plan.add_table(optimizer)
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
 Here, within the `if __name__ == "__main__":` block, we first suppress warnings
 that Everest might produce. These warnings are generally intended for end-users
-and are typically not relevant during the development of a custom `run_plan`
+and are typically not relevant during the development of a custom `run`
 function. We then execute the `run_everest` function, passing the path to the
 configuration file and to the script file.
 

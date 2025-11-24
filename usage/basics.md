@@ -6,16 +6,17 @@ optimization run based on the parameters in a YAML configuration file. However,
 with ropt-everest, you can override this behavior.
 
 To customize the workflow, create a Python file that contains a function named
-`run_plan` with the following signature:
+`run` with the following signature:
 
 ```py
-def run_plan(plan: EverestPlan) -> None:
+def run(evaluator: Evaluator) -> None:
     ...
 ```
 
-The only argument is an [`EverestPlan`][ropt_everest.EverestPlan] object, which
-is used to define and execute the optimization workflow. This object is created
-by Everest and provided to `run_plan` via the `plan` parameter. 
+The only argument is an [`Evaluator`][ropt.plugins.evaluator.base.Evaluator]
+object, which is used to define and execute the optimization workflow. This
+object is created by Everest and provided to `run` via the `evaluator`
+parameter. 
 
 Everest can now directed to use this function to run the optimization by setting the
 `ROPT_SCRIPT` environment variable. For instance:
@@ -27,21 +28,18 @@ ROPT_SCRIPT=run.py everest run config.yml
 Developing and executing a custom workflow involves two key aspects:
 
 1.  **Defining the Workflow:** This entails adding the individual steps and
-    their associated event handlers to the `EverestPlan`. These steps can
-    include optimizers, evaluators, and other custom operations. Result
-    handlers, such as trackers and table outputs, capture the outcomes of each
-    step.
+    their associated event handlers to the workflow. These steps can include
+    optimizers, evaluators, and other custom operations. Result handlers, such
+    as trackers and table outputs, capture the outcomes of each step.
 
 2.  **Executing and Inspecting:** This process involves arranging the defined
-    steps in the desired order of execution and leveraging the event handlers
-    to analyze the output data. The `EverestPlan` automatically manages the
-    execution of these steps, guaranteeing their correct operation and ensuring
-    that results are consistently captured and made accessible. Because the
-    `run_plan` function is implemented in standard Python, you can use the full
-    power of Python programming (e.g., loops, conditional statements, and custom
-    functions) to create sophisticated and adaptable optimization workflows.
+    steps in the desired order of execution and leveraging the event handlers to
+    analyze the output data. Because the `run` function is implemented in
+    standard Python, you can use the full power of Python programming (e.g.,
+    loops, conditional statements, and custom functions) to create sophisticated
+    and adaptable optimization workflows.
 
-A `run_plan` function constructs a workflow by creating _step_ objects and
+A `run` function constructs a workflow by creating _step_ objects and
 _handler_ objects. You create these objects by calling methods on the `plan`
 object, typically using the pattern `plan.add_*()`. For example,
 `plan.add_optimizer()` creates an optimizer step and registers it with the plan.
@@ -69,7 +67,7 @@ the Everest configuration file is called `config.yml`:
 ```py
 from ropt_everest import load_config
 
-def run_plan(plan):
+def run(plan):
     config = load_config("config.yml")  # Load the configuration
     optimizer = plan.add_optimizer()    # Add an optimizer step
     plan.add_table(optimizer)           # Add a table event handler
@@ -81,7 +79,7 @@ This function executes a basic optimization workflow by performing these steps:
 1.  **Loading Configuration**: Load an Everest configuration using the
     [`load_config`][ropt_everest.load_config] function.
 2.  **Plan Creation**: Everest creates an
-    [`EverestPlan`][ropt_everest.EverestPlan] object and passes it to `run_plan`
+    [`EverestPlan`][ropt_everest.EverestPlan] object and passes it to `run`
     via the `plan` parameter. In addition it passes the Everest configuration
     dictionary, although it is not used in this example.
 3.  **Optimizer Addition**: An optimizer step is added to the plan using the
@@ -130,7 +128,7 @@ executed using its [`run`][ropt_everest.EverestOptimizerStep.run] method. The
 `run` method supports the following parameters to customize its behavior:
 
 - **config** (`dict`, optional): An Everest configuration dictionary. You can
-    copy and modify the configuration passed to the `run_plan` function to
+    copy and modify the configuration passed to the `run` function to
     create a suitable configuration, or you can construct or load your own.
 - **controls** (`array-like`, optional): Initial control values for the
     optimizer. If not specified, the initial values from the Everest
@@ -143,13 +141,13 @@ executed using its [`run`][ropt_everest.EverestOptimizerStep.run] method. The
     
 ### [`add_ensemble_evaluator`][ropt_everest.EverestPlan.add_ensemble_evaluator]
 Adds an ensemble evaluator step to the workflow plan. The resulting
-[`EverestEnsembleEvaluatorStep`][ropt_everest.EverestEnsembleEvaluatorStep]
+[`EverestEvaluatorStep`][ropt_everest.EverestEvaluatorStep]
 object can be executed using its
-[`run`][ropt_everest.EverestEnsembleEvaluatorStep.run] method. The `run` method
+[`run`][ropt_everest.EverestEvaluatorStep.run] method. The `run` method
 supports the following parameters to customize its behavior:
 
 - **config** (`dict`, optional): An Everest configuration dictionary. You can
-    copy and modify the configuration passed to the `run_plan` function to
+    copy and modify the configuration passed to the `run` function to
     create a suitable configuration, or you can construct or load your own.
 - **controls** (`array-like`, optional): The controls that will be evaluated.
     This can be a single vector, a sequence of multiple vectors, or a 2D matrix
