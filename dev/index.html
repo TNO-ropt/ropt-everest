@@ -10,7 +10,7 @@
       
       
       
-        <link rel="next" href="reference/reference/">
+        <link rel="next" href="usage/basics/">
       
       
         
@@ -298,6 +298,174 @@
   
   
   
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Usage
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/basics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running the workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/everest_config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Everest configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="usage/examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="reference/reference/" class="md-nav__link">
         
@@ -358,14 +526,12 @@
 
 
 <h1 id="ropt-everest"><code>ropt-everest</code></h1>
-<p>The <code>ropt-everest</code> plugin extends <a href="https://tno-ropt.github.io/ropt/latest/"><code>ropt</code></a>
-with functionality specific to Everest. It primarily offers two key features:</p>
-<ol>
-<li><strong>Enhanced Reporting:</strong> It generates tables containing optimization results,
-   which are saved to disk after each batch evaluation.</li>
-<li><strong>Custom Workflow Implementation:</strong> It provides the ability to load custom
-   Python code to override the default optimization workflow.</li>
-</ol>
+<p>The <code>ropt-everest</code> plugin extends
+<a href="https://tno-ropt.github.io/ropt/latest/"><code>ropt</code></a> with functionality specific to
+Everest. It provides the ability to load custom Python code to override the
+default optimization workflow. These custom workflows can either be run via the
+standard Everest command line interface (cli), or via a script that bypasses the
+Everest cli.</p>
 
 
 
