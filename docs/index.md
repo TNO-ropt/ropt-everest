@@ -1,9 +1,8 @@
 # `ropt-everest`
 
-The `ropt-everest` plugin extends [`ropt`](https://tno-ropt.github.io/ropt/latest/)
-with functionality specific to Everest. It primarily offers two key features:
-
-1. **Enhanced Reporting:** It generates tables containing optimization results,
-   which are saved to disk after each batch evaluation.
-2. **Custom Workflow Implementation:** It provides the ability to load custom
-   Python code to override the default optimization workflow.
+The `ropt-everest` plugin extends
+[`ropt`](https://tno-ropt.github.io/ropt/latest/) with functionality specific to
+Everest. It provides the ability to load custom Python code to override the
+default optimization workflow. These custom workflows can either be run via the
+standard Everest command line interface (cli), or via a script that bypasses the
+Everest cli.

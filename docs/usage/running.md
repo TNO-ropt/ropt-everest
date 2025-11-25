@@ -29,21 +29,20 @@ this script. However, it can also be directly executed as a Python script, using
 the `run_everest` function:
 
 ```py
-from ropt_everest import load_config, run_everest
+from ropt_everest import create_optimizer, load_config, run_everest
 
-
-def run(plan):
-    config = load_config("config.yml")
-    optimizer = plan.add_optimizer()
-    plan.add_table(optimizer)
+def run(evaluator):
+    config = load_config("config_example.yml")
+    optimizer = create_optimizer(evaluator)
+    tracker = optimizer.add_tracker()
     optimizer.run(config)
-
+    print(tracker.controls)
 
 if __name__ == "__main__":
     import warnings
 
     warnings.filterwarnings("ignore")
-    run_everest("config.yml", __file__)
+    run_everest("config_example.yml", script=__file__)
 ```
 
 Here, within the `if __name__ == "__main__":` block, we first suppress warnings
