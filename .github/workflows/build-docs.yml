@@ -31,7 +31,7 @@ jobs:
       run: |
         uv sync --all-extras --dev
         uv pip install git+https://github.com/TNO-ropt/ropt
-        uv pip install git+https://github.com/equinor/ert[everest,dev]
+        uv pip install git+https://github.com/equinor/ert[dev]
     - name: Build docs
       if: always()
       run: uv run mkdocs build --strict
