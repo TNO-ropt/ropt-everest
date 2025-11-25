@@ -9,11 +9,11 @@ from ropt.plugins.evaluator.base import EvaluatorPlugin
 from ropt.plugins.event_handler.base import EventHandlerPlugin
 
 from ._cached_evaluator import EverestDefaultCachedEvaluator
-from ._evaluator import EverestEvaluatorStep
-from ._optimizer import EverestOptimizerStep
+from ._evaluator import EverestEnsembleEvaluator
+from ._optimizer import EverestOptimizer
 from ._run_script import EverestRunScriptComputeStep
-from ._store import EverestStoreHandler
-from ._tracker import EverestTrackerHandler
+from ._store import EverestStore
+from ._tracker import EverestTracker
 
 if TYPE_CHECKING:
     from ropt.plugins.compute_step.base import ComputeStep
@@ -22,16 +22,16 @@ if TYPE_CHECKING:
 
 _STEP_OBJECTS: Final[dict[str, type[ComputeStep]]] = {
     "run_script": EverestRunScriptComputeStep,
-    "optimizer": EverestOptimizerStep,
-    "evaluator": EverestEvaluatorStep,
+    "optimizer": EverestOptimizer,
+    "ensemble_evaluator": EverestEnsembleEvaluator,
 }
 
 _EVALUATOR_OBJECTS: Final[dict[str, type[Evaluator]]] = {
     "cached_evaluator": EverestDefaultCachedEvaluator,
 }
 _EVENT_HANDLER_OBJECTS: Final[dict[str, type[EventHandler]]] = {
-    "store": EverestStoreHandler,
-    "tracker": EverestTrackerHandler,
+    "store": EverestStore,
+    "tracker": EverestTracker,
 }
 
 

@@ -134,7 +134,7 @@ def run_everest(
     - Error traces: If errors occur during the optimization, you'll get a
         full Python stack trace, making debugging easier.
     - Exceptional exit conditions, such as maximum number batch reached, or
-        a user abort are reported, if `report_exit_code` is set.
+        a user abort are reported, if `report_exit_code` is set (the default).
 
     The optional `script` argument is used to define a custom script that runs
     the optimization. If the file named by `script` does not exists, the

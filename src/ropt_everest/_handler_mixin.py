@@ -5,14 +5,16 @@ from typing import TYPE_CHECKING, Any, Literal
 from ropt.plugins.event_handler.base import EventHandler
 from ropt.workflow import create_event_handler
 
-from ._store import EverestStoreHandler
-from ._tracker import EverestTrackerHandler
+from ._store import EverestStore
+from ._tracker import EverestTracker
 
 if TYPE_CHECKING:
     from ropt.plugins.event_handler import EventHandler
 
 
-class StepMixin:
+class HandlerMixin:
+    """Mixin class for adding event handlers to an optimizer or ensemble evaluator."""
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:  # noqa: ANN401
         super().__init__(*args, **kwargs)
         self._table: EventHandler | None = None
@@ -22,7 +24,7 @@ class StepMixin:
         *,
         what: Literal["best", "last"] = "best",
         constraint_tolerance: float | None = None,
-    ) -> EverestTrackerHandler:
+    ) -> EverestTracker:
         """Adds a tracker to the optimizer or ensemble evaluator.
 
         Trackers monitor the progress of the optimization or evaluation and
@@ -31,10 +33,10 @@ class StepMixin:
         tracker to save the best or the last results generated.
 
         Invoking this method returns an
-        [`EverestTrackerHandler`][ropt_everest.EverestTrackerHandler] object,
+        [`EverestTracker`][ropt_everest.EverestTracker] object,
         which provides various methods to access the tracked results.
 
-        A tracker is configured by three arguments:
+        A tracker is configured by the following arguments:
 
         **what:** This argument determines which results the tracker should
         record. You can choose from the following options:
@@ -55,29 +57,29 @@ class StepMixin:
             constraint_tolerance: Tolerance for constraint satisfaction.
 
         Returns:
-            An `EverestTrackerHandler` object.
+            An `EverestTracker` object.
         """
         tracker = create_event_handler(
             "everest/tracker", what=what, constraint_tolerance=constraint_tolerance
         )
-        assert isinstance(tracker, EverestTrackerHandler)
+        assert isinstance(tracker, EverestTracker)
         self.add_event_handler(tracker)  # type: ignore[attr-defined]
         return tracker
 
-    def add_store(self) -> EverestStoreHandler:
+    def add_store(self) -> EverestStore:
         """Adds a results store to the optimizer or ensemble evaluator.
 
         Stores the results of the optimization or evaluation.
 
         Invoking this method returns an
-        [`EverestStoreHandler`][ropt_everest.EverestStoreHandler] object, which
+        [`EverestStore`][ropt_everest.EverestStore] object, which
         provides various methods to access the stored results.
 
         Returns:
-            An `EverestStoreHandler` object.
+            An `EverestStore` object.
         """
         store = create_event_handler("everest/store")
-        assert isinstance(store, EverestStoreHandler)
+        assert isinstance(store, EverestStore)
         self.add_event_handler(store)  # type: ignore[attr-defined]
         return store
 

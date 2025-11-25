@@ -1,19 +1,19 @@
 """Main ropt_everest package."""
 
-from ._evaluator import EverestEvaluatorStep, create_evaluator
-from ._optimizer import EverestOptimizerStep, create_optimizer
-from ._step_mixin import StepMixin
-from ._store import EverestStoreHandler
-from ._tracker import EverestTrackerHandler
+from ._evaluator import EverestEnsembleEvaluator, create_ensemble_evaluator
+from ._handler_mixin import HandlerMixin
+from ._optimizer import EverestOptimizer, create_optimizer
+from ._store import EverestStore
+from ._tracker import EverestTracker
 from ._utils import load_config, run_everest
 
 __all__ = [
-    "EverestEvaluatorStep",
-    "EverestOptimizerStep",
-    "EverestStoreHandler",
-    "EverestTrackerHandler",
-    "StepMixin",
-    "create_evaluator",
+    "EverestEnsembleEvaluator",
+    "EverestOptimizer",
+    "EverestStore",
+    "EverestTracker",
+    "HandlerMixin",
+    "create_ensemble_evaluator",
     "create_optimizer",
     "load_config",
     "run_everest",

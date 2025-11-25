@@ -88,7 +88,7 @@ This function executes a basic optimization workflow by performing these steps:
     the [`add_table`][ropt_everest.EverestPlan.add_table] method. This will save
     the optimization results in a set of tables.
 5.  **Optimizer Execution**: The optimization process is started by calling the
-    [`run`][ropt_everest.EverestOptimizerStep.run] method of the optimizer step. It
+    [`run`][ropt_everest.EverestOptimizer.run] method of the optimizer step. It
     uses the configuration that was passed to Everest without modification.
 
 
@@ -123,8 +123,8 @@ for building and managing optimization workflows:
 
 ### [`add_optimizer`][ropt_everest.EverestPlan.add_optimizer]
 Adds an optimizer step to the workflow plan. The resulting
-[`EverestOptimizerStep`][ropt_everest.EverestOptimizerStep] object can be
-executed using its [`run`][ropt_everest.EverestOptimizerStep.run] method. The
+[`EverestOptimizer`][ropt_everest.EverestOptimizer] object can be
+executed using its [`run`][ropt_everest.EverestOptimizer.run] method. The
 `run` method supports the following parameters to customize its behavior:
 
 - **config** (`dict`, optional): An Everest configuration dictionary. You can
@@ -141,9 +141,9 @@ executed using its [`run`][ropt_everest.EverestOptimizerStep.run] method. The
     
 ### [`add_ensemble_evaluator`][ropt_everest.EverestPlan.add_ensemble_evaluator]
 Adds an ensemble evaluator step to the workflow plan. The resulting
-[`EverestEvaluatorStep`][ropt_everest.EverestEvaluatorStep]
+[`EverestEnsembleEvaluator`][ropt_everest.EverestEnsembleEvaluator]
 object can be executed using its
-[`run`][ropt_everest.EverestEvaluatorStep.run] method. The `run` method
+[`run`][ropt_everest.EverestEnsembleEvaluator.run] method. The `run` method
 supports the following parameters to customize its behavior:
 
 - **config** (`dict`, optional): An Everest configuration dictionary. You can
