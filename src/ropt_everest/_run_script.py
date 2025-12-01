@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import importlib
 import sys
 from functools import partial
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -24,11 +24,11 @@ class EverestRunScriptComputeStep(ComputeStep):
         path = Path(script)
         if path.exists():
             module_name = path.stem
-            spec = importlib.util.spec_from_file_location(module_name, path)
+            spec = spec_from_file_location(module_name, path)
             if spec is None:
                 msg = f"Could not load {module_name}.py"
                 raise ImportError(msg)
-            module = importlib.util.module_from_spec(spec)
+            module = module_from_spec(spec)
             sys.modules[module_name] = module
             assert spec.loader is not None
             spec.loader.exec_module(module)
