@@ -151,7 +151,10 @@ def run_everest(
     run_model = EverestRunModel.create(
         EverestConfig.load_file(config_file), runtime_plugins=get_site_plugins()
     )
-    if script is not None and Path(script).exists():
+    if script is not None:
+        if not Path(script).exists():
+            msg = f"script does not exist: {script}"
+            raise RuntimeError(msg)
         env_var = os.environ.get("ROPT_SCRIPT", None)
         try:
             os.environ["ROPT_SCRIPT"] = str(script)
