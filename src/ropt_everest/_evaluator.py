@@ -88,6 +88,9 @@ class EverestEnsembleEvaluator(HandlerMixin, DefaultEnsembleEvaluatorComputeStep
             metadata:   An optional dictionary of metadata to associate with the
                         results.
             output_dir: An optional output directory.
+
+        Returns:
+            The exit code of the ensemble evaluator.
         """
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(

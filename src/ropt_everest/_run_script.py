@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 
 class EverestRunScriptComputeStep(ComputeStep):
-    def run(
+    def run(  # noqa: PLR6301
         self, *, evaluator: EvaluatorCallback, script: Path | str
     ) -> Callable[..., ExitCode | None] | None:
         path = Path(script)

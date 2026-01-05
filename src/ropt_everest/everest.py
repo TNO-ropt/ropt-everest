@@ -47,7 +47,7 @@ class EverestComputeStepPlugin(ComputeStepPlugin):
         """Create a step.
 
         # noqa
-        """
+        """  # noqa: DOC201, DOC501
         _, _, name = name.lower().rpartition("/")
         step_obj = _STEP_OBJECTS.get(name)
         if step_obj is not None:
@@ -61,7 +61,7 @@ class EverestComputeStepPlugin(ComputeStepPlugin):
         """Check if a method is supported.
 
         # noqa
-        """
+        """  # noqa: DOC201
         return method.lower() in _STEP_OBJECTS
 
 
@@ -77,7 +77,7 @@ class EverestEvaluatorPlugin(EvaluatorPlugin):
         """Create a step.
 
         # noqa
-        """
+        """  # noqa: DOC201, DOC501
         _, _, name = name.lower().rpartition("/")
         evaluator_obj = _EVALUATOR_OBJECTS.get(name)
         if evaluator_obj is not None:
@@ -91,7 +91,7 @@ class EverestEvaluatorPlugin(EvaluatorPlugin):
         """Check if a method is supported.
 
         # noqa
-        """
+        """  # noqa: DOC201
         return method.lower() in _EVALUATOR_OBJECTS
 
 
@@ -107,7 +107,7 @@ class EverestEventHandlerPlugin(EventHandlerPlugin):
         """Create a step.
 
         # noqa
-        """
+        """  # noqa: DOC201, DOC501
         _, _, name = name.lower().rpartition("/")
         event_handler_obj = _EVENT_HANDLER_OBJECTS.get(name)
         if event_handler_obj is not None:
@@ -121,5 +121,5 @@ class EverestEventHandlerPlugin(EventHandlerPlugin):
         """Check if a method is supported.
 
         # noqa
-        """
+        """  # noqa: DOC201
         return method.lower() in _EVENT_HANDLER_OBJECTS

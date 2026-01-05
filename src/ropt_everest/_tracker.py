@@ -3,7 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING, Literal
 
-from ropt.plugins.event_handler._tracker import DefaultTrackerHandler
+from ropt.plugins.event_handler._tracker import DefaultTrackerHandler  # noqa: PLC2701
 from ropt.results import FunctionResults, results_to_dataframe
 
 from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, fix_columns, reorder_columns
@@ -88,6 +88,9 @@ class EverestTracker(DefaultTrackerHandler):
 
         Args:
             kind: The type of table to create.
+
+        Raises:
+            RuntimeError: If the `kind` is not supported.
 
         Returns:
             A Pandas DataFrame containing the tracked results, or None.

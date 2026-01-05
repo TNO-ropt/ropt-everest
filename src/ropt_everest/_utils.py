@@ -145,6 +145,9 @@ def run_everest(
         script:           Optional script to replace the default optimization.
         report_exit_code: If `True`, report the exit code.
 
+    Raises:
+        RuntimeError: If the script does not exist.
+
     Returns:
         The Everest exit code.
     """

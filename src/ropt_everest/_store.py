@@ -3,7 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import TYPE_CHECKING
 
-from ropt.plugins.event_handler._store import DefaultStoreHandler
+from ropt.plugins.event_handler._store import DefaultStoreHandler  # noqa: PLC2701
 from ropt.results import FunctionResults, GradientResults, Results, results_to_dataframe
 
 from ._utils import TABLE_COLUMNS, TABLE_TYPE_MAP, fix_columns, reorder_columns
@@ -81,6 +81,9 @@ class EverestStore(DefaultStoreHandler):
             control `point.x` may have the name: `(controls, point.x)`. The
             gradient of an objective `distance` with respect to a control
             `point.x` may have the column name `(objectives, distance, point.x.0)`.
+
+        Raises:
+            RuntimeError: If the `kind` is not supported.
 
         Args:
             kind: The type of table to create.
