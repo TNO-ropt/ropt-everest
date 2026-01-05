@@ -32,6 +32,8 @@ jobs:
         with:
           enable-cache: true
           cache-dependency-glob: "**/pyproject.toml"
+      - name: Install netcdf4
+        run: sudo apt-get update && sudo apt-get install -y libnetcdf-dev
       - name: Install ropt and ert
         run: |
           uv sync --all-extras --dev
