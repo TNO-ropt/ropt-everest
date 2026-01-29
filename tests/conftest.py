@@ -5,11 +5,12 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-from ert.config import ConfigWarning
 
 
 @pytest.fixture(autouse=True)
 def filter_warnings() -> None:
+    from ert.config import ConfigWarning  # noqa: PLC0415
+
     warnings.filterwarnings(
         "ignore",
         message=".*Forward model might not write the required output.*",

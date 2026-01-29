@@ -4,13 +4,11 @@ import os
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Final, Literal
 
-from ert.ensemble_evaluator.config import EvaluatorServerConfig
-from ert.plugins import get_site_plugins
-from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
-from everest.config import EverestConfig
-
 if TYPE_CHECKING:
     import pandas as pd
+    from ert.run_models.everest_run_model import EverestExitCode
+
+# ruff: noqa: PLC0415
 
 TABLE_COLUMNS: Final[dict[str, dict[str, str]]] = {
     "results": {
@@ -107,6 +105,8 @@ def load_config(config_file: str) -> dict[str, Any]:
     Returns:
         A dictionary representing the Everest configuration.
     """
+    from everest.config import EverestConfig
+
     config: dict[str, Any] = EverestConfig.load_file(config_file).model_dump(
         exclude_none=True
     )
@@ -151,6 +151,11 @@ def run_everest(
     Returns:
         The Everest exit code.
     """
+    from ert.ensemble_evaluator.config import EvaluatorServerConfig
+    from ert.plugins import get_site_plugins
+    from ert.run_models.everest_run_model import EverestExitCode, EverestRunModel
+    from everest.config import EverestConfig
+
     run_model = EverestRunModel.create(
         EverestConfig.load_file(config_file), runtime_plugins=get_site_plugins()
     )

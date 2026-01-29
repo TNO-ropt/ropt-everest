@@ -3,9 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from everest.config import EverestConfig
-from everest.optimizer.everest2ropt import everest2ropt
-from everest.optimizer.opt_model_transforms import get_optimization_domain_transforms
 from ropt.config import EnOptConfig
 from ropt.enums import ExitCode
 from ropt.plugins.compute_step.optimizer import DefaultOptimizerComputeStep
@@ -18,6 +15,8 @@ if TYPE_CHECKING:
     from numpy.typing import ArrayLike
     from ropt.enums import ExitCode
     from ropt.plugins.evaluator.base import Evaluator
+
+# ruff: noqa: PLC0415
 
 
 class EverestOptimizer(HandlerMixin, DefaultOptimizerComputeStep):
@@ -86,6 +85,12 @@ class EverestOptimizer(HandlerMixin, DefaultOptimizerComputeStep):
         Returns:
             The exit code of the optimizer.
         """
+        from everest.config import EverestConfig
+        from everest.optimizer.everest2ropt import everest2ropt
+        from everest.optimizer.opt_model_transforms import (
+            get_optimization_domain_transforms,
+        )
+
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(
             [control.to_ert_parameter_config() for control in everest_config.controls],
