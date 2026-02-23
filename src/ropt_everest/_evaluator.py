@@ -100,7 +100,11 @@ class EverestEnsembleEvaluator(HandlerMixin, DefaultEnsembleEvaluatorComputeStep
 
         everest_config = EverestConfig.with_plugins(config)
         config_dict, initial_values = everest2ropt(
-            [control.to_ert_parameter_config() for control in everest_config.controls],
+            [
+                param
+                for control in everest_config.controls
+                for param in control.to_ert_parameter_config()
+            ],
             everest_config.create_ert_objectives_config(),
             everest_config.input_constraints,
             everest_config.create_ert_output_constraints_config(),
@@ -120,7 +124,11 @@ class EverestEnsembleEvaluator(HandlerMixin, DefaultEnsembleEvaluatorComputeStep
         enopt_config = EnOptConfig.model_validate(config_dict)
 
         everest_transforms = get_optimization_domain_transforms(
-            [control.to_ert_parameter_config() for control in everest_config.controls],
+            [
+                param
+                for control in everest_config.controls
+                for param in control.to_ert_parameter_config()
+            ],
             everest_config.create_ert_objectives_config(),
             everest_config.input_constraints,
             everest_config.create_ert_output_constraints_config(),
